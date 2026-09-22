@@ -36,5 +36,9 @@ Desktop.ini
 *.tmp
 *.temp
 
+# Diagram skills provisioned by tools/setup_workflow.py (third-party, not redistributed here)
+.claude/skills/
+tools/.workflow-setup.json
+
 # Keep planning sources and deliverables in version control:
 # projects/, templates/, prompts/, reference/, and document exports.

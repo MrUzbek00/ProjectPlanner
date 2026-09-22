@@ -8,6 +8,35 @@ Project: TBD · Package version: TBD · Date: TBD · Language: TBD
 | --- | --- | --- | --- |
 | Project Technical Specification / Technical Assignment | TBD | TBD | TBD |
 | Complete Development Cards | TBD | TBD | TBD |
+| Deliverable document package (Word and Excel) | TBD | TBD | TBD |
+
+## Deliverable package
+
+| Document | Markdown source | Word file | Built from source revision | Build date | Export verified |
+| --- | --- | --- | --- | --- | --- |
+| Product Requirements Document | TBD | TBD | TBD | TBD | TBD |
+| Business Requirements Document | TBD | TBD | TBD | TBD | TBD |
+| Software Requirements Specification | TBD | TBD | TBD | TBD | TBD |
+| Statement of Work and Scope Statement | TBD | TBD | TBD | TBD | TBD |
+| User Journey and User Stories | TBD | TBD | TBD | TBD | TBD |
+| Wireframes and UI/UX Specification | TBD | TBD | TBD | TBD | TBD |
+| Project Plan and Roadmap | TBD | TBD | TBD | TBD | TBD |
+| Deliverable Package Manifest | TBD | TBD | TBD | TBD | TBD |
+
+| Workbook | File | Sheets | Built from source revision | Export verified |
+| --- | --- | --- | --- | --- |
+| Requirements and traceability | TBD | TBD | TBD | TBD |
+| Project plan and roadmap | TBD | TBD | TBD | TBD |
+
+| Diagram | DIAG ID | Tool | Editable source | Export | Embedded in | Built from source revision | Verified |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| BPMN process diagrams | TBD | Excalidraw skill | TBD | TBD | TBD | TBD | TBD |
+| Proposed data model (ER) | TBD | draw.io skill | TBD | TBD | TBD | TBD | TBD |
+| Entity state diagrams | TBD | draw.io skill | TBD | TBD | TBD | TBD | TBD |
+
+Hand over the editable `.excalidraw` and `.drawio` sources alongside the exports so the recipient can correct a model without redrawing it.
+
+Each export states the approved revision it was generated from. An export whose source revision no longer matches the current baseline is stale and must be rebuilt before handoff.
 
 ## Supporting artifacts
 
@@ -15,8 +44,8 @@ Project: TBD · Package version: TBD · Date: TBD · Language: TBD
 | --- | --- | --- | --- |
 | Source and decision registers / glossary | TBD | TBD | TBD |
 | Requirement gap analysis and interview history | TBD | TBD | TBD |
-| Process flow / BPMN-like model | TBD | TBD | TBD |
-| ERD / data model | TBD | TBD | TBD |
+| BPMN process diagrams (generated) | TBD | TBD | TBD |
+| ERD / proposed data model (generated) | TBD | TBD | TBD |
 | System architecture | TBD | TBD | TBD |
 | Page map / page specifications | TBD | TBD | TBD |
 | Role-permission matrix | TBD | TBD | TBD |

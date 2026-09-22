@@ -2,7 +2,7 @@
 
 Project: TBD · Reviewer: TBD · Review date: TBD
 
-Review stage: PRE-APPROVAL SPECIFICATION / FINAL SPECIFICATION AND BACKLOG
+Review stage: PRE-APPROVAL SPECIFICATION / FINAL SPECIFICATION AND BACKLOG / DIAGRAMS / DELIVERABLE PACKAGE
 
 Specification version / complete file manifest: TBD
 
@@ -85,6 +85,34 @@ For each row record PASS, FAIL, N/A with rationale, or NOT REVIEWED; evidence mu
 | Deliverable index, file links and approval manifest are consistent | NOT REVIEWED | | |
 | Deployment/user guide/training/support requirements have owners and stages; unfinished artifacts are labeled | NOT REVIEWED | | |
 
+## Deliverable package checks
+
+Applicable at the deliverable-package review stage. Before that stage, record N/A for the stage rather than a claimed pass.
+
+| Check | Result | Evidence / IDs | Finding IDs / rationale |
+| --- | --- | --- | --- |
+| Every diagram was specified before it was generated, and every element traces to a confirmed record | NOT REVIEWED | | |
+| No diagram invents a lane, gateway, end event, table, column, relationship or cardinality | NOT REVIEWED | | |
+| AS-IS and TO-BE process diagrams are separate and are not conflated | NOT REVIEWED | | |
+| Diagrams match the current process model, state transitions and data model | NOT REVIEWED | | |
+| Structural proposals in the data model are listed as proposals, not as confirmed requirements | NOT REVIEWED | | |
+| Every diagram was rendered, opened and visually inspected | NOT REVIEWED | | |
+| Captions carry the DIAG ID and the notation or model-status statement | NOT REVIEWED | | |
+| Every deliverable was authored only after its source analysis records were complete | NOT REVIEWED | | |
+| No deliverable introduces a requirement, metric, persona, cost, date or policy absent from an approved record | NOT REVIEWED | | |
+| The MVP definition is identical in the PRD and the SOW | NOT REVIEWED | | |
+| Personas, objectives, KPIs and out-of-scope lists agree across all deliverables | NOT REVIEWED | | |
+| Shared content appears once canonically and is referenced, not restated differently | NOT REVIEWED | | |
+| Every user story traces to an approved requirement and carries measurable acceptance criteria | NOT REVIEWED | | |
+| Every scheduled task exists in the approved backlog with matching dependencies | NOT REVIEWED | | |
+| Screen records cover every page in the approved specification, with all applicable states | NOT REVIEWED | | |
+| Unconfirmed figures, dates, signatories and brand rules remain TBD with named owners | NOT REVIEWED | | |
+| Build validation errors were cleared before generation | NOT REVIEWED | | |
+| Every Word and Excel export was opened and inspected, not merely generated | NOT REVIEWED | | |
+| Exports were generated from the current approved revision and none is stale | NOT REVIEWED | | |
+| No template instruction text survives in a released document | NOT REVIEWED | | |
+| Document language is consistent across the package | NOT REVIEWED | | |
+
 ## Findings and remaining weaknesses
 
 | FIND ID | Severity | Weakness / contradiction / missing detail | Evidence | Affected requirements / cards | Impact | Required correction / question | Owner | Status | Closure evidence |
@@ -113,5 +141,7 @@ List any checks not performed and their practical limitation: TBD. A manual revi
 
 - Ready for specification approval? TBD, with evidence.
 - Ready for backlog handoff? TBD, with evidence; pre-approval review may be N/A.
+- Diagrams verified against their source models? TBD, with inspection evidence.
+- Deliverable package ready for release? TBD, with export verification evidence.
 - Remaining weaknesses and explicit non-blocking dispositions: TBD.
 - Required next action / responsible decision authority: TBD.

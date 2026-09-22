@@ -49,7 +49,30 @@ Template only — replace placeholders with evidence; no project approval is imp
 | G2 — Specification reviewable | NOT STARTED | | | |
 | G3 — Specification approved | NOT STARTED | | | |
 | G4 — Backlog complete | NOT STARTED | | | |
-| G5 — Handoff ready | NOT STARTED | | | |
+| G5 — Diagrams generated and verified | NOT STARTED | | | |
+| G6 — Deliverable package built | NOT STARTED | | | |
+| G7 — Handoff ready | NOT STARTED | | | |
+
+## Deliverable package status
+
+| Deliverable | Markdown authored | Word generated | Excel sheets included | Export verified | Outstanding |
+| --- | --- | --- | --- | --- | --- |
+| Product Requirements Document | NOT STARTED | | | | |
+| Business Requirements Document | NOT STARTED | | | | |
+| Software Requirements Specification | NOT STARTED | | | | |
+| Statement of Work and Scope Statement | NOT STARTED | | | | |
+| User Journey and User Stories | NOT STARTED | | | | |
+| Wireframes and UI/UX Specification | NOT STARTED | | | | |
+| Project Plan and Roadmap | NOT STARTED | | | | |
+| Deliverable Package Manifest | NOT STARTED | | | | |
+
+| Diagram | DIAG ID | Tool | Specified | Generated | Rendered and inspected | Embedded in |
+| --- | --- | --- | --- | --- | --- | --- |
+| BPMN process diagrams | | Excalidraw skill | NOT STARTED | | | |
+| Proposed data model (ER) | | draw.io skill | NOT STARTED | | | |
+| Entity state diagrams | | draw.io skill | NOT STARTED | | | |
+
+Last build command and date: not run. Build output location: TBD. Diagram source location: TBD.
 
 ## Approval record
 

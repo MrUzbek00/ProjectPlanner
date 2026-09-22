@@ -21,6 +21,27 @@ Copy templates into the per-project structure described in [projects/README.md](
 | [14 — API Contract](14-api-contract.md) | For actual required interfaces | Request/response/error/authentication/data/retry/verification definitions |
 | [15 — Delivery Documentation](15-delivery-documentation.md) | Requirements during planning; instructions when implemented | Deployment, user-guide, training and support content/ownership/stages |
 
+## Deliverable package templates
+
+Used after the analysis records are complete, to author the stakeholder-facing documents that are exported to Word and Excel. See [WORKFLOW.md](../WORKFLOW.md) section 12 and [tools/README.md](../tools/README.md).
+
+| Template | Audience | Purpose |
+| --- | --- | --- |
+| [16 — PRD](16-prd.md) | Product, business, delivery | Product intent, personas, success metrics, MVP feature set, release criteria |
+| [17 — BRD](17-brd.md) | Sponsors and stakeholders | Business case, objectives, justification, financial expectations, governance |
+| [18 — SRS](18-srs.md) | Engineering | Architecture, data, interfaces, functional and non-functional behavior, security, APIs |
+| [19 — SOW and Scope Statement](19-sow-scope-statement.md) | Contracting and delivery | Deliverables, boundaries, MVP definition, milestones, acceptance, change control |
+| [20 — User Journey and User Stories](20-user-journey-stories.md) | Product and delivery | Journeys, pain points, epics, story backlog, acceptance criteria |
+| [21 — Wireframes and UI/UX](21-wireframes-uiux.md) | Design and frontend | Information architecture, screen layouts, states, interactions, asset handoff |
+| [22 — Project Plan and Roadmap](22-project-plan-roadmap.md) | Delivery management | Phases, milestones, sprints, task sequence, dependencies, resources, RACI |
+| [23 — Deliverable Package Manifest](23-deliverable-package.md) | Package governance | Contents, source coverage, generation log, export verification, release decision |
+| [24 — BPMN Process Diagrams](24-bpmn-process-diagrams.md) | Business and engineering | BPMN notation contract, per-diagram specification, generation record and verification |
+| [25 — ER and Data Diagrams](25-er-data-diagrams.md) | Engineering and data | Proposed physical data model, state and data-flow diagrams, structural proposals, verification |
+
+Tables tagged with `<!-- xlsx: workbook=<key>; sheet=<name> -->` are also written to the Excel workbooks. Keep the marker directly above its table when copying a template.
+
+Diagrams are generated with the Excalidraw and draw.io skills named in templates 24 and 25, specified before they are drawn, and embedded in the Word deliverables with captioned image references.
+
 ## Completion rules
 
 - A template is not a completed deliverable. Empty tables and TBD entries are intentional only in templates and appropriate drafts.
@@ -28,5 +49,8 @@ Copy templates into the per-project structure described in [projects/README.md](
 - Keep one canonical definition; use stable links elsewhere. Linked requirement/page/model records are part of the specification approval manifest.
 - Repeat records per actual process, role, requirement, page, table, form, action, integration, entity and card.
 - Do not create executable business project cards before specification approval. Blank reusable card templates do not constitute project cards.
+- Do not author a deliverable document before the analysis records it restates are complete. A deliverable adds no requirement of its own; content that exists only there is a defect.
+- Generated Word and Excel files are output. Edit the Markdown and rebuild; never hand-edit an export and treat it as the source.
+- Specify a diagram before generating it, and verify it by looking at the rendered image. A diagram shows only what a confirmed record states.
 - Preserve source statements and decisions. A recommendation is not a confirmed requirement until accepted.
 - Project facts, language, scope and technologies come from project discovery, not from these blank templates.
