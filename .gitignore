@@ -1,0 +1,40 @@
+# Python virtual environments
+workflow_venv/
+.venv/
+venv/
+env/
+
+# Python bytecode and tool caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local environment secrets (keep shareable examples)
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+# Editor and operating-system files
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary document lock files and scratch files
+~$*
+.~lock.*#
+*.tmp
+*.temp
+
+# Keep planning sources and deliverables in version control:
+# projects/, templates/, prompts/, reference/, and document exports.

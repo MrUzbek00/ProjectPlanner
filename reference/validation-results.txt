@@ -1,0 +1,15 @@
+﻿Reusable workflow package structural verification
+Checked at: 2026-09-19T12:45:44.6088562+05:00
+Root: D:\Telegram_bots\Project Planning Workflow
+Markdown files checked: 23
+Local Markdown links checked: 30
+Specification sections: 26 (required 1-26 in order)
+Required card fields: 27
+Required page/table/form/action terms: 44
+Required functional-requirement fields: 13
+Original attachment copy SHA256 matches: True
+Source SHA256: 8E441D9EF681636BA64CC602254B090D76FE495946EB6007C270141B31EAE20C
+Structural errors: 0
+Checks include non-empty Markdown files, replacement characters, balanced code fences, table column consistency and existing local link targets.
+Manual source coverage review: reference/workflow-coverage.md.
+Limit: these checks validate the reusable package structure, not a future business specification or application implementation.
