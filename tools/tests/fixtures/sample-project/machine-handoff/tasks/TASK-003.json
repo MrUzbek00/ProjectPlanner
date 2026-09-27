@@ -1,0 +1,194 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "id": "TASK-003",
+  "title": "Users can set a new password from a valid reset link",
+  "revision": 1,
+  "content_hash": "sha256:8e81748e584e9b880c9b66780551e5ee997c9236116868deb8da8e42e668e9ee",
+  "status": "READY",
+  "type": "fullstack",
+  "objective": "Let a user regain access by choosing a new password from the emailed link (BR-001).",
+  "declared_scope": null,
+  "source_requirements": [
+    "FR-AUTH-002",
+    "RULE-001"
+  ],
+  "feature": "FEAT-001",
+  "epic": "EPIC-001",
+  "description": "A user who opens a reset link that is valid, unused and less than 30 minutes old sets a new password, and the link is marked used at the same moment. Any other link is rejected and the password stays unchanged.",
+  "acceptance_criteria": [
+    "AC-003: Given a token issued 29 minutes ago and unused, when a new password is submitted, then the password changes and the token is marked used",
+    "AC-004: Given a token issued 31 minutes ago, or already used, when a new password is submitted, then the request is rejected and the password is unchanged"
+  ],
+  "dependencies": [
+    "TASK-001"
+  ],
+  "constraints": {
+    "architecture": [
+      "Look tokens up by hash through the token store (ADR-002)"
+    ],
+    "security": [
+      "A token expires 30 minutes after issue and is single use (RULE-001)"
+    ],
+    "performance": [],
+    "data": [],
+    "compliance": [],
+    "other": [],
+    "not_applicable": {}
+  },
+  "verification": {
+    "required_tests": [
+      "unit",
+      "integration",
+      "security",
+      "e2e"
+    ],
+    "test_ids": [
+      "TEST-003"
+    ]
+  },
+  "open_questions": [],
+  "blocking_issues": [],
+  "priority": "high",
+  "priority_confirmed": true,
+  "complexity": "M",
+  "phase": "PHASE-01",
+  "parent_task": null,
+  "dependencies_reviewed": true,
+  "blocks": [],
+  "architecture_decisions": [
+    {
+      "id": "ADR-001",
+      "status": "accepted",
+      "applies_via": [
+        "feature:FEAT-001"
+      ]
+    },
+    {
+      "id": "ADR-002",
+      "status": "accepted",
+      "applies_via": [
+        "module:MOD-001",
+        "feature:FEAT-001"
+      ]
+    }
+  ],
+  "related_modules": [
+    "MOD-001"
+  ],
+  "readiness_gaps": [],
+  "scope": "in_scope",
+  "external_dependencies": [],
+  "impacts": {
+    "data": {
+      "stated": true,
+      "text": "- Affected entities: ENT-001 (the account's password is replaced) and ENT-002 (the token is marked used).\n- Migration expected: none.",
+      "ids": [
+        "ENT-001",
+        "ENT-002"
+      ],
+      "change": null,
+      "not_applicable": false
+    },
+    "api": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    },
+    "ui": {
+      "stated": true,
+      "text": "- New screen: set a new password from the link.\n- User states: success, and a rejection message for an expired or used link (AC-004).",
+      "ids": [
+        "AC-004"
+      ],
+      "change": null,
+      "not_applicable": false
+    },
+    "integration": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    }
+  },
+  "risk_ids": [],
+  "readiness": {
+    "result": "PASS",
+    "checks": {
+      "specification_ready": true,
+      "task_id_valid": true,
+      "title_clear": true,
+      "objective_clear": true,
+      "source_requirement_valid": true,
+      "feature_valid": true,
+      "scope_valid": true,
+      "acceptance_criteria_valid": true,
+      "acceptance_criteria_testable": true,
+      "dependencies_valid": true,
+      "external_dependencies_available": true,
+      "architecture_valid": true,
+      "architecture_conflicts_clear": true,
+      "security_valid": true,
+      "data_impact_known": true,
+      "api_impact_known": true,
+      "ui_impact_known": true,
+      "integration_impact_known": true,
+      "verification_defined": true,
+      "open_questions_clear": true,
+      "not_stale": true,
+      "review_findings_clear": true,
+      "blocking_risks_clear": true
+    },
+    "failures": [],
+    "recommended_status": "READY",
+    "accepted_risk_findings": []
+  },
+  "readiness_history": [
+    {
+      "date": "2026-09-22",
+      "from": null,
+      "to": "DRAFT",
+      "reason": "Card written from FEAT-001",
+      "change_id": null
+    },
+    {
+      "date": "2026-09-22",
+      "from": "DRAFT",
+      "to": "READY",
+      "reason": "Definition of Ready passed; validated by the fixture analyst",
+      "change_id": null
+    }
+  ],
+  "details": {
+    "testing_checklist": {
+      "text": "",
+      "items": [],
+      "tables": [
+        {
+          "headers": [
+            "TEST ID",
+            "Type",
+            "Fixture / preconditions",
+            "Expected evidence",
+            "Required for this card? / reason",
+            "Execution status / evidence"
+          ],
+          "rows": [
+            [
+              "TEST-003",
+              "Integration",
+              "Tokens at 29 and 31 minutes, one used",
+              "Only the fresh unused token succeeds",
+              "Yes — FR-AUTH-002, RULE-001",
+              "NOT RUN"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "source_path": "backlog/tasks/TASK-003.md"
+}

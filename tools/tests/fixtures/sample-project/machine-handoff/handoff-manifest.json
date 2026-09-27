@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "handoff_version": "1.0",
+  "planner_schema_version": "1.5",
+  "producer": {
+    "system": "ProjectPlanner",
+    "generator": "project-planning-workflow/generate_handoff",
+    "generator_version": "1.5.0"
+  },
+  "project_id": "SAMPLE",
+  "project_name": "Sample Portal",
+  "specification_version": "1.0",
+  "handoff_status": "READY_FOR_HANDOFF",
+  "generated_at": "2026-09-26T00:00:00Z",
+  "content_fingerprint": "sha256:35de0a5fe2808bf063c503fce9a987d7d4886d00abd7c4e62f56d687cd0a48b1",
+  "task_content_hash": {
+    "algorithm": "sha256",
+    "basis": "task-intent/1",
+    "covers": [
+      "task (every field not excluded)",
+      "source requirements (every field not excluded)",
+      "architecture decisions the task relies on (every field not excluded)"
+    ],
+    "excludes": [
+      "task.schema_version",
+      "task.project_id",
+      "task.revision",
+      "task.status",
+      "task.content_hash",
+      "task.priority",
+      "task.priority_confirmed",
+      "task.complexity",
+      "task.phase",
+      "task.dependencies_reviewed",
+      "task.blocks",
+      "task.readiness_gaps",
+      "task.readiness",
+      "task.readiness_history",
+      "task.source_path",
+      "requirement.source_path",
+      "requirement.priority",
+      "requirement.priority_confirmed",
+      "architecture_decision.source_path"
+    ]
+  },
+  "summary": {
+    "requirements": 7,
+    "tasks_total": 4,
+    "tasks_ready": 3,
+    "tasks_blocked": 0,
+    "tasks_needs_review": 0,
+    "tasks_needs_discovery": 1,
+    "tasks_draft": 0,
+    "tasks_cancelled": 0
+  },
+  "ready_tasks": [
+    "TASK-001",
+    "TASK-002",
+    "TASK-003"
+  ],
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "revision": 1,
+      "status": "READY",
+      "content_hash": "sha256:5753f21ee296fd507518424a3546418bd277a9c92fd83488705a1587eb1ec94c",
+      "file": "tasks/TASK-001.json"
+    },
+    {
+      "id": "TASK-002",
+      "revision": 1,
+      "status": "READY",
+      "content_hash": "sha256:4c42ced1315ac258108c9d8a6eb2d2414ced5704e9a8cb8bee9f2615d954a7f6",
+      "file": "tasks/TASK-002.json"
+    },
+    {
+      "id": "TASK-003",
+      "revision": 1,
+      "status": "READY",
+      "content_hash": "sha256:8e81748e584e9b880c9b66780551e5ee997c9236116868deb8da8e42e668e9ee",
+      "file": "tasks/TASK-003.json"
+    },
+    {
+      "id": "TASK-004",
+      "revision": 1,
+      "status": "NEEDS_DISCOVERY",
+      "content_hash": "sha256:0619c2c36549a0724ed96de49dfac259774c1c4210febb300d3950c4fc7ea37a",
+      "file": "tasks/TASK-004.json"
+    }
+  ],
+  "files": [
+    {
+      "path": "architecture.json",
+      "role": "architecture",
+      "sha256": "7f87d35983461880bbf840778c72542174f82d4ed60e06e59e5ac72b3c01a304"
+    },
+    {
+      "path": "backlog-readiness.json",
+      "role": "backlog_readiness",
+      "sha256": "dea8bde627fd491584726c561d14b90ce24ff51f9379e3361aaccf72cff7d2b6"
+    },
+    {
+      "path": "backlog.json",
+      "role": "backlog",
+      "sha256": "6465f8dbd79d367f6b10e6413b155b2f65cdb68eec6e28ab6df425070ce70932"
+    },
+    {
+      "path": "changes.json",
+      "role": "changes",
+      "sha256": "f37096fa6604ae9429e9eac049879774d7d095abe71550f95dd43aed7d451f4c"
+    },
+    {
+      "path": "decisions.json",
+      "role": "decisions",
+      "sha256": "d96f689a8150c378691dac060f994b6671aba7830bc3faeeeab0982fbce93da2"
+    },
+    {
+      "path": "domain.json",
+      "role": "domain",
+      "sha256": "8c82e9d855ab39fc5de3d9ddfb3502193c635490a73ee6609ee311dc2c688c28"
+    },
+    {
+      "path": "project.json",
+      "role": "project",
+      "sha256": "0bad92444c71f0ebd4ee9bf9213a6ca4313851beeadbf3ecf5320b562fcada6c"
+    },
+    {
+      "path": "requirements.json",
+      "role": "requirements",
+      "sha256": "918a7c6fd3e3d5b6d85ed85cf21404d4b865c3397f4d75bd62743b412bb5e7a5"
+    },
+    {
+      "path": "specification-review.json",
+      "role": "specification_review",
+      "sha256": "89b50e61fdb2d9a8ab28dd3317849d9ca61eb079b1972cf684308386e650a7b5"
+    },
+    {
+      "path": "tests.json",
+      "role": "tests",
+      "sha256": "77ad2faac432f0950f1bc326909b07a29a9b43aeee3743cf168ec56d14ec871c"
+    },
+    {
+      "path": "traceability.json",
+      "role": "traceability",
+      "sha256": "c1b48ba8eded26f5c5052b388e957a2057c7bad5d9b64deb0fe5b66181d4c657"
+    },
+    {
+      "path": "tasks/TASK-001.json",
+      "role": "task",
+      "sha256": "9881a6af3df2f250a8629d7815baf5d383205de4e4133acbde010e85833331d6"
+    },
+    {
+      "path": "tasks/TASK-002.json",
+      "role": "task",
+      "sha256": "5229a75429da0a8a6cbb48e33db82db795e3714663b49ff3db925e3e72346675"
+    },
+    {
+      "path": "tasks/TASK-003.json",
+      "role": "task",
+      "sha256": "db0a1c3780856915f832cf7b32cf0a5c0c5f146266a5ae2c12c533feb2a64bca"
+    },
+    {
+      "path": "tasks/TASK-004.json",
+      "role": "task",
+      "sha256": "09246e99511c012eceed5077958def996b78e4efc9c6fcd9fa503fd1a349be39"
+    }
+  ],
+  "validation": {
+    "schema_valid": true,
+    "traceability_valid": true,
+    "architecture_valid": true,
+    "dependency_graph_valid": true,
+    "specification_review_passed": true,
+    "backlog_readiness_valid": true
+  }
+}

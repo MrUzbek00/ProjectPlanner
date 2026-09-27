@@ -74,39 +74,39 @@ A `TBD (Q-###)` in a released package is acceptable only where it is non-blockin
 
 ## 6. Export Verification
 
-Verification means the exported file was opened and inspected, not that the generator exited successfully.
+Verification means the exported file was opened and inspected, not that the generator exited successfully. Record each result as PASS, FAIL, N/A with a reason, or NOT REVIEWED; `tools/check_gates.py` fails gate G13 while any row here or in section 7 is not PASS or a reasoned N/A.
 
 | Check | Result | Evidence | Findings |
 | --- | --- | --- | --- |
-| Every Word document opens and renders its headings, tables and layout blocks | TBD | TBD | TBD |
-| Table of contents is present and correct after field update | TBD | TBD | TBD |
-| No table is truncated or missing columns | TBD | TBD | TBD |
-| ASCII layout blocks render in a monospaced style and stay aligned | TBD | TBD | TBD |
-| Every embedded diagram appears, is legible at delivered size and is not clipped | TBD | TBD | TBD |
-| Every diagram caption carries its DIAG ID and its notation or model-status statement | TBD | TBD | TBD |
-| No diagram reference is broken and no export is stale against its source model | TBD | TBD | TBD |
-| Every workbook opens and every declared sheet exists | TBD | TBD | TBD |
-| Sheet headers, filters and frozen panes behave as intended | TBD | TBD | TBD |
-| Identifiers match their Markdown source exactly | TBD | TBD | TBD |
-| No template instruction text survives in a released document | TBD | TBD | TBD |
-| Cross-document references resolve to real records | TBD | TBD | TBD |
-| Document language is consistent across the package | TBD | TBD | TBD |
+| Every Word document opens and renders its headings, tables and layout blocks | NOT REVIEWED |  |  |
+| Table of contents is present and correct after field update | NOT REVIEWED |  |  |
+| No table is truncated or missing columns | NOT REVIEWED |  |  |
+| ASCII layout blocks render in a monospaced style and stay aligned | NOT REVIEWED |  |  |
+| Every embedded diagram appears, is legible at delivered size and is not clipped | NOT REVIEWED |  |  |
+| Every diagram caption carries its DIAG ID and its notation or model-status statement | NOT REVIEWED |  |  |
+| No diagram reference is broken and no export is stale against its source model | NOT REVIEWED |  |  |
+| Every workbook opens and every declared sheet exists | NOT REVIEWED |  |  |
+| Sheet headers, filters and frozen panes behave as intended | NOT REVIEWED |  |  |
+| Identifiers match their Markdown source exactly | NOT REVIEWED |  |  |
+| No template instruction text survives in a released document | NOT REVIEWED |  |  |
+| Cross-document references resolve to real records | NOT REVIEWED |  |  |
+| Document language is consistent across the package | NOT REVIEWED |  |  |
 
 ## 7. Consistency Checks Across Documents
 
 | Check | Result | Findings |
 | --- | --- | --- |
-| The MVP definition is identical in the PRD and the SOW | TBD | TBD |
-| Personas are identical in the PRD and the journey document | TBD | TBD |
-| The RACI appears only in the Project Plan and is referenced elsewhere | TBD | TBD |
-| Business objectives in the BRD match the approved BIZ register | TBD | TBD |
-| Requirements in the SRS match the approved specification with no additions | TBD | TBD |
-| Every story in the backlog traces to an approved requirement | TBD | TBD |
-| Every scheduled card exists in the approved backlog | TBD | TBD |
-| Success metrics agree between the PRD and the BRD | TBD | TBD |
-| Out-of-scope lists agree across the PRD, SOW and specification | TBD | TBD |
-| Diagrams agree with the process model, state transitions and data model they depict | TBD | TBD |
-| No diagram shows a lane, gateway, table, column or relationship absent from a confirmed record | TBD | TBD |
+| The MVP definition is identical in the PRD and the SOW | NOT REVIEWED |  |
+| Personas are identical in the PRD and the journey document | NOT REVIEWED |  |
+| The RACI appears only in the Project Plan and is referenced elsewhere | NOT REVIEWED |  |
+| Business objectives in the BRD match the approved BR register | NOT REVIEWED |  |
+| Requirements in the SRS match the approved specification with no additions | NOT REVIEWED |  |
+| Every story in the backlog traces to an approved requirement | NOT REVIEWED |  |
+| Every scheduled card exists in the approved backlog | NOT REVIEWED |  |
+| Success metrics agree between the PRD and the BRD | NOT REVIEWED |  |
+| Out-of-scope lists agree across the PRD, SOW and specification | NOT REVIEWED |  |
+| Diagrams agree with the process model, state transitions and data model they depict | NOT REVIEWED |  |
+| No diagram shows a lane, gateway, table, column or relationship absent from a confirmed record | NOT REVIEWED |  |
 
 ## 8. Release Decision
 

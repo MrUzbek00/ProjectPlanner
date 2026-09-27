@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/requirements.schema.json",
+  "title": "Requirements document (requirements.json)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "specification_version",
+    "sources",
+    "requirements",
+    "scope_items"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/projectId"
+    },
+    "specification_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sources": {
+      "description": "The source inventory that requirement evidence refers to.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "type",
+          "authority",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/sourceId"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "authority": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "requirement.schema.json"
+      }
+    },
+    "scope_items": {
+      "description": "Scope register entries from specification/scope.md: explicit boundary statements with their classification.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "item",
+          "classification",
+          "related_ids",
+          "rationale",
+          "authority"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/scopeItemId"
+          },
+          "item": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "classification": {
+            "enum": [
+              "in_scope",
+              "out_of_scope",
+              "future",
+              "pending_decision"
+            ]
+          },
+          "related_ids": {
+            "$ref": "common.schema.json#/$defs/anyIdList"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "authority": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

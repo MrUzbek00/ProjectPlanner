@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/backlog-readiness.schema.json",
+  "title": "Backlog readiness (backlog-readiness.json)",
+  "description": "The backlog-level readiness view, computed by tools/backlog_readiness.py from the task files alone and recomputed by tools/validate_handoff.py. A task is READY only when it passes every Definition of Ready check. The backlog may be PARTIALLY_READY: a valid subset of work can start while the rest stays visibly unresolved. Flags are heuristics for a reviewer, never verdicts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project_id", "status", "summary", "validation", "coverage", "phases", "work_sets", "flags", "tasks"],
+  "$defs": {
+    "count": { "type": "integer", "minimum": 0 },
+    "taskIds": { "$ref": "common.schema.json#/$defs/taskIdList" }
+  },
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "project_id": { "$ref": "common.schema.json#/$defs/projectId" },
+    "status": { "$ref": "common.schema.json#/$defs/backlogStatus" },
+    "summary": {
+      "description": "Counts by planning status over every task; active means in scope and not cancelled; ready_valid counts READY tasks that pass the Definition of Ready; ready_percentage is of active tasks.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "active", "draft", "needs_discovery", "needs_review", "blocked", "ready", "cancelled", "out_of_scope",
+                   "ready_valid", "ready_percentage", "meets_definition_of_ready_not_marked_ready"],
+      "properties": {
+        "total": { "$ref": "#/$defs/count" },
+        "active": { "$ref": "#/$defs/count" },
+        "draft": { "$ref": "#/$defs/count" },
+        "needs_discovery": { "$ref": "#/$defs/count" },
+        "needs_review": { "$ref": "#/$defs/count" },
+        "blocked": { "$ref": "#/$defs/count" },
+        "ready": { "$ref": "#/$defs/count" },
+        "cancelled": { "$ref": "#/$defs/count" },
+        "out_of_scope": { "$ref": "#/$defs/count" },
+        "ready_valid": { "$ref": "#/$defs/count" },
+        "ready_percentage": { "type": "number", "minimum": 0, "maximum": 100 },
+        "meets_definition_of_ready_not_marked_ready": { "$ref": "#/$defs/taskIds" }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dependency_graph_valid", "dependency_cycles", "architecture_conflicts", "traceability_valid", "traceability_issues",
+                   "unresolved_critical_findings", "unresolved_major_findings_affecting_backlog", "critical_blockers",
+                   "specification_approved", "specification_review_passed", "ready_tasks_failing_definition_of_ready"],
+      "properties": {
+        "dependency_graph_valid": { "type": "boolean" },
+        "dependency_cycles": { "$ref": "#/$defs/count" },
+        "architecture_conflicts": { "description": "Active tasks with an unresolved ARCHITECTURE CONFLICT.", "$ref": "#/$defs/count" },
+        "traceability_valid": { "type": "boolean" },
+        "traceability_issues": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" },
+        "unresolved_critical_findings": { "$ref": "#/$defs/count" },
+        "unresolved_major_findings_affecting_backlog": { "$ref": "common.schema.json#/$defs/anyIdList" },
+        "critical_blockers": { "description": "Open BLOCKER questions that name active work or its requirements.", "$ref": "common.schema.json#/$defs/questionIdList" },
+        "specification_approved": { "type": "boolean" },
+        "specification_review_passed": { "type": "boolean" },
+        "ready_tasks_failing_definition_of_ready": { "$ref": "#/$defs/taskIds" }
+      }
+    },
+    "coverage": {
+      "description": "Metrics that expose gaps; not targets.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/count" }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "status", "active_tasks", "ready_tasks", "status_counts", "planning_questions"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/phaseId" },
+          "title": { "type": ["string", "null"] },
+          "status": { "enum": ["READY", "PARTIALLY_READY", "NOT_READY", "EMPTY"] },
+          "active_tasks": { "$ref": "#/$defs/count" },
+          "ready_tasks": { "$ref": "#/$defs/count" },
+          "status_counts": { "type": "object", "additionalProperties": { "$ref": "#/$defs/count" } },
+          "planning_questions": {
+            "description": "The planning completeness check: what, why, which requirement, what success looks like, dependencies, constraints, blockers, verification — answered for every active task in the phase or not.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["key", "question", "answered", "unanswered_for"],
+              "properties": {
+                "key": { "type": "string" },
+                "question": { "type": "string" },
+                "answered": { "type": "boolean" },
+                "unanswered_for": { "$ref": "#/$defs/taskIds" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "work_sets": {
+      "description": "Waves of ready work: WS-01 can start now; each later set once the earlier sets are complete. Work depending on anything not ready is in no set.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "task_ids"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^WS-[0-9]{2,}$" },
+          "task_ids": { "$ref": "#/$defs/taskIds" }
+        }
+      }
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "severity", "task_ids", "message"],
+        "properties": {
+          "kind": { "enum": ["NEEDS_DECOMPOSITION", "FRAGMENTATION", "POSSIBLE_DUPLICATE", "CONTRADICTION", "MISSING_ERROR_BEHAVIOUR",
+                             "VERIFICATION_GAP", "IMPLEMENTATION_STEP"] },
+          "severity": { "enum": ["warning"] },
+          "task_ids": { "$ref": "#/$defs/taskIds" },
+          "message": { "$ref": "common.schema.json#/$defs/nonEmptyString" }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "status", "scope", "priority", "sequence", "phase", "revision", "readiness_valid", "result",
+                     "recommended_status", "failed_checks", "failures", "accepted_risk_findings", "related_risks", "flags"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/taskId" },
+          "title": { "type": ["string", "null"] },
+          "status": { "$ref": "common.schema.json#/$defs/taskStatus" },
+          "scope": { "$ref": "common.schema.json#/$defs/scope" },
+          "priority": { "$ref": "common.schema.json#/$defs/priority" },
+          "sequence": { "description": "Recommended implementation order from the dependencies; priority is business importance.", "type": ["integer", "null"], "minimum": 1 },
+          "phase": { "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/phaseId" }] },
+          "revision": { "type": "integer", "minimum": 1 },
+          "readiness_valid": { "type": "boolean" },
+          "result": { "enum": ["PASS", "FAIL", "NOT_APPLICABLE", null] },
+          "recommended_status": { "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/taskStatus" }] },
+          "failed_checks": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/readinessCheck" } },
+          "failures": { "$ref": "common.schema.json#/$defs/stringList" },
+          "accepted_risk_findings": { "$ref": "common.schema.json#/$defs/anyIdList" },
+          "related_risks": { "$ref": "common.schema.json#/$defs/anyIdList" },
+          "flags": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "baseline": {
+    "exists": false,
+    "created_at": null,
+    "specification_version": null,
+    "incorporated_changes": [],
+    "controlled_kinds": []
+  },
+  "summary": {
+    "open_changes": 0,
+    "critical_changes": 0,
+    "items_needing_review": 0,
+    "stale_tasks": 0,
+    "invalid_ready_tasks": 0,
+    "unrecorded_changes": 0
+  },
+  "detected_changes": [],
+  "unrecorded_changes": [],
+  "changes": [],
+  "artifact_states": []
+}

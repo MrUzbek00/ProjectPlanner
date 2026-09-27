@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "tests": [
+    {
+      "id": "TEST-001",
+      "title": "Token store keeps no plain-text token",
+      "level": "integration",
+      "category": "Security",
+      "requirement_ids": [
+        "SR-001"
+      ],
+      "acceptance_criteria_ids": [
+        "AC-006"
+      ],
+      "preconditions": "Empty token store",
+      "steps": [
+        {
+          "action": "Issue a token",
+          "expected": "One record is stored"
+        },
+        {
+          "action": "Search the store for the token value",
+          "expected": "No match"
+        }
+      ],
+      "expected_result": "The stored record holds a hash; searching the store for the token value finds nothing",
+      "execution_status": "NOT_RUN",
+      "source_path": "quality/acceptance-tests.md"
+    },
+    {
+      "id": "TEST-002",
+      "title": "Reset request sends one email and does not reveal accounts",
+      "level": "integration",
+      "category": "Functional, negative",
+      "requirement_ids": [
+        "FR-AUTH-001"
+      ],
+      "acceptance_criteria_ids": [
+        "AC-001",
+        "AC-002"
+      ],
+      "preconditions": "One active account",
+      "steps": [],
+      "expected_result": "One email for the known address; identical responses for known and unknown addresses",
+      "execution_status": "NOT_RUN",
+      "source_path": "quality/acceptance-tests.md"
+    },
+    {
+      "id": "TEST-003",
+      "title": "Only a fresh, unused token sets a new password",
+      "level": "integration",
+      "category": "Functional, boundary",
+      "requirement_ids": [
+        "FR-AUTH-002",
+        "RULE-001"
+      ],
+      "acceptance_criteria_ids": [
+        "AC-003",
+        "AC-004"
+      ],
+      "preconditions": "Tokens issued 29 and 31 minutes ago; one already used",
+      "steps": [],
+      "expected_result": "Only the 29-minute unused token succeeds; the others are rejected and the password is unchanged",
+      "execution_status": "NOT_RUN",
+      "source_path": "quality/acceptance-tests.md"
+    },
+    {
+      "id": "TEST-004",
+      "title": "Account locks at the confirmed threshold",
+      "level": "integration",
+      "category": "Functional",
+      "requirement_ids": [
+        "FR-AUTH-003"
+      ],
+      "acceptance_criteria_ids": [
+        "AC-005"
+      ],
+      "preconditions": "Account with consecutive failed sign-ins",
+      "steps": [],
+      "expected_result": "The account locks at the threshold confirmed by Q-002",
+      "execution_status": "NOT_RUN",
+      "source_path": "quality/acceptance-tests.md"
+    }
+  ]
+}

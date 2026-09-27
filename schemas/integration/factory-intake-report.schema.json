@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/integration/1.0/factory-intake-report.schema.json",
+  "title": "Factory handoff intake report",
+  "description": "software-factory-output/intake-report.json: what SoftwareFactory did with one planner handoff. Every rejection names the side that must resolve it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "handoff_path",
+    "ingested_at",
+    "supported_schema_versions",
+    "source",
+    "handoff_errors",
+    "ready_tasks_received",
+    "accepted",
+    "already_ingested",
+    "rejected",
+    "planning_changed"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "status": {
+      "description": "REJECTED when the handoff itself is refused or no READY task is accepted; PARTIALLY_ACCEPTED when some READY tasks are rejected.",
+      "enum": ["ACCEPTED", "PARTIALLY_ACCEPTED", "REJECTED"]
+    },
+    "handoff_path": { "type": "string", "minLength": 1 },
+    "ingested_at": { "$ref": "#/$defs/dateTime" },
+    "supported_schema_versions": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "source": {
+      "description": "Where the tasks came from; null when the manifest could not be read.",
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["system", "project_id", "project_name", "handoff_version", "schema_version", "planner_schema_version", "content_fingerprint"],
+          "properties": {
+            "system": { "const": "ProjectPlanner" },
+            "project_id": { "type": "string" },
+            "project_name": { "type": "string" },
+            "handoff_version": { "type": "string" },
+            "schema_version": { "type": "string" },
+            "planner_schema_version": { "type": "string" },
+            "content_fingerprint": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "handoff_errors": {
+      "description": "Reasons the whole handoff was refused. Non-empty exactly when status is REJECTED for a handoff-level reason.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "ready_tasks_received": { "type": "integer", "minimum": 0 },
+    "accepted": {
+      "description": "READY tasks accepted for engineering in this run, including re-ingested new revisions.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/taskId" }
+    },
+    "already_ingested": {
+      "description": "READY tasks whose revision and content hash match an earlier intake; their engineering status is kept.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/taskId" }
+    },
+    "rejected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task_id", "planner_revision", "reason", "owner", "issues"],
+        "properties": {
+          "task_id": { "type": "string" },
+          "planner_revision": { "anyOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }] },
+          "reason": { "type": "string", "minLength": 1 },
+          "owner": { "$ref": "#/$defs/owner" },
+          "issues": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/issue" } }
+        }
+      }
+    },
+    "planning_changed": {
+      "description": "Tasks ingested earlier whose planning changed in this handoff and that need review before engineering continues.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task_id", "previous_revision", "new_revision", "execution_stage", "reason"],
+        "properties": {
+          "task_id": { "$ref": "#/$defs/taskId" },
+          "previous_revision": { "anyOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }] },
+          "new_revision": { "anyOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }] },
+          "execution_stage": { "type": "string" },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}(?:-S[0-9]{2,})?$" },
+    "dateTime": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$" },
+    "owner": { "enum": ["PROJECT_PLANNER", "SOFTWARE_FACTORY", "HUMAN_DECISION"] },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "owner"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+        "message": { "type": "string", "minLength": 1 },
+        "owner": { "$ref": "#/$defs/owner" }
+      }
+    }
+  }
+}

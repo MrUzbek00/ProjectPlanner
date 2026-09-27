@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/traceability.schema.json",
+  "title": "Traceability (traceability.json)",
+  "description": "Forward and reverse links derived from the canonical records: requirement -> requirement -> feature -> task -> test. Each task record carries empty delivery slots (pull requests, commits, releases) that downstream engineering fills in to extend the chain.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "requirements",
+    "tasks",
+    "architecture",
+    "coverage_summary",
+    "orphans"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/projectId"
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "requirement_id",
+          "requirement_type",
+          "status",
+          "upstream_requirement_ids",
+          "downstream_requirement_ids",
+          "feature_ids",
+          "task_ids",
+          "test_ids",
+          "adr_ids",
+          "coverage",
+          "scope",
+          "module_ids",
+          "process_ids"
+        ],
+        "properties": {
+          "requirement_id": {
+            "$ref": "common.schema.json#/$defs/requirementId"
+          },
+          "requirement_type": {
+            "$ref": "common.schema.json#/$defs/requirementType"
+          },
+          "status": {
+            "$ref": "common.schema.json#/$defs/requirementStatus"
+          },
+          "upstream_requirement_ids": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "downstream_requirement_ids": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "feature_ids": {
+            "$ref": "common.schema.json#/$defs/featureIdList"
+          },
+          "task_ids": {
+            "$ref": "common.schema.json#/$defs/taskIdList"
+          },
+          "test_ids": {
+            "$ref": "common.schema.json#/$defs/testIdList"
+          },
+          "adr_ids": {
+            "$ref": "common.schema.json#/$defs/adrIdList"
+          },
+          "coverage": {
+            "description": "covered: implemented and verified (GOAL, BR, RULE: realised by downstream records); missing_task / missing_test / missing_task_and_test: gaps; missing_downstream: a GOAL, BR or RULE nothing realises; excluded: not in the current scope or no longer valid.",
+            "enum": [
+              "covered",
+              "missing_task",
+              "missing_test",
+              "missing_task_and_test",
+              "missing_downstream",
+              "excluded"
+            ]
+          },
+          "scope": {
+            "$ref": "common.schema.json#/$defs/scope"
+          },
+          "module_ids": {
+            "$ref": "common.schema.json#/$defs/moduleIdList"
+          },
+          "process_ids": {
+            "$ref": "common.schema.json#/$defs/processIdList"
+          }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "task_id",
+          "requirement_ids",
+          "feature_id",
+          "epic_id",
+          "test_ids",
+          "acceptance_criteria_ids",
+          "adr_ids",
+          "delivery"
+        ],
+        "properties": {
+          "task_id": {
+            "$ref": "common.schema.json#/$defs/taskId"
+          },
+          "requirement_ids": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "feature_id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/featureId"
+              }
+            ]
+          },
+          "epic_id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/epicId"
+              }
+            ]
+          },
+          "test_ids": {
+            "$ref": "common.schema.json#/$defs/testIdList"
+          },
+          "adr_ids": {
+            "$ref": "common.schema.json#/$defs/adrIdList"
+          },
+          "delivery": {
+            "description": "Extension slots for engineering evidence. ProjectPlanner emits them empty; a downstream system appends pull requests, commits and releases without changing the planning links.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "pull_requests",
+              "commits",
+              "releases"
+            ],
+            "properties": {
+              "pull_requests": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "commits": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "releases": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "acceptance_criteria_ids": {
+            "$ref": "common.schema.json#/$defs/acceptanceCriterionIdList"
+          }
+        }
+      }
+    },
+    "architecture": {
+      "description": "Why each technical constraint exists and what it reaches: for every ADR, the requirements, features, tasks and modules it governs. Derived from the ADRs and from the records that name them.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["adr_id", "status", "active", "requirement_ids", "feature_ids", "task_ids", "module_ids", "supersedes", "superseded_by"],
+        "properties": {
+          "adr_id": { "$ref": "common.schema.json#/$defs/adrId" },
+          "status": { "$ref": "common.schema.json#/$defs/adrStatus" },
+          "active": { "type": "boolean" },
+          "requirement_ids": { "$ref": "common.schema.json#/$defs/requirementIdList" },
+          "feature_ids": { "$ref": "common.schema.json#/$defs/featureIdList" },
+          "task_ids": { "$ref": "common.schema.json#/$defs/taskIdList" },
+          "module_ids": { "$ref": "common.schema.json#/$defs/moduleIdList" },
+          "supersedes": { "$ref": "common.schema.json#/$defs/adrIdList" },
+          "superseded_by": { "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/adrId" }] }
+        }
+      }
+    },
+    "coverage_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "in_release_requirements",
+        "covered",
+        "missing_task",
+        "missing_test",
+        "missing_task_and_test",
+        "missing_downstream",
+        "excluded",
+        "tasks_without_requirements"
+      ],
+      "properties": {
+        "in_release_requirements": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "covered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_task": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_test": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_task_and_test": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_downstream": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excluded": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tasks_without_requirements": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "orphans": {
+      "description": "Items with no reason to exist in the plan: in-scope requirements with nothing upstream (goals excepted), features with no requirement, tasks with no requirement, feature or acceptance criterion.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirements",
+        "features",
+        "tasks"
+      ],
+      "properties": {
+        "requirements": {
+          "$ref": "common.schema.json#/$defs/requirementIdList"
+        },
+        "features": {
+          "$ref": "common.schema.json#/$defs/featureIdList"
+        },
+        "tasks": {
+          "$ref": "common.schema.json#/$defs/taskIdList"
+        }
+      }
+    }
+  }
+}

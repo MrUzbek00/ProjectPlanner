@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/architecture-decision.schema.json",
+  "title": "Architecture Decision Record",
+  "description": "One ADR, generated from architecture/ADR-###-*.md. The Markdown file is the source of truth; this is its machine-readable form.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "title", "status", "active", "date", "decision_owner", "approval_evidence", "decision_questions",
+    "context", "decision", "rationale", "alternatives", "consequences", "risks", "risk_ids", "constraints",
+    "related_requirements", "related_features", "affected_modules", "related_decisions", "principles",
+    "depends_on", "conflicts_with", "supersedes", "superseded_by", "notes", "source_path"
+  ],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/adrId" },
+    "title": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "status": { "$ref": "common.schema.json#/$defs/adrStatus" },
+    "active": {
+      "description": "True only for an accepted ADR: the decisions that currently govern planning.",
+      "type": "boolean"
+    },
+    "date": { "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/isoDate" }] },
+    "decision_owner": {
+      "description": "The named human authority that approves or rejects the decision. Empty or TBD while proposed.",
+      "type": "string"
+    },
+    "approval_evidence": {
+      "description": "Decision-log entries (DEC) or sources (SRC) recording the human approval, rejection, supersession or deprecation.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "anyOf": [
+          { "$ref": "common.schema.json#/$defs/decisionId" },
+          { "$ref": "common.schema.json#/$defs/sourceId" }
+        ]
+      }
+    },
+    "decision_questions": {
+      "description": "Open questions whose answers decide a proposed ADR. Their priority is the decision's criticality.",
+      "$ref": "common.schema.json#/$defs/questionIdList"
+    },
+    "context": { "type": "string" },
+    "decision": { "type": "string" },
+    "rationale": { "type": "string" },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["option", "description", "advantages", "disadvantages", "outcome"],
+        "properties": {
+          "option": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "description": { "type": "string" },
+          "advantages": { "type": "string" },
+          "disadvantages": { "type": "string" },
+          "outcome": { "type": "string" }
+        }
+      }
+    },
+    "consequences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative", "other"],
+      "properties": {
+        "positive": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" },
+        "negative": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" },
+        "other": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" }
+      }
+    },
+    "risks": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" },
+    "risk_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "common.schema.json#/$defs/riskId" }
+    },
+    "constraints": {
+      "description": "Constraints the decision introduces on all downstream planning, in reviewable language.",
+      "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+    },
+    "related_requirements": { "$ref": "common.schema.json#/$defs/requirementIdList" },
+    "related_features": {
+      "description": "Features the ADR names itself. Features that name the ADR, or reach it through requirements or modules, are listed in traceability.json.",
+      "$ref": "common.schema.json#/$defs/featureIdList"
+    },
+    "affected_modules": { "$ref": "common.schema.json#/$defs/moduleIdList" },
+    "related_decisions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "common.schema.json#/$defs/decisionId" }
+    },
+    "principles": { "$ref": "common.schema.json#/$defs/principleIdList" },
+    "depends_on": {
+      "description": "Other ADRs and external dependencies this decision relies on.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "anyOf": [
+          { "$ref": "common.schema.json#/$defs/adrId" },
+          { "$ref": "common.schema.json#/$defs/dependencyId" }
+        ]
+      }
+    },
+    "conflicts_with": {
+      "description": "ADRs this decision cannot coexist with. Two accepted ADRs that conflict are a validation error.",
+      "$ref": "common.schema.json#/$defs/adrIdList"
+    },
+    "supersedes": { "$ref": "common.schema.json#/$defs/adrIdList" },
+    "superseded_by": { "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/adrId" }] },
+    "notes": { "type": "string" },
+    "source_path": { "$ref": "common.schema.json#/$defs/sourcePath" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "accepted" } } },
+      "then": {
+        "properties": {
+          "active": { "const": true },
+          "date": { "$ref": "common.schema.json#/$defs/isoDate" }
+        }
+      },
+      "else": { "properties": { "active": { "const": false } } }
+    },
+    {
+      "if": { "properties": { "status": { "const": "superseded" } } },
+      "then": { "properties": { "superseded_by": { "$ref": "common.schema.json#/$defs/adrId" } } }
+    }
+  ]
+}

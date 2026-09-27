@@ -31,7 +31,7 @@ Personas mirror the PRD. Keep one canonical definition; if they differ, the PRD 
 
 ## 3. Journey Inventory
 
-| Journey ID | Journey | Persona | Business process (PROC-###) | Trigger | End state | Frequency | Criticality | Related BIZ |
+| Journey ID | Journey | Persona | Business process (PROC-###) | Trigger | End state | Frequency | Criticality | Related BR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 4. Journey Maps
@@ -57,7 +57,7 @@ Repeat this structure for every journey. Keep the current-state and future-state
 
 **Journey exits and failure paths**
 
-| Exit point | Cause | Current outcome | New-system outcome | Handled by (FR / BR) |
+| Exit point | Cause | Current outcome | New-system outcome | Handled by (FR / RULE) |
 | --- | --- | --- | --- | --- |
 
 ### 4.1 Process Diagram
@@ -65,7 +65,7 @@ Repeat this structure for every journey. Keep the current-state and future-state
 Embed the generated BPMN process diagrams here, one per confirmed process, with the caption carrying the DIAG ID and the notation statement. Specify each diagram in the BPMN diagram record before generating it.
 
 ```markdown
-![DIAG-001 — <process>, TO-BE. Drawn in BPMN 2.0 notation; not a BPMN 2.0 XML interchange file.](diagrams/diag-001-<process>-tobe.png)
+![DIAG-001 — <process>, TO-BE. Drawn in BPMN 2.0 notation; not a BPMN 2.0 XML interchange file.](../diagrams/exported/diag-001-<process>-tobe.png)
 ```
 
 A journey map and a BPMN diagram answer different questions: the journey carries what the person experiences, the BPMN diagram carries who performs which step in which order. Keep both; do not replace one with the other.
@@ -86,14 +86,14 @@ Every confirmed pain point is either addressed by an approved requirement or exp
 
 ## 7. Epics
 
-| Epic ID | Epic | Business outcome | Personas | Journeys covered | Related BIZ | Features | Stories | Release | Status |
+| Epic ID | Epic | Business outcome | Personas | Journeys covered | Related BR | Features | Stories | Release | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 8. User Story Backlog
 
 <!-- xlsx: workbook=requirements; sheet=User Stories -->
 
-| Story ID | Epic | Feature | As a (persona / ROLE) | I want | So that | Journey step | Screen (PAGE) | Related FR | Related BR | Priority (MoSCoW) | Complexity | Release | Dependencies | Card ID | Acceptance criteria IDs | Status |
+| Story ID | Epic | Feature | As a (persona / ROLE) | I want | So that | Journey step | Screen (PAGE) | Related FR | Related RULE | Priority (MoSCoW) | Complexity | Release | Dependencies | Card ID | Acceptance criteria IDs | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 A story is ready when its persona is a confirmed role, its value statement traces to an approved objective, its acceptance criteria are measurable, and its dependencies are known.
@@ -109,7 +109,7 @@ Repeat per story. Detail is required before a story is treated as ready.
 - **Preconditions:** TBD
 - **Permissions required:** TBD (ROLE-###)
 - **Data touched:** TBD (ENT-###)
-- **Business rules applied:** TBD (BR-###)
+- **Business rules applied:** TBD (RULE-###)
 - **Screens:** TBD (PAGE-###)
 - **Notifications triggered:** TBD (NOTIF-###)
 - **Out of scope for this story:** TBD

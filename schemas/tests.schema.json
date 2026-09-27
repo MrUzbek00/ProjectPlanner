@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/tests.schema.json",
+  "title": "Test definitions (tests.json)",
+  "description": "Acceptance test definitions from quality/acceptance-tests.md. Execution status is NOT_RUN until a real execution is recorded; planning never claims a pass.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project_id", "tests"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "project_id": { "$ref": "common.schema.json#/$defs/projectId" },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "title", "level", "category", "requirement_ids", "acceptance_criteria_ids",
+          "preconditions", "steps", "expected_result", "execution_status", "source_path"
+        ],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/testId" },
+          "title": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "level": { "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/testLevel" }] },
+          "category": { "type": "string" },
+          "requirement_ids": { "$ref": "common.schema.json#/$defs/requirementIdList" },
+          "acceptance_criteria_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "common.schema.json#/$defs/acceptanceCriterionId" }
+          },
+          "preconditions": { "type": "string" },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["action", "expected"],
+              "properties": {
+                "action": { "type": "string" },
+                "expected": { "type": "string" }
+              }
+            }
+          },
+          "expected_result": { "type": "string" },
+          "execution_status": { "enum": ["NOT_RUN", "PASS", "FAIL", "BLOCKED"] },
+          "source_path": { "$ref": "common.schema.json#/$defs/sourcePath" }
+        }
+      }
+    }
+  }
+}

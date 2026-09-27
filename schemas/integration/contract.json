@@ -1,0 +1,13 @@
+{
+  "contract": "project-planner/software-factory",
+  "contract_version": "1.0",
+  "canonical_source": "ProjectPlanner: schemas/integration/",
+  "schemas": {
+    "architecture-reference.schema.json": "f50dcd6aa9b3bba310c92c40df19e3d8cc19f68e2b724b91d861b95c19e88e67",
+    "factory-intake-report.schema.json": "0c33b0cb825e1a7618d15501eb519443abd958251e07330a3fd8dce3c677b56d",
+    "factory-status.schema.json": "859cf3808a00a48057b490c4dab293d178232c2c5656da29026f428cdd8792a7",
+    "handoff-manifest.schema.json": "719502da01dd403fd55e30cba46fcfb06f74d637dc39daf34dd849b3c8eccc33",
+    "requirement-reference.schema.json": "4aed94a867bae057a4644e456f290e86320c24e3b732059f86631bc2e78bae0f",
+    "task-handoff.schema.json": "82f74e792464b7a8291cd011aad8f676feba5c58e0f00d9ccfaae51f0ffe891a"
+  }
+}

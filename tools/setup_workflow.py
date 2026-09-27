@@ -2,7 +2,8 @@
 """Provision everything the Project Planning Workflow needs to run.
 
 Installs the two diagram skills the workflow generates diagrams with, the Python
-packages the document builder needs, and the Excalidraw render pipeline. Detects
+packages the document builder and the machine-handoff validator need, and the
+Excalidraw render pipeline. Detects
 the draw.io CLI and explains how to install it rather than installing a desktop
 application unprompted.
 
@@ -302,36 +303,61 @@ def install_skill(
     return Result(spec.name, OK, f"installed at {target}", required=spec.required, notes=notes)
 
 
-def install_build_dependencies(check_only: bool) -> Result:
+def _missing_packages(pairs) -> list[str]:
     missing = []
-    for module, package in (("docx", "python-docx"), ("openpyxl", "openpyxl")):
+    for module, package in pairs:
         try:
             __import__(module)
         except ImportError:
             missing.append(package)
+    return missing
 
+
+def install_python_packages(check_only: bool, label: str, pairs, requirements_file: str, present: str) -> Result:
+    missing = _missing_packages(pairs)
     if not missing:
-        return Result("document builder packages", OK, "python-docx and openpyxl available")
+        return Result(label, OK, f"{present} available")
 
     if check_only:
         return Result(
-            "document builder packages",
+            label,
             MISSING,
             f"missing: {', '.join(missing)}",
-            "Run: python -m pip install -r tools/requirements-docs.txt",
+            f"Run: python -m pip install -r {requirements_file}",
         )
 
     say(f"  installing {', '.join(missing)}")
-    requirements = REPO_ROOT / "tools" / "requirements-docs.txt"
+    requirements = REPO_ROOT / requirements_file
     result = run([sys.executable, "-m", "pip", "install", "-q", "-r", str(requirements)])
     if result.returncode != 0:
         return Result(
-            "document builder packages",
+            label,
             MISSING,
             failure_detail(result),
-            f"Run: {sys.executable} -m pip install -r tools/requirements-docs.txt",
+            f"Run: {sys.executable} -m pip install -r {requirements_file}",
         )
-    return Result("document builder packages", OK, "python-docx and openpyxl installed")
+    return Result(label, OK, f"{present} installed")
+
+
+def install_build_dependencies(check_only: bool) -> Result:
+    return install_python_packages(
+        check_only,
+        "document builder packages",
+        (("docx", "python-docx"), ("openpyxl", "openpyxl")),
+        "tools/requirements-docs.txt",
+        "python-docx and openpyxl",
+    )
+
+
+def install_handoff_dependencies(check_only: bool) -> Result:
+    # referencing ships with jsonschema >= 4.18 and resolves $ref across schemas/.
+    return install_python_packages(
+        check_only,
+        "machine handoff validator packages",
+        (("jsonschema", "jsonschema"), ("referencing", "jsonschema")),
+        "tools/requirements-handoff.txt",
+        "jsonschema",
+    )
 
 
 def setup_renderer(skill_dir: Path | None, check_only: bool, skip: bool) -> Result:
@@ -677,6 +703,7 @@ def main(argv: list[str] | None = None) -> int:
                 excalidraw_dir = find_existing_skill(alternate, spec.name)
 
     results.append(install_build_dependencies(args.check))
+    results.append(install_handoff_dependencies(args.check))
     results.append(setup_renderer(excalidraw_dir, args.check, args.skip_renderer))
     results.append(verify_render(excalidraw_dir, args.check, args.skip_renderer))
     results.append(check_python_for_skills())

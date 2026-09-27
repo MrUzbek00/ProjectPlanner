@@ -2,7 +2,7 @@
 
 Project: TBD · Revision: TBD · Classification: DRAFT
 
-Populate only confirmed processes and relationships. AS-IS observations and proposed TO-BE behavior must remain distinguishable. Use tracked questions for unknown steps.
+Populate only confirmed processes and relationships. AS-IS observations and proposed TO-BE behavior must remain distinguishable. Use tracked questions for unknown steps. Business entities, their attributes and lifecycles are defined in `specification/domain-model.md` (`templates/32`); this file defines the processes, permissions and state transitions that act on them.
 
 ## Process inventory
 
@@ -11,36 +11,47 @@ Populate only confirmed processes and relationships. AS-IS observations and prop
 
 ## Process record — repeat for each major process
 
-| Field | Definition |
-| --- | --- |
-| Process ID / name | TBD |
-| AS-IS / TO-BE | TBD |
-| Purpose / related BIZ and FR IDs | TBD |
-| Trigger | TBD |
-| Actors / ROLE IDs | TBD |
-| Preconditions | TBD |
-| Main flow | Ordered steps in the table below |
-| Alternative flows | Trigger condition, steps, rejoin point or final outcome |
-| Approval steps | Confirmed path or N/A with evidence |
-| Rejection flow | Reason/comment, actor, status, edit/resubmit eligibility and output |
-| Status transitions | Entity and state IDs; transition table below |
-| Notifications | Trigger, recipient, channel and NOTIF IDs |
-| Data created or modified | ENT IDs, changed values, ownership and transaction boundary if confirmed |
-| Output | Observable successful business result |
-| Failure cases | Preconditions/validation/permission/external/concurrent failures as applicable |
-| Audit requirements | Events and captured values linked to requirements |
-| Source / decision references | TBD |
-| Unresolved questions | TBD |
+TEMPLATE — stage 4. Copy this file to `specification/process-model.md`. Model a workflow before designing the solution for it: who does what, when, under which conditions, what can go differently and what can go wrong. Model AS-IS and TO-BE as separate records where the process changes, and state the differences explicitly. Diagrams (`templates/24`) are generated only after the logical workflow here is understood.
 
-### Main flow
+Each process is a record block that `tools/generate_handoff.py` reads into `machine-handoff/domain.json` and `tools/check_gates.py` checks for gate G4. Keep the field names and section labels. Every field needs content; where nothing applies write `None — reason`.
+
+### PROC-000 — Process name
+
+| Field | Value |
+| --- | --- |
+| Perspective | AS-IS / TO-BE |
+| Replaces | TO-BE only: the AS-IS PROC-### this process replaces |
+| Actor | ROLE IDs or confirmed actors, including systems |
+| Trigger | The event, action or schedule that starts it |
+| Preconditions | What must be true before it starts |
+| Result | The observable business outcome when it succeeds |
+| Business rules | RULE-### applied, or `None — reason` |
+| Data involved | ENT-### read or changed |
+| Related requirements | BR / FR / NFR / DR / IR / SR / UXR IDs the process realises |
+| Confidence | CONFIRMED / LIKELY / ASSUMPTION / UNKNOWN |
+
+**Main flow**
+
+1. Ordered steps: actor, action, system response, data or state change, requirement IDs.
+
+**Alternative flow**
+
+- Condition → steps → where it rejoins or how it ends. `None — reason` when there is none.
+
+**Exceptions**
+
+- Failing condition → required behaviour → data kept or rolled back → notification. Include permission, validation, external-system and concurrency failures where they apply.
+
+**Differences from AS-IS**
+
+- TO-BE only: each difference from the process it replaces — removed steps, new steps, changed actors, changed rules.
+
+Approval, rejection, notification and audit behaviour are part of the main, alternative and exception flows where the process has them; state transitions are recorded below.
+
+### Main flow detail — optional, for complex processes
 
 | Step | Actor | User / external action | System behavior | Input | Output / data change | State before → after | Rule / requirement IDs |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-
-### Alternatives, rejection and failure
-
-| Path ID | Branch condition / failing step | Actor | Required behavior | Rejoin point or terminal outcome | Data retained / changed / rolled back | Notification | Audit | Evidence / open question |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Roles and permissions
 
@@ -51,7 +62,7 @@ For each permission use Allowed / Denied / Conditional / TBD. Define every condi
 
 ### Detailed role-permission matrix
 
-| ROLE ID | MOD / PAGE / entity / action | Create | View | Edit | Delete | Approve | Reject | Export | Admin | Record scope | Conditions / BR IDs | Evidence |
+| ROLE ID | MOD / PAGE / entity / action | Create | View | Edit | Delete | Approve | Reject | Export | Admin | Record scope | Conditions / RULE IDs | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## State dictionary
@@ -66,13 +77,9 @@ For each permission use Allowed / Denied / Conditional / TBD. Define every condi
 
 Confirm which transitions are forbidden and the response to an invalid transition. Ask about cancellation, resubmission, delegation or parallel approval only when relevant; do not add them automatically.
 
-## Entity and relationship inventory
+## Entities
 
-| ENT ID / name | Business purpose | Confirmed important fields | Ownership | Lifecycle / states | Source | Unresolved data decisions |
-| --- | --- | --- | --- | --- | --- | --- |
-
-| From entity | Relationship | To entity | Cardinality | Optionality | Ownership / delete implications | Evidence / DEC ID |
-| --- | --- | --- | --- | --- | --- | --- |
+Entities, their attributes, relationships, lifecycle states, ownership and permissions are defined once, in `specification/domain-model.md` (`templates/32`). Refer to them here by ENT-### and STATE-###; do not keep a second entity inventory.
 
 ## Diagrams
 

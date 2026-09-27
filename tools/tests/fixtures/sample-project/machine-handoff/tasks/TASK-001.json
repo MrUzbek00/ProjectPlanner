@@ -1,0 +1,194 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "id": "TASK-001",
+  "title": "Reset tokens are stored so that they cannot be recovered",
+  "revision": 1,
+  "content_hash": "sha256:5753f21ee296fd507518424a3546418bd277a9c92fd83488705a1587eb1ec94c",
+  "status": "READY",
+  "type": "database",
+  "objective": "Provide what FR-AUTH-001 and FR-AUTH-002 need to issue and redeem reset links safely.",
+  "declared_scope": null,
+  "source_requirements": [
+    "SR-001",
+    "RULE-001"
+  ],
+  "feature": "FEAT-001",
+  "epic": "EPIC-001",
+  "description": "Issued reset tokens are kept as one-way hashes together with their account, issue time and used flag, so that a token can be found by its hash and marked used exactly once.",
+  "acceptance_criteria": [
+    "AC-006: Given a token has been issued, when the store is inspected, then no plain-text token value is present"
+  ],
+  "dependencies": [],
+  "constraints": {
+    "architecture": [
+      "Store only a hash of the token; never the token itself (ADR-002)"
+    ],
+    "security": [
+      "Token values carry at least 128 bits of randomness (SR-001)",
+      "Marking a token used is atomic, so a token cannot be redeemed twice (RULE-001)"
+    ],
+    "performance": [],
+    "data": [],
+    "compliance": [],
+    "other": [],
+    "not_applicable": {}
+  },
+  "verification": {
+    "required_tests": [
+      "unit",
+      "integration"
+    ],
+    "test_ids": [
+      "TEST-001"
+    ]
+  },
+  "open_questions": [],
+  "blocking_issues": [],
+  "priority": "high",
+  "priority_confirmed": true,
+  "complexity": "S",
+  "phase": "PHASE-01",
+  "parent_task": null,
+  "dependencies_reviewed": true,
+  "blocks": [
+    "TASK-002",
+    "TASK-003"
+  ],
+  "architecture_decisions": [
+    {
+      "id": "ADR-001",
+      "status": "accepted",
+      "applies_via": [
+        "feature:FEAT-001"
+      ]
+    },
+    {
+      "id": "ADR-002",
+      "status": "accepted",
+      "applies_via": [
+        "task",
+        "requirement:SR-001",
+        "module:MOD-001",
+        "feature:FEAT-001"
+      ]
+    }
+  ],
+  "related_modules": [
+    "MOD-001"
+  ],
+  "readiness_gaps": [],
+  "scope": "in_scope",
+  "external_dependencies": [],
+  "impacts": {
+    "data": {
+      "stated": true,
+      "text": "- Affected entities: ENT-002 (reset token).\n- Create / update / delete: a token record is created on issue; its used flag is updated on redemption; nothing is deleted.\n- Ownership: MOD-001 owns the token store.\n- Lifecycle: ISSUED → USED or EXPIRED (RULE-001).\n- Migration expected: none — the store is new.\n- Retention impact: none stated in the sources.",
+      "ids": [
+        "ENT-002",
+        "MOD-001",
+        "RULE-001"
+      ],
+      "change": null,
+      "not_applicable": false
+    },
+    "api": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    },
+    "ui": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    },
+    "integration": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    }
+  },
+  "risk_ids": [],
+  "readiness": {
+    "result": "PASS",
+    "checks": {
+      "specification_ready": true,
+      "task_id_valid": true,
+      "title_clear": true,
+      "objective_clear": true,
+      "source_requirement_valid": true,
+      "feature_valid": true,
+      "scope_valid": true,
+      "acceptance_criteria_valid": true,
+      "acceptance_criteria_testable": true,
+      "dependencies_valid": true,
+      "external_dependencies_available": true,
+      "architecture_valid": true,
+      "architecture_conflicts_clear": true,
+      "security_valid": true,
+      "data_impact_known": true,
+      "api_impact_known": true,
+      "ui_impact_known": true,
+      "integration_impact_known": true,
+      "verification_defined": true,
+      "open_questions_clear": true,
+      "not_stale": true,
+      "review_findings_clear": true,
+      "blocking_risks_clear": true
+    },
+    "failures": [],
+    "recommended_status": "READY",
+    "accepted_risk_findings": []
+  },
+  "readiness_history": [
+    {
+      "date": "2026-09-22",
+      "from": null,
+      "to": "DRAFT",
+      "reason": "Card written from FEAT-001",
+      "change_id": null
+    },
+    {
+      "date": "2026-09-22",
+      "from": "DRAFT",
+      "to": "READY",
+      "reason": "Definition of Ready passed; validated by the fixture analyst",
+      "change_id": null
+    }
+  ],
+  "details": {
+    "testing_checklist": {
+      "text": "",
+      "items": [],
+      "tables": [
+        {
+          "headers": [
+            "TEST ID",
+            "Type",
+            "Fixture / preconditions",
+            "Expected evidence",
+            "Required for this card? / reason",
+            "Execution status / evidence"
+          ],
+          "rows": [
+            [
+              "TEST-001",
+              "Integration",
+              "Empty store",
+              "Stored record holds a hash only",
+              "Yes — SR-001",
+              "NOT RUN"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "source_path": "backlog/tasks/TASK-001.md"
+}

@@ -2,7 +2,7 @@
 
 TEMPLATE — generated from approved project records — NOT APPROVED
 
-Produce this document only after the project Markdown records are complete (discovery, process model, technical specification, backlog). Every statement must resolve to a confirmed record: `BIZ-###`, `FR-###`, `BR-###`, `NFR-###`, `PAGE-###`, `US-###`, a decision `DEC-###`, or a tracked `TBD (Q-###)`. Do not introduce a product claim, metric, persona or feature that no approved record supports.
+Produce this document only after the project Markdown records are complete (discovery, process model, technical specification, backlog). Every statement must resolve to a confirmed record: `BR-###`, `FR-###`, `RULE-###`, `NFR-###`, `PAGE-###`, `US-###`, a decision `DEC-###`, or a tracked `TBD (Q-###)`. Do not introduce a product claim, metric, persona or feature that no approved record supports.
 
 <!-- doc-meta
 title: Product Requirements Document
@@ -33,7 +33,7 @@ TBD — what the product is, who operates it, and which confirmed business proce
 
 ### 2.2 Problem Statement
 
-| Problem ID | Problem | Who experiences it | Observed evidence / impact | Current workaround | Related BIZ | Source |
+| Problem ID | Problem | Who experiences it | Observed evidence / impact | Current workaround | Related BR | Source |
 | --- | --- | --- | --- | --- | --- | --- |
 
 ### 2.3 Why Now
@@ -42,7 +42,7 @@ TBD — confirmed business driver, deadline, regulatory trigger or cost event. U
 
 ### 2.4 Product Vision Statement
 
-TBD — one sentence, traceable to approved BIZ objectives. Mark as `REC-###` if proposed rather than confirmed.
+TBD — one sentence, traceable to approved BR objectives. Mark as `REC-###` if proposed rather than confirmed.
 
 ## 3. Goals and Success Metrics
 
@@ -50,7 +50,7 @@ Every target requires a confirmed baseline, unit, measurement method and owner. 
 
 <!-- xlsx: workbook=requirements; sheet=Success Metrics -->
 
-| KPI ID | Goal / outcome | Metric definition | Unit | Baseline | Target | Measurement method | Measurement window | Data source | Owner | Related BIZ | Evidence |
+| KPI ID | Goal / outcome | Metric definition | Unit | Baseline | Target | Measurement method | Measurement window | Data source | Owner | Related BR | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ### 3.1 Non-goals
@@ -108,7 +108,7 @@ The MVP is the minimum set that delivers a confirmed business outcome end to end
 
 <!-- xlsx: workbook=requirements; sheet=Product Features -->
 
-| Feature ID | Feature name | Persona served | Business outcome enabled | Release | Priority (MoSCoW) | Related BIZ | Related FR | Related PAGE | Related EPIC / FEAT | Complexity | Status |
+| Feature ID | Feature name | Persona served | Business outcome enabled | Release | Priority (MoSCoW) | Related BR | Related FR | Related PAGE | Related EPIC / FEAT | Complexity | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ### 6.2 MVP Entry and Exit Definition
@@ -142,7 +142,7 @@ Repeat per feature. Authoritative behavior stays in the SRS; this section states
 - **Entry point:** TBD (PAGE-###)
 - **Key user stories:** TBD (US-###)
 - **Functional requirements:** TBD (FR-###)
-- **Business rules applied:** TBD (BR-###)
+- **Business rules applied:** TBD (RULE-###)
 - **Permissions:** TBD (ROLE-###)
 - **Data created / modified:** TBD (ENT-###)
 - **Success signal:** TBD (KPI-###)
@@ -165,7 +165,7 @@ Detailed layouts, states and components belong to the Wireframes and UI/UX docum
 Embed the generated BPMN process diagrams here, one per confirmed process, with the caption carrying the DIAG ID and the notation statement. Specify each diagram in the BPMN diagram record before generating it.
 
 ```markdown
-![DIAG-001 — <process>, TO-BE. Drawn in BPMN 2.0 notation; not a BPMN 2.0 XML interchange file.](diagrams/diag-001-<process>-tobe.png)
+![DIAG-001 — <process>, TO-BE. Drawn in BPMN 2.0 notation; not a BPMN 2.0 XML interchange file.](../diagrams/exported/diag-001-<process>-tobe.png)
 ```
 
 
@@ -215,4 +215,4 @@ Instrumentation is a requirement only when confirmed or covered by an approved N
 | PRD element | Source record | Location in project Markdown | Verified |
 | --- | --- | --- | --- |
 
-Reverse coverage check: every approved `BIZ-###` appears in section 3 or 6, and every MVP feature links to at least one approved `FR-###` and one acceptance test `AT-###`. Record exceptions with reasons.
+Reverse coverage check: every approved `BR-###` appears in section 3 or 6, and every MVP feature links to at least one approved `FR-###` and one acceptance test `TEST-###`. Record exceptions with reasons.

@@ -1,0 +1,333 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "specification_version": "1.0",
+  "sources": [
+    {
+      "id": "SRC-001",
+      "title": "Fixture brief",
+      "type": "Document",
+      "authority": "Authoritative",
+      "version": "2026-09-01 / 1"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "GOAL-001",
+      "type": "business_goal",
+      "title": "Users regain account access without help-desk involvement",
+      "description": "Password resets stop depending on the help desk.",
+      "rationale": "Resets are the most common help-desk request in the fixture brief.",
+      "source": [],
+      "status": "approved",
+      "priority": "high",
+      "acceptance_criteria": [],
+      "dependencies": [],
+      "related_modules": [],
+      "stakeholder": "Fixture owner",
+      "notes": "",
+      "evidence": [
+        "SRC-001"
+      ],
+      "priority_confirmed": true,
+      "confidence": "confirmed",
+      "scope": "in_scope",
+      "actor": null,
+      "trigger": null,
+      "permissions": null,
+      "category": null,
+      "business_measure": {
+        "measure": "Share of password resets completed without a help-desk ticket, %",
+        "baseline": "TBD (Q-004)",
+        "target": "TBD (Q-004)"
+      },
+      "open_questions": [
+        "Q-004"
+      ],
+      "superseded_by": null,
+      "architecture_decisions": [],
+      "source_path": "specification/business-requirements.md"
+    },
+    {
+      "id": "BR-001",
+      "type": "business",
+      "title": "Users can reset a forgotten password by themselves",
+      "description": "A registered user who has forgotten their password can set a new one without contacting anyone.",
+      "rationale": "This is the change the business objective depends on.",
+      "source": [
+        "GOAL-001"
+      ],
+      "status": "approved",
+      "priority": "high",
+      "acceptance_criteria": [
+        "AC-008: A registered user completes a password reset with no help-desk contact."
+      ],
+      "dependencies": [],
+      "related_modules": [],
+      "stakeholder": "Fixture owner",
+      "notes": "",
+      "evidence": [
+        "SRC-001"
+      ],
+      "priority_confirmed": true,
+      "confidence": "confirmed",
+      "scope": "in_scope",
+      "actor": null,
+      "trigger": null,
+      "permissions": null,
+      "category": null,
+      "business_measure": null,
+      "open_questions": [],
+      "superseded_by": null,
+      "architecture_decisions": [],
+      "source_path": "specification/business-requirements.md"
+    },
+    {
+      "id": "RULE-001",
+      "type": "business_rule",
+      "title": "A reset link is valid for 30 minutes and only once",
+      "description": "A password-reset link expires 30 minutes after it is issued and cannot be used a second time.",
+      "rationale": "Decided in DEC-001 to balance security and convenience.",
+      "source": [
+        "BR-001"
+      ],
+      "status": "approved",
+      "priority": "high",
+      "acceptance_criteria": [],
+      "dependencies": [],
+      "related_modules": [
+        "MOD-001"
+      ],
+      "stakeholder": "Fixture owner",
+      "notes": "",
+      "evidence": [
+        "DEC-001"
+      ],
+      "priority_confirmed": true,
+      "confidence": "confirmed",
+      "scope": "in_scope",
+      "actor": null,
+      "trigger": null,
+      "permissions": null,
+      "category": null,
+      "business_measure": null,
+      "open_questions": [],
+      "superseded_by": null,
+      "architecture_decisions": [],
+      "source_path": "specification/business-rules.md"
+    },
+    {
+      "id": "FR-AUTH-001",
+      "type": "functional",
+      "title": "Request a password reset",
+      "description": "A user can request a password-reset email by entering an email address.",
+      "rationale": "The first step of the self-service reset in PROC-002.",
+      "source": [
+        "BR-001"
+      ],
+      "status": "approved",
+      "priority": "high",
+      "acceptance_criteria": [
+        "AC-001: A reset email is sent when the address belongs to an active account.",
+        "AC-002: A request for an address with no active account is rejected silently: no email is sent and the response is identical."
+      ],
+      "dependencies": [
+        "RULE-001"
+      ],
+      "related_modules": [
+        "MOD-001",
+        "MOD-002"
+      ],
+      "stakeholder": "Fixture owner",
+      "notes": "",
+      "evidence": [
+        "SRC-001"
+      ],
+      "priority_confirmed": true,
+      "confidence": "confirmed",
+      "scope": "in_scope",
+      "actor": "Registered user",
+      "trigger": "The user asks to reset a forgotten password",
+      "permissions": "Anyone may request a reset; the email only reaches the account's own address",
+      "category": null,
+      "business_measure": null,
+      "open_questions": [],
+      "superseded_by": null,
+      "architecture_decisions": [
+        {
+          "id": "ADR-001",
+          "status": "accepted",
+          "applies_via": [
+            "adr"
+          ]
+        }
+      ],
+      "source_path": "specification/functional-requirements.md"
+    },
+    {
+      "id": "FR-AUTH-002",
+      "type": "functional",
+      "title": "Set a new password with a reset link",
+      "description": "A user who follows a valid reset link can set a new password.",
+      "rationale": "Completes the self-service reset in PROC-002.",
+      "source": [
+        "BR-001"
+      ],
+      "status": "approved",
+      "priority": "high",
+      "acceptance_criteria": [
+        "AC-003: A valid, unused link within 30 minutes of issue accepts a new password.",
+        "AC-004: An expired or already used link is rejected and the password is unchanged."
+      ],
+      "dependencies": [
+        "FR-AUTH-001",
+        "RULE-001"
+      ],
+      "related_modules": [
+        "MOD-001"
+      ],
+      "stakeholder": "Fixture owner",
+      "notes": "",
+      "evidence": [
+        "SRC-001"
+      ],
+      "priority_confirmed": true,
+      "confidence": "confirmed",
+      "scope": "in_scope",
+      "actor": "Registered user",
+      "trigger": "The user opens the link from the reset email",
+      "permissions": "Only the holder of a valid link can set the password for that account",
+      "category": null,
+      "business_measure": null,
+      "open_questions": [],
+      "superseded_by": null,
+      "architecture_decisions": [],
+      "source_path": "specification/functional-requirements.md"
+    },
+    {
+      "id": "FR-AUTH-003",
+      "type": "functional",
+      "title": "Lock an account after repeated failed sign-ins",
+      "description": "An account is locked after a number of consecutive failed sign-ins: TBD (Q-002).",
+      "rationale": "Requested by the owner in round 2; the threshold is undecided.",
+      "source": [
+        "BR-001"
+      ],
+      "status": "confirmed",
+      "priority": "medium",
+      "acceptance_criteria": [
+        "AC-005: The account is locked after the confirmed number of consecutive failures: TBD (Q-002)."
+      ],
+      "dependencies": [],
+      "related_modules": [
+        "MOD-001"
+      ],
+      "stakeholder": "Fixture owner",
+      "notes": "",
+      "evidence": [
+        "SRC-001"
+      ],
+      "priority_confirmed": false,
+      "confidence": "confirmed",
+      "scope": "pending_decision",
+      "actor": "Registered user",
+      "trigger": "Consecutive failed sign-ins",
+      "permissions": "N/A — system behaviour, no user action is permitted or denied beyond sign-in",
+      "category": null,
+      "business_measure": null,
+      "open_questions": [
+        "Q-002"
+      ],
+      "superseded_by": null,
+      "architecture_decisions": [],
+      "source_path": "specification/functional-requirements.md"
+    },
+    {
+      "id": "SR-001",
+      "type": "security",
+      "title": "Reset tokens are unguessable and stored only as hashes",
+      "description": "Reset tokens carry at least 128 bits of randomness and only a hash of each token is stored.",
+      "rationale": "A leaked token store must not allow anyone to reset a password.",
+      "source": [
+        "BR-001"
+      ],
+      "status": "approved",
+      "priority": "high",
+      "acceptance_criteria": [
+        "AC-006: The token store contains no plain-text token value."
+      ],
+      "dependencies": [],
+      "related_modules": [
+        "MOD-001"
+      ],
+      "stakeholder": "Fixture owner",
+      "notes": "",
+      "evidence": [
+        "SRC-001"
+      ],
+      "priority_confirmed": true,
+      "confidence": "confirmed",
+      "scope": "in_scope",
+      "actor": null,
+      "trigger": null,
+      "permissions": null,
+      "category": "Credential protection",
+      "business_measure": null,
+      "open_questions": [],
+      "superseded_by": null,
+      "architecture_decisions": [
+        {
+          "id": "ADR-002",
+          "status": "accepted",
+          "applies_via": [
+            "adr"
+          ]
+        }
+      ],
+      "source_path": "specification/security-requirements.md"
+    }
+  ],
+  "scope_items": [
+    {
+      "id": "SCOPE-001",
+      "item": "Password reset by email",
+      "classification": "in_scope",
+      "related_ids": [
+        "BR-001",
+        "FR-AUTH-001",
+        "FR-AUTH-002",
+        "SR-001",
+        "RULE-001"
+      ],
+      "rationale": "The business objective",
+      "authority": "APR-001"
+    },
+    {
+      "id": "SCOPE-002",
+      "item": "Account lockout after failed sign-ins",
+      "classification": "pending_decision",
+      "related_ids": [
+        "FR-AUTH-003",
+        "FEAT-002"
+      ],
+      "rationale": "Threshold undecided (Q-002)",
+      "authority": "Fixture owner"
+    },
+    {
+      "id": "SCOPE-003",
+      "item": "Password reset by SMS",
+      "classification": "out_of_scope",
+      "related_ids": [],
+      "rationale": "No phone numbers are held",
+      "authority": "Round 1 answer"
+    },
+    {
+      "id": "SCOPE-004",
+      "item": "Self-service account unlock",
+      "classification": "future",
+      "related_ids": [],
+      "rationale": "Depends on the lockout decision",
+      "authority": "Round 2 answer"
+    }
+  ]
+}

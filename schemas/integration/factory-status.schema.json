@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/integration/1.0/factory-status.schema.json",
+  "title": "Factory task status",
+  "description": "software-factory-output/tasks/TASK-###-status.json: SoftwareFactory's engineering status for one planner task. SoftwareFactory writes it; ProjectPlanner may later read it and show it as external engineering status. It is never planning authority: planning statuses stay in the planner's records.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status_authority",
+    "task_id",
+    "planner_revision",
+    "planner_content_hash",
+    "status",
+    "reason",
+    "owner",
+    "issues",
+    "source",
+    "planning_change",
+    "engineering",
+    "updated_at",
+    "history"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "status_authority": {
+      "description": "Who owns the status values in this file.",
+      "const": "SOFTWARE_FACTORY"
+    },
+    "task_id": { "$ref": "#/$defs/taskId" },
+    "planner_revision": {
+      "description": "The planner revision SoftwareFactory ingested; null only when a rejected task carried no valid revision.",
+      "anyOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }]
+    },
+    "planner_content_hash": {
+      "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/contentHash" }]
+    },
+    "status": { "$ref": "#/$defs/factoryStatus" },
+    "reason": {
+      "description": "The primary reason for REJECTED, BLOCKED or PLANNING_CHANGED; null otherwise.",
+      "type": ["string", "null"]
+    },
+    "owner": {
+      "description": "Which side must act on the reason; null when nothing is outstanding.",
+      "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/owner" }]
+    },
+    "issues": {
+      "description": "Every problem found, each with the side that must resolve it.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/issue" }
+    },
+    "source": { "$ref": "#/$defs/source" },
+    "planning_change": {
+      "description": "Set when the planner's task changed after SoftwareFactory ingested it.",
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "previous_revision",
+            "new_revision",
+            "previous_content_hash",
+            "new_content_hash",
+            "new_planner_status",
+            "execution_stage",
+            "implementation_started",
+            "review_required",
+            "detected_at"
+          ],
+          "properties": {
+            "previous_revision": { "anyOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }] },
+            "new_revision": {
+              "description": "null when the task is no longer in the handoff.",
+              "anyOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }]
+            },
+            "previous_content_hash": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/contentHash" }] },
+            "new_content_hash": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/contentHash" }] },
+            "new_planner_status": { "type": ["string", "null"] },
+            "execution_stage": {
+              "description": "The factory status the task had when the change was detected.",
+              "$ref": "#/$defs/factoryStatus"
+            },
+            "implementation_started": { "type": "boolean" },
+            "review_required": { "const": true },
+            "detected_at": { "$ref": "#/$defs/dateTime" }
+          }
+        }
+      ]
+    },
+    "engineering": {
+      "description": "Engineering references a planner may display: the branch and the pull request.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "pull_request"],
+      "properties": {
+        "branch": { "type": ["string", "null"] },
+        "pull_request": {
+          "anyOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["number", "url"],
+              "properties": {
+                "number": { "type": "integer", "minimum": 1 },
+                "url": { "type": ["string", "null"] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "updated_at": { "$ref": "#/$defs/dateTime" },
+    "history": {
+      "description": "Every status this task has had in SoftwareFactory, oldest first. The last entry matches status.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["status", "at", "planner_revision", "note"],
+        "properties": {
+          "status": { "$ref": "#/$defs/factoryStatus" },
+          "at": { "$ref": "#/$defs/dateTime" },
+          "planner_revision": { "anyOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }] },
+          "note": { "type": ["string", "null"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}(?:-S[0-9]{2,})?$" },
+    "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "dateTime": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$" },
+    "owner": { "enum": ["PROJECT_PLANNER", "SOFTWARE_FACTORY", "HUMAN_DECISION"] },
+    "factoryStatus": {
+      "enum": [
+        "ACCEPTED_FOR_ENGINEERING",
+        "REPOSITORY_INSPECTED",
+        "IMPLEMENTATION_PLANNED",
+        "IMPLEMENTING",
+        "VALIDATING",
+        "PR_CREATED",
+        "BLOCKED",
+        "COMPLETED",
+        "PLANNING_CHANGED",
+        "REJECTED"
+      ]
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "owner"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+        "message": { "type": "string", "minLength": 1 },
+        "owner": { "$ref": "#/$defs/owner" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "project_id", "handoff_version", "schema_version", "planner_schema_version", "content_fingerprint"],
+      "properties": {
+        "system": { "const": "ProjectPlanner" },
+        "project_id": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*$" },
+        "handoff_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+        "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+        "planner_schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+        "content_fingerprint": { "$ref": "#/$defs/contentHash" }
+      }
+    }
+  }
+}

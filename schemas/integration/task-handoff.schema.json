@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/integration/1.0/task-handoff.schema.json",
+  "title": "Task handoff (consumer view)",
+  "description": "The fields of machine-handoff/tasks/TASK-###.json that a downstream engineering system relies on. The planner's full task shape is fixed by schemas/task.schema.json; this view adds no field of its own and tolerates the others, so the planner can add optional fields without breaking the contract. Removing, renaming or retyping any field named here is a new contract version.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "project_id",
+    "id",
+    "revision",
+    "content_hash",
+    "status",
+    "title",
+    "objective",
+    "description",
+    "type",
+    "scope",
+    "feature",
+    "epic",
+    "source_requirements",
+    "acceptance_criteria",
+    "dependencies",
+    "external_dependencies",
+    "architecture_decisions",
+    "constraints",
+    "verification",
+    "impacts",
+    "open_questions",
+    "blocking_issues",
+    "readiness"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "project_id": { "$ref": "#/$defs/projectId" },
+    "id": { "$ref": "#/$defs/taskId" },
+    "revision": {
+      "description": "Incremented by the planner whenever the task's definition changes materially after validation.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "content_hash": {
+      "description": "sha256 over the task's stable content and the requirements and ADRs it relies on (basis task-intent/1). Timestamps, status and readiness bookkeeping are excluded.",
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "status": { "enum": ["DRAFT", "NEEDS_DISCOVERY", "NEEDS_REVIEW", "BLOCKED", "READY", "CANCELLED"] },
+    "title": { "type": "string", "minLength": 1 },
+    "objective": { "type": "string" },
+    "description": { "type": "string" },
+    "type": { "type": "string" },
+    "scope": { "type": ["string", "null"] },
+    "feature": { "type": ["string", "null"] },
+    "epic": { "type": ["string", "null"] },
+    "source_requirements": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/requirementId" }
+    },
+    "acceptance_criteria": { "$ref": "#/$defs/stringList" },
+    "dependencies": {
+      "description": "Predecessor tasks, by planner ID.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/taskId" }
+    },
+    "external_dependencies": { "$ref": "#/$defs/stringList" },
+    "architecture_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status"],
+        "properties": {
+          "id": { "$ref": "#/$defs/adrId" },
+          "status": { "enum": ["proposed", "accepted", "rejected", "superseded", "deprecated"] }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["architecture", "security", "performance", "data", "compliance", "other"],
+      "properties": {
+        "architecture": { "$ref": "#/$defs/stringList" },
+        "security": { "$ref": "#/$defs/stringList" },
+        "performance": { "$ref": "#/$defs/stringList" },
+        "data": { "$ref": "#/$defs/stringList" },
+        "compliance": { "$ref": "#/$defs/stringList" },
+        "other": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["required_tests", "test_ids"],
+      "properties": {
+        "required_tests": { "$ref": "#/$defs/stringList" },
+        "test_ids": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "impacts": {
+      "type": "object",
+      "required": ["data", "api", "ui", "integration"],
+      "properties": {
+        "data": { "$ref": "#/$defs/impact" },
+        "api": { "$ref": "#/$defs/impact" },
+        "ui": { "$ref": "#/$defs/impact" },
+        "integration": { "$ref": "#/$defs/impact" }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "question", "blocking"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^Q-[0-9]{3,}$" },
+          "question": { "type": "string" },
+          "blocking": { "type": "boolean" }
+        }
+      }
+    },
+    "blocking_issues": { "$ref": "#/$defs/stringList" },
+    "readiness": {
+      "description": "The planner's Definition of Ready evaluation. null only for a task that was never evaluated.",
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["result", "checks", "failures", "recommended_status"],
+          "properties": {
+            "result": { "enum": ["PASS", "FAIL", "NOT_APPLICABLE"] },
+            "checks": { "type": "object" },
+            "failures": { "type": "array" },
+            "recommended_status": { "type": "string" }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "projectId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*$" },
+    "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}(?:-S[0-9]{2,})?$" },
+    "adrId": { "type": "string", "pattern": "^ADR-[0-9]{3,}$" },
+    "requirementId": {
+      "type": "string",
+      "pattern": "^(?:GOAL-[0-9]{3,}|BR-[0-9]{3,}|RULE-[0-9]{3,}|FR-(?:[A-Z][A-Z0-9]{1,11}-)?[0-9]{3,}|NFR-[0-9]{3,}|DR-[0-9]{3,}|IR-[0-9]{3,}|SR-[0-9]{3,}|UXR-[0-9]{3,}|TR-[0-9]{3,})$"
+    },
+    "stringList": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "impact": {
+      "type": "object",
+      "required": ["stated", "text", "not_applicable"],
+      "properties": {
+        "stated": { "type": "boolean" },
+        "text": { "type": "string" },
+        "not_applicable": { "type": "boolean" }
+      }
+    }
+  }
+}

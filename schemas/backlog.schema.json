@@ -1,0 +1,449 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/backlog.schema.json",
+  "title": "Backlog index (backlog.json)",
+  "description": "Epics, features, phases and an index of every task with its dependencies and computed sequence. Full task content lives only in tasks/TASK-###.json; every field repeated here is generated from the same record and checked for equality by the validator.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "specification_version",
+    "epics",
+    "features",
+    "phases",
+    "tasks",
+    "sequencing",
+    "ready_task_ids",
+    "executable_now",
+    "external_dependencies"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/projectId"
+    },
+    "specification_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "epics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "goal",
+          "status",
+          "priority",
+          "requirement_ids",
+          "feature_ids",
+          "source_path"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/epicId"
+          },
+          "title": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "goal": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "common.schema.json#/$defs/taskStatus"
+          },
+          "priority": {
+            "$ref": "common.schema.json#/$defs/priority"
+          },
+          "requirement_ids": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "feature_ids": {
+            "$ref": "common.schema.json#/$defs/featureIdList"
+          },
+          "source_path": {
+            "$ref": "common.schema.json#/$defs/sourcePath"
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "epic",
+          "title",
+          "goal",
+          "status",
+          "priority",
+          "requirement_ids",
+          "task_ids",
+          "source_path",
+          "scope",
+          "module_ids",
+          "dependencies",
+          "external_dependencies",
+          "architecture_decisions",
+          "no_tasks_reason"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/featureId"
+          },
+          "epic": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/epicId"
+              }
+            ]
+          },
+          "title": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "goal": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "common.schema.json#/$defs/taskStatus"
+          },
+          "priority": {
+            "$ref": "common.schema.json#/$defs/priority"
+          },
+          "requirement_ids": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "task_ids": {
+            "$ref": "common.schema.json#/$defs/taskIdList"
+          },
+          "source_path": {
+            "$ref": "common.schema.json#/$defs/sourcePath"
+          },
+          "scope": {
+            "$ref": "common.schema.json#/$defs/scope"
+          },
+          "module_ids": {
+            "$ref": "common.schema.json#/$defs/moduleIdList"
+          },
+          "dependencies": {
+            "description": "Features that must be delivered first.",
+            "$ref": "common.schema.json#/$defs/featureIdList"
+          },
+          "external_dependencies": {
+            "$ref": "common.schema.json#/$defs/dependencyIdList"
+          },
+          "architecture_decisions": {
+            "description": "Architecture decisions the feature must respect: named by the feature, named by the ADR's Related features, or reached through the feature's requirements or modules.",
+            "$ref": "common.schema.json#/$defs/adrLinkList"
+          },
+          "no_tasks_reason": {
+            "description": "Why an in-scope feature needs no task (already implemented, documentation only, external vendor responsibility, no implementation required); null otherwise.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "order",
+          "objective",
+          "exit_criteria",
+          "task_ids",
+          "source_path",
+          "date",
+          "date_basis",
+          "commitment_decision"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/phaseId"
+          },
+          "title": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "objective": {
+            "type": "string"
+          },
+          "exit_criteria": {
+            "type": "string"
+          },
+          "task_ids": {
+            "$ref": "common.schema.json#/$defs/taskIdList"
+          },
+          "source_path": {
+            "$ref": "common.schema.json#/$defs/sourcePath"
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "date_basis": {
+            "description": "target: a wish; estimate: derived from sizing and capacity; commitment: agreed and recorded in a decision; none: no date.",
+            "enum": [
+              "target",
+              "estimate",
+              "commitment",
+              "none"
+            ]
+          },
+          "commitment_decision": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/decisionId"
+              }
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "date_basis": {
+                  "const": "commitment"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "commitment_decision": {
+                  "$ref": "common.schema.json#/$defs/decisionId"
+                },
+                "date": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "status",
+          "type",
+          "priority",
+          "complexity",
+          "epic",
+          "feature",
+          "phase",
+          "source_requirements",
+          "dependencies",
+          "blocks",
+          "sequence",
+          "depth",
+          "file",
+          "scope",
+          "external_dependencies"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/taskId"
+          },
+          "title": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "status": {
+            "$ref": "common.schema.json#/$defs/taskStatus"
+          },
+          "type": {
+            "type": "string"
+          },
+          "priority": {
+            "$ref": "common.schema.json#/$defs/priority"
+          },
+          "complexity": {
+            "$ref": "common.schema.json#/$defs/complexity"
+          },
+          "epic": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/epicId"
+              }
+            ]
+          },
+          "feature": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/featureId"
+              }
+            ]
+          },
+          "phase": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/phaseId"
+              }
+            ]
+          },
+          "source_requirements": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "dependencies": {
+            "$ref": "common.schema.json#/$defs/taskIdList"
+          },
+          "blocks": {
+            "$ref": "common.schema.json#/$defs/taskIdList"
+          },
+          "sequence": {
+            "description": "1-based position in the deterministic topological order; null for tasks inside a dependency cycle.",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "depth": {
+            "description": "Length of the longest predecessor chain; tasks with equal depth have no dependency between them.",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^tasks/TASK-[0-9]{3,}(?:-S[0-9]{2,})?\\.json$"
+          },
+          "scope": {
+            "$ref": "common.schema.json#/$defs/scope"
+          },
+          "external_dependencies": {
+            "$ref": "common.schema.json#/$defs/dependencyIdList"
+          }
+        }
+      }
+    },
+    "sequencing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "tie_break",
+        "order"
+      ],
+      "properties": {
+        "method": {
+          "const": "topological"
+        },
+        "tie_break": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "order": {
+          "$ref": "common.schema.json#/$defs/taskIdList"
+        }
+      }
+    },
+    "ready_task_ids": {
+      "description": "READY tasks in sequence order: the set normally handed to downstream engineering.",
+      "$ref": "common.schema.json#/$defs/taskIdList"
+    },
+    "executable_now": {
+      "description": "The first ready work set: READY tasks that pass the Definition of Ready and depend on nothing that is not itself in an earlier set. The planning workflow does not track execution.",
+      "$ref": "common.schema.json#/$defs/taskIdList"
+    },
+    "external_dependencies": {
+      "description": "External systems, departments, vendors, data and stakeholder inputs the plan depends on.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "type",
+          "owner",
+          "status",
+          "needed_for",
+          "risk_ids"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/dependencyId"
+          },
+          "description": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "type": {
+            "enum": [
+              "external_system",
+              "department",
+              "vendor",
+              "data",
+              "decision",
+              "other"
+            ]
+          },
+          "owner": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "AVAILABLE",
+              "PENDING",
+              "UNAVAILABLE",
+              "UNKNOWN"
+            ]
+          },
+          "needed_for": {
+            "$ref": "common.schema.json#/$defs/anyIdList"
+          },
+          "risk_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "common.schema.json#/$defs/riskId"
+            }
+          }
+        }
+      }
+    }
+  }
+}

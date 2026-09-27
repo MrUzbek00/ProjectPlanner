@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/validation-report.schema.json",
+  "title": "Validation report (validation-report.json)",
+  "description": "What the deterministic validator found when the handoff was generated. It is evidence, not a claim: re-run tools/validate_handoff.py to reproduce it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project_id", "generated_at", "result", "specification", "handoff_status", "summary", "errors", "warnings", "non_ready_tasks"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "project_id": { "type": ["string", "null"] },
+    "generated_at": { "$ref": "common.schema.json#/$defs/dateTime" },
+    "result": { "enum": ["VALID", "INVALID"] },
+    "specification": { "type": "string" },
+    "handoff_status": { "enum": ["ready", "not_ready", "invalid"] },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ready_tasks", "blocked_tasks", "other_non_ready_tasks", "errors", "warnings"],
+      "properties": {
+        "ready_tasks": { "type": "integer", "minimum": 0 },
+        "blocked_tasks": { "type": "integer", "minimum": 0 },
+        "other_non_ready_tasks": { "type": "integer", "minimum": 0 },
+        "errors": { "type": "integer", "minimum": 0 },
+        "warnings": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "errors": { "$ref": "#/$defs/findings" },
+    "warnings": { "$ref": "#/$defs/findings" },
+    "non_ready_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "reasons"],
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "type": "string" },
+          "reasons": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step", "code", "message", "location"],
+        "properties": {
+          "step": { "type": "string" },
+          "code": { "type": "string", "pattern": "^[A-Z_]+$" },
+          "message": { "type": "string" },
+          "location": { "type": "string" }
+        }
+      }
+    }
+  }
+}

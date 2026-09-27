@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "review_version": "1.0",
+  "review_cycle": 2,
+  "review_date": "2026-09-19",
+  "reviewer": "Fixture reviewer — SPECIFICATION REVIEWER",
+  "specification_author": "Fixture analyst — SPECIFICATION AUTHOR",
+  "overall_result": "PASS_WITH_WARNINGS",
+  "summary": {
+    "critical": 0,
+    "major": 0,
+    "minor": 0,
+    "observation": 1,
+    "open": 1,
+    "accepted_risk": 0,
+    "resolved": 1,
+    "rejected": 0,
+    "total": 2,
+    "resolved_since_previous": 1
+  },
+  "cycles": [
+    {
+      "review_cycle": 1,
+      "review_date": "2026-09-18",
+      "review_version": "0.9",
+      "overall_result": "FAIL",
+      "finding_count": 2,
+      "critical_count": 0,
+      "major_count": 1,
+      "minor_count": 0,
+      "observation_count": 1,
+      "accepted_risk_count": 0,
+      "resolved_since_previous": 0,
+      "snapshot": "reviews/history/specification-review-cycle-001.md"
+    },
+    {
+      "review_cycle": 2,
+      "review_date": "2026-09-19",
+      "review_version": "1.0",
+      "overall_result": "PASS_WITH_WARNINGS",
+      "finding_count": 1,
+      "critical_count": 0,
+      "major_count": 0,
+      "minor_count": 0,
+      "observation_count": 1,
+      "accepted_risk_count": 0,
+      "resolved_since_previous": 1,
+      "snapshot": null
+    }
+  ],
+  "findings": [
+    {
+      "id": "REVIEW-001",
+      "title": "Lockout threshold was specified without a source",
+      "severity": "MAJOR",
+      "category": "REQUIREMENT",
+      "status": "RESOLVED",
+      "raised_in_cycle": 1,
+      "closed_in_cycle": 2,
+      "affected_artifacts": [
+        "FR-AUTH-003",
+        "AC-005"
+      ],
+      "return_to_stage": "3 — Requirement Analysis",
+      "evidence": "FR-AUTH-003 in version 0.9 locked an account after five failed sign-ins. SRC-001 and the decision log contain no threshold, and Q-002 asks for it.",
+      "conflict": "",
+      "why_it_matters": "A guessed security threshold would be built and tested as if the owner had decided it.",
+      "required_action": "Remove the number, keep the requirement pending until Q-002 is answered, and hold it out of the release.",
+      "resolution": {
+        "text": "The invented threshold was removed. FR-AUTH-003 and AC-005 state TBD (Q-002), and FR-AUTH-003 is PENDING DECISION through SCOPE-002",
+        "resolved_by": "Fixture analyst",
+        "resolution_date": "2026-09-19",
+        "changed_artifacts": [
+          "FR-AUTH-003",
+          "SCOPE-002"
+        ],
+        "verification": "Re-reviewed in cycle 2: FR-AUTH-003 and AC-005 contain no number; SCOPE-002 is PENDING DECISION and names Q-002",
+        "approved_by": null,
+        "approval_evidence": []
+      },
+      "source_path": "reviews/specification-review.md"
+    },
+    {
+      "id": "REVIEW-002",
+      "title": "Reset email language is undecided",
+      "severity": "OBSERVATION",
+      "category": "REQUIREMENT",
+      "status": "OPEN",
+      "raised_in_cycle": 1,
+      "closed_in_cycle": null,
+      "affected_artifacts": [
+        "Q-003",
+        "FR-AUTH-001"
+      ],
+      "return_to_stage": "2 — Discovery",
+      "evidence": "Q-003 (reset email language) is open, and FR-AUTH-001 does not state the language of the reset email.",
+      "conflict": "",
+      "why_it_matters": "Not a defect for the release: the template text can change later without changing behaviour.",
+      "required_action": "Record the answer to Q-003 when it arrives.",
+      "resolution": null,
+      "source_path": "reviews/specification-review.md"
+    }
+  ],
+  "issues": [],
+  "source_path": "reviews/specification-review.md"
+}

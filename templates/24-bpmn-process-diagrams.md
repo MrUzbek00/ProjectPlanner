@@ -4,7 +4,7 @@ TEMPLATE — diagram specifications and generation record — NOT APPROVED
 
 Business process diagrams are drawn in BPMN notation with the Excalidraw diagram skill ([coleam00/excalidraw-diagram-skill](https://github.com/coleam00/excalidraw-diagram-skill)), one diagram per confirmed process. This record is the contract the diagram is drawn from: it fixes the participants, the flow and the notation before any shape is placed.
 
-A diagram is a view of the confirmed process model in `models/process-model.md`. It shows what that model states and nothing else. A lane, gateway, message flow or end event that appears in a diagram and not in the model is an invented requirement — remove it or raise it through the model first.
+A diagram is a view of the confirmed process model in `specification/process-model.md`. It shows what that model states and nothing else. A lane, gateway, message flow or end event that appears in a diagram and not in the model is an invented requirement — remove it or raise it through the model first.
 
 ## 1. Notation Conformance Statement
 
@@ -16,7 +16,7 @@ The Excalidraw skill produces `.excalidraw` JSON and a rendered PNG. It does not
 
 ## 2. Diagram Inventory
 
-| DIAG ID | Process (PROC-###) | Diagram title | Perspective (AS-IS / TO-BE) | Participants | Source records | `.excalidraw` file | Rendered PNG | Embedded in | Status |
+| DIAG ID | Process (PROC-###) | Diagram title | Perspective (AS-IS / TO-BE) | Participants | Source records | `.excalidraw` file in `diagrams/source/` | Rendered PNG in `diagrams/exported/` | Embedded in | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Draw AS-IS and TO-BE as separate diagrams. Do not overlay a proposed change onto an observed process; the difference between them is the argument the pair has to make.
@@ -84,7 +84,7 @@ Repeat this record for every diagram in the inventory. Complete it before genera
 
 **Gateways**
 
-| Gateway | Type | Question asked | Outgoing flows and conditions | Default flow | Business rule (BR-###) | Source |
+| Gateway | Type | Question asked | Outgoing flows and conditions | Default flow | Business rule (RULE-###) | Source |
 | --- | --- | --- | --- | --- | --- | --- |
 
 **Message flows**
@@ -146,7 +146,7 @@ uv run python render_excalidraw.py <path-to-diagram.excalidraw>
 Reference each rendered diagram from the deliverable that carries it, using a relative path from the deliverable Markdown file:
 
 ```markdown
-![DIAG-001 — Purchase approval, TO-BE. Drawn in BPMN 2.0 notation; not a BPMN 2.0 XML interchange file.](diagrams/diag-001-purchase-approval-tobe.png)
+![DIAG-001 — Purchase approval, TO-BE. Drawn in BPMN 2.0 notation; not a BPMN 2.0 XML interchange file.](../diagrams/exported/diag-001-purchase-approval-tobe.png)
 ```
 
 The build tool embeds the PNG and renders the caption beneath it. Keep the DIAG ID first in the caption so a reader can find the specification behind the picture.

@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/changes.schema.json",
+  "title": "Change impact (changes.json)",
+  "description": "Every change record (changes/CHANGE-###.md) with its analysed impact, the records that changed since the trusted baseline, the changes no approved record accounts for, and the review state of every artifact that is not CURRENT. The change records and the baseline are the source; this is derived from them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project_id", "baseline", "summary", "detected_changes", "unrecorded_changes", "changes", "artifact_states"],
+  "$defs": {
+    "idList": { "$ref": "common.schema.json#/$defs/anyIdList" },
+    "reviewState": { "enum": ["CURRENT", "NEEDS_REVIEW", "STALE", "INVALID"] },
+    "severity": { "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
+    "nullableSeverity": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/severity" }] },
+    "affected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "level", "confidence", "reason", "review_state", "resolution"],
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/anyId" },
+        "level": { "enum": ["DIRECT", "INDIRECT", "POTENTIAL", "NEW"] },
+        "confidence": { "enum": ["CONFIRMED", "LIKELY", "POSSIBLE"] },
+        "reason": { "type": "string" },
+        "review_state": { "$ref": "#/$defs/reviewState" },
+        "resolution": {
+          "oneOf": [{ "type": "null" }, { "enum": ["UPDATED", "NO_CHANGE_NEEDED", "ADDED", "REMOVED", "DEFERRED", "REPLACED"] }]
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/schemaVersion" },
+    "project_id": { "$ref": "common.schema.json#/$defs/projectId" },
+    "baseline": {
+      "description": "The trusted state (changes/baseline.json) that changes are detected against.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exists", "created_at", "specification_version", "incorporated_changes", "controlled_kinds"],
+      "properties": {
+        "exists": { "type": "boolean" },
+        "created_at": { "type": ["string", "null"] },
+        "specification_version": { "type": ["string", "null"] },
+        "incorporated_changes": { "$ref": "#/$defs/idList" },
+        "controlled_kinds": { "$ref": "common.schema.json#/$defs/stringList" }
+      }
+    },
+    "summary": {
+      "description": "Project-level change state, for dashboards.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["open_changes", "critical_changes", "items_needing_review", "stale_tasks", "invalid_ready_tasks", "unrecorded_changes"],
+      "properties": {
+        "open_changes": { "type": "integer", "minimum": 0 },
+        "critical_changes": { "type": "integer", "minimum": 0 },
+        "items_needing_review": { "type": "integer", "minimum": 0 },
+        "stale_tasks": { "type": "integer", "minimum": 0 },
+        "invalid_ready_tasks": { "type": "integer", "minimum": 0 },
+        "unrecorded_changes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "detected_changes": {
+      "description": "Change-controlled records that differ from the baseline.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "change", "source_path"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/anyId" },
+          "change": { "enum": ["added", "modified", "removed"] },
+          "source_path": { "$ref": "common.schema.json#/$defs/sourcePath" }
+        }
+      }
+    },
+    "unrecorded_changes": {
+      "description": "Detected changes that no APPROVED or IMPLEMENTED_IN_PLAN change record accounts for.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "change", "covered_by", "affected", "source_path"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/anyId" },
+          "change": { "enum": ["added", "modified", "removed"] },
+          "covered_by": { "$ref": "#/$defs/idList" },
+          "affected": { "$ref": "#/$defs/idList" },
+          "source_path": { "$ref": "common.schema.json#/$defs/sourcePath" }
+        }
+      }
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "change_id", "title", "status", "date", "change_type", "changed_artifacts", "changed_by", "approved_by",
+          "approval_evidence", "declared_severity", "decisions_required", "resolution_status", "superseded_by",
+          "previous_state", "new_state", "reason", "required_reviews", "risk_impact", "roadmap_notes", "new_work",
+          "document_notes", "source_path", "marks_plan", "computed_severity", "severity_drivers", "direct_impact",
+          "indirect_impact", "potential_impact", "affected", "invalidated_items", "review_required", "review_areas",
+          "missing_work", "roadmap", "risks", "documents", "rerun_gates"
+        ],
+        "properties": {
+          "change_id": { "type": "string", "pattern": "^CHANGE-[0-9]{3,}$" },
+          "title": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "status": { "enum": ["PROPOSED", "UNDER_ANALYSIS", "APPROVED", "REJECTED", "IMPLEMENTED_IN_PLAN", "SUPERSEDED"] },
+          "date": { "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/isoDate" }] },
+          "change_type": {
+            "oneOf": [
+              { "type": "null" },
+              { "enum": ["REQUIREMENT_CHANGE", "ARCHITECTURE_CHANGE", "SCOPE_CHANGE", "BUSINESS_RULE_CHANGE", "WORKFLOW_CHANGE",
+                         "FEATURE_CHANGE", "DATA_CHANGE", "INTEGRATION_CHANGE", "SECURITY_CHANGE", "PRIORITY_CHANGE",
+                         "DEPENDENCY_CHANGE", "ROADMAP_CHANGE"] }
+            ]
+          },
+          "changed_artifacts": { "$ref": "#/$defs/idList" },
+          "changed_by": { "type": "string" },
+          "approved_by": { "type": "string" },
+          "approval_evidence": { "$ref": "#/$defs/idList" },
+          "declared_severity": { "$ref": "#/$defs/nullableSeverity" },
+          "decisions_required": { "$ref": "common.schema.json#/$defs/questionIdList" },
+          "resolution_status": { "enum": ["OPEN", "IN_PROGRESS", "RESOLVED"] },
+          "superseded_by": { "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^CHANGE-[0-9]{3,}$" }] },
+          "previous_state": { "type": "string" },
+          "new_state": { "type": "string" },
+          "reason": { "type": "string" },
+          "required_reviews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["area", "result", "evidence"],
+              "properties": {
+                "area": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+                "result": { "enum": ["DONE", "N/A", "PENDING"] },
+                "evidence": { "type": "string" }
+              }
+            }
+          },
+          "risk_impact": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["risk", "effect", "rationale"],
+              "properties": {
+                "risk": { "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/riskId" }] },
+                "effect": { "oneOf": [{ "type": "null" }, { "enum": ["NEW", "INCREASED", "REDUCED", "RETIRED", "UNCHANGED"] }] },
+                "rationale": { "type": "string" }
+              }
+            }
+          },
+          "roadmap_notes": { "type": "string" },
+          "new_work": { "type": "string" },
+          "document_notes": { "type": "string" },
+          "source_path": { "$ref": "common.schema.json#/$defs/sourcePath" },
+          "marks_plan": {
+            "description": "True for APPROVED and IMPLEMENTED_IN_PLAN changes: only these alter the review state of the plan.",
+            "type": "boolean"
+          },
+          "computed_severity": { "$ref": "#/$defs/severity" },
+          "severity_drivers": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" },
+          "direct_impact": { "$ref": "#/$defs/idList" },
+          "indirect_impact": { "$ref": "#/$defs/idList" },
+          "potential_impact": { "$ref": "#/$defs/idList" },
+          "affected": { "type": "array", "items": { "$ref": "#/$defs/affected" } },
+          "invalidated_items": {
+            "description": "Artifacts dispositioned INVALID, and READY tasks whose readiness this change withdraws.",
+            "$ref": "#/$defs/idList"
+          },
+          "review_required": { "type": "boolean" },
+          "review_areas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["area", "ids"],
+              "properties": {
+                "area": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+                "ids": { "$ref": "#/$defs/idList" }
+              }
+            }
+          },
+          "missing_work": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" },
+          "roadmap": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["phases", "committed_phases", "notes"],
+            "properties": {
+              "phases": { "$ref": "#/$defs/idList" },
+              "committed_phases": { "$ref": "#/$defs/idList" },
+              "notes": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" }
+            }
+          },
+          "risks": { "$ref": "#/$defs/idList" },
+          "documents": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "ids"],
+              "properties": {
+                "path": { "$ref": "common.schema.json#/$defs/sourcePath" },
+                "ids": { "$ref": "#/$defs/idList" }
+              }
+            }
+          },
+          "rerun_gates": { "$ref": "common.schema.json#/$defs/stringList" }
+        }
+      }
+    },
+    "artifact_states": {
+      "description": "Every artifact that is not CURRENT: its worst review state, the changes behind it and why. An artifact not listed is CURRENT.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "state", "change_ids", "reasons"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/anyId" },
+          "state": { "enum": ["NEEDS_REVIEW", "STALE", "INVALID"] },
+          "change_ids": { "$ref": "common.schema.json#/$defs/stringList" },
+          "reasons": { "$ref": "common.schema.json#/$defs/nonEmptyStringList" }
+        }
+      }
+    }
+  }
+}

@@ -135,7 +135,14 @@ TBD — the system, its actors and its external systems. Include a context diagr
 | Layer | Technology | Version | Confirmed or recommended | Rationale | Decision reference |
 | --- | --- | --- | --- | --- | --- |
 
-A recommended technology is not an approved technology. Keep the distinction visible in every row.
+A recommended technology is not an approved technology. Keep the distinction visible in every row. A confirmed technology cites its accepted ADR; a recommended one cites its proposed ADR.
+
+### 3.5 Architecture Decisions
+
+Restates the accepted ADRs from `architecture/` for engineering readers; the ADR files are canonical. Superseded, rejected and deprecated decisions are not listed as constraints.
+
+| ADR ID | Decision | Constraints introduced | Related requirements | Status |
+| --- | --- | --- | --- | --- |
 
 ## 4. Data Requirements
 
@@ -161,7 +168,7 @@ Include an ERD only when the confirmed model supports it. An ERD must not introd
 Embed the generated entity-relationship diagram here. It shows a proposed physical model derived from the confirmed logical entities above; the caption must say so.
 
 ```markdown
-![DIAG-010 — Proposed physical data model. Derived from the confirmed logical entities; types, keys and indexes are design recommendations.](diagrams/diag-010-er-model.png)
+![DIAG-010 — Proposed physical data model. Derived from the confirmed logical entities; types, keys and indexes are design recommendations.](../diagrams/exported/diag-010-er-model.png)
 ```
 
 
@@ -209,7 +216,7 @@ TBD or `N/A — reason; evidence`.
 
 <!-- xlsx: workbook=requirements; sheet=Functional Requirements -->
 
-| FR ID | Requirement | Module | Page | Actor role | Trigger | Preconditions | Main behavior | Alternative behavior | Failure behavior | Data read | Data written | Business rules | Permissions | Priority | Complexity | Related BIZ | Acceptance criteria | Acceptance tests | Card | Status |
+| FR ID | Requirement | Module | Page | Actor role | Trigger | Preconditions | Main behavior | Alternative behavior | Failure behavior | Data read | Data written | Business rules | Permissions | Priority | Complexity | Related BR | Acceptance criteria | Acceptance tests | Card | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ### 6.2 Requirement Detail
@@ -239,7 +246,7 @@ Reproduce the full approved requirement record for each `FR-###`, including inpu
 Embed the generated BPMN process diagrams here, one per confirmed process, with the caption carrying the DIAG ID and the notation statement. Specify each diagram in the BPMN diagram record before generating it.
 
 ```markdown
-![DIAG-001 — <process>, TO-BE. Drawn in BPMN 2.0 notation; not a BPMN 2.0 XML interchange file.](diagrams/diag-001-<process>-tobe.png)
+![DIAG-001 — <process>, TO-BE. Drawn in BPMN 2.0 notation; not a BPMN 2.0 XML interchange file.](../diagrams/exported/diag-001-<process>-tobe.png)
 ```
 
 ### 6.4 Use Case Scenarios
@@ -251,7 +258,7 @@ Embed the generated BPMN process diagrams here, one per confirmed process, with 
 
 ### 7.1 Business Rules
 
-| BR ID | Rule | Trigger point | Condition | Effect | Violation behavior and message | Override authority | Related FR | Source |
+| RULE ID | Rule | Trigger point | Condition | Effect | Violation behavior and message | Override authority | Related FR | Source |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ### 7.2 State Machines
@@ -267,7 +274,7 @@ Repeat per entity. State names are entity-scoped.
 Embed the generated state diagram for each entity whose lifecycle is confirmed. The diagram shows exactly the transitions in the table above — no more.
 
 ```markdown
-![DIAG-020 — <entity> lifecycle. Generated from the confirmed state transitions.](diagrams/diag-020-<entity>-states.png)
+![DIAG-020 — <entity> lifecycle. Generated from the confirmed state transitions.](../diagrams/exported/diag-020-<entity>-states.png)
 ```
 
 ### 7.3 Approval Rules
@@ -408,7 +415,7 @@ Cover functional, permission, validation, workflow and state, integration, expor
 
 <!-- xlsx: workbook=requirements; sheet=Traceability -->
 
-| BIZ ID | FR ID | BR / NFR / TR | Module | Page | User story | Epic / Feature | Card ID | Acceptance criterion | Acceptance test | Coverage status | Gap note |
+| BR ID | FR ID | RULE / NFR / TR | Module | Page | User story | Epic / Feature | Task ID | Acceptance criterion | Acceptance test | Coverage status | Gap note |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Reverse checks: no orphan card, no requirement without acceptance coverage, no acceptance test without a requirement, no page without a role permitted to reach it.

@@ -14,7 +14,7 @@ Establish the required content, owner and stage during planning. Complete implem
 | Build/release procedure | TBD | Verified commands and versioned artifact references when available | TBD | TBD | TBD |
 | Database migration / data import | TBD | Mapping, validation, reconciliation and recovery if applicable | TBD | TBD | TBD |
 | Deployment / rollback | TBD | Conditions, responsibilities and verified steps | TBD | TBD | TBD |
-| Smoke checks and acceptance | TBD | Required AT IDs and evidence | TBD | TBD | TBD |
+| Smoke checks and acceptance | TBD | Required TEST IDs and evidence | TBD | TBD | TBD |
 | Monitoring / logs / alert response | TBD | Confirmed signals, recipients and troubleshooting | TBD | TBD | TBD |
 | Backup / restoration | TBD | Approved targets and restoration evidence | TBD | TBD | TBD |
 | Retention / archival / deletion | TBD | Approved data lifecycle and responsibilities | TBD | TBD | TBD |

@@ -1,0 +1,731 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/task.schema.json",
+  "title": "Task (machine-handoff/tasks/TASK-###.json)",
+  "description": "One executable backlog task, generated from backlog/tasks/TASK-###.md. A task is READY only when it passes every Definition of Ready check; 'readiness' records the evaluation and the validator recomputes it from the whole bundle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "id",
+    "title",
+    "status",
+    "type",
+    "source_requirements",
+    "feature",
+    "epic",
+    "description",
+    "acceptance_criteria",
+    "dependencies",
+    "constraints",
+    "verification",
+    "open_questions",
+    "blocking_issues",
+    "priority",
+    "priority_confirmed",
+    "complexity",
+    "phase",
+    "parent_task",
+    "dependencies_reviewed",
+    "blocks",
+    "architecture_decisions",
+    "related_modules",
+    "readiness_gaps",
+    "details",
+    "source_path",
+    "scope",
+    "external_dependencies",
+    "revision",
+    "content_hash",
+    "objective",
+    "declared_scope",
+    "impacts",
+    "risk_ids",
+    "readiness",
+    "readiness_history"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/projectId"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/taskId"
+    },
+    "title": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/taskStatus"
+    },
+    "type": {
+      "enum": [
+        "backend",
+        "frontend",
+        "fullstack",
+        "database",
+        "integration",
+        "infrastructure",
+        "security",
+        "testing",
+        "documentation",
+        "design",
+        "other"
+      ]
+    },
+    "source_requirements": {
+      "$ref": "common.schema.json#/$defs/requirementIdList"
+    },
+    "feature": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/featureId"
+        }
+      ]
+    },
+    "epic": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/epicId"
+        }
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "acceptance_criteria": {
+      "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+    },
+    "dependencies": {
+      "description": "Predecessor tasks that must be completed before this one (the Markdown 'Blocked By' field).",
+      "$ref": "common.schema.json#/$defs/taskIdList"
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "architecture",
+        "security",
+        "performance",
+        "data",
+        "compliance",
+        "other",
+        "not_applicable"
+      ],
+      "properties": {
+        "architecture": {
+          "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+        },
+        "security": {
+          "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+        },
+        "performance": {
+          "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+        },
+        "data": {
+          "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+        },
+        "compliance": {
+          "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+        },
+        "other": {
+          "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+        },
+        "not_applicable": {
+          "description": "Constraint kinds recorded as not applicable, with the stated reason.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "architecture": {
+              "$ref": "common.schema.json#/$defs/nonEmptyString"
+            },
+            "security": {
+              "$ref": "common.schema.json#/$defs/nonEmptyString"
+            },
+            "performance": {
+              "$ref": "common.schema.json#/$defs/nonEmptyString"
+            },
+            "data": {
+              "$ref": "common.schema.json#/$defs/nonEmptyString"
+            },
+            "compliance": {
+              "$ref": "common.schema.json#/$defs/nonEmptyString"
+            }
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_tests",
+        "test_ids"
+      ],
+      "properties": {
+        "required_tests": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "common.schema.json#/$defs/testLevel"
+          }
+        },
+        "test_ids": {
+          "$ref": "common.schema.json#/$defs/testIdList"
+        }
+      }
+    },
+    "open_questions": {
+      "description": "Unresolved questions that affect this task or one of its source requirements.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "question",
+          "blocking"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/questionId"
+          },
+          "question": {
+            "type": "string"
+          },
+          "blocking": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "blocking_issues": {
+      "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+    },
+    "priority": {
+      "$ref": "common.schema.json#/$defs/priority"
+    },
+    "priority_confirmed": {
+      "type": "boolean"
+    },
+    "complexity": {
+      "$ref": "common.schema.json#/$defs/complexity"
+    },
+    "phase": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/phaseId"
+        }
+      ]
+    },
+    "parent_task": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "common.schema.json#/$defs/taskId"
+        }
+      ]
+    },
+    "dependencies_reviewed": {
+      "description": "True when 'Blocked By' was explicitly reviewed: a list of task IDs or 'None'. False when blank or TBD.",
+      "type": "boolean"
+    },
+    "blocks": {
+      "description": "Derived reverse of dependencies: tasks that list this task as a predecessor.",
+      "$ref": "common.schema.json#/$defs/taskIdList"
+    },
+    "architecture_decisions": {
+      "description": "Architecture decisions that apply to this task, and how each one applies: named by the task, linked through a source requirement, a related module, or its feature.",
+      "$ref": "common.schema.json#/$defs/adrLinkList"
+    },
+    "related_modules": {
+      "$ref": "common.schema.json#/$defs/moduleIdList"
+    },
+    "readiness_gaps": {
+      "description": "Definition of Ready conditions this task does not meet. Empty for every READY task.",
+      "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+    },
+    "details": {
+      "description": "The remaining sections of the task card (goal, inputs, UI, backend, database, API, permissions, validation, edge cases and so on), keyed by section name.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z0-9_]+$"
+      },
+      "additionalProperties": {
+        "$ref": "common.schema.json#/$defs/markdownSection"
+      }
+    },
+    "source_path": {
+      "$ref": "common.schema.json#/$defs/sourcePath"
+    },
+    "scope": {
+      "description": "Scope of the task's feature.",
+      "$ref": "common.schema.json#/$defs/scope"
+    },
+    "external_dependencies": {
+      "$ref": "common.schema.json#/$defs/dependencyIdList"
+    },
+    "revision": {
+      "description": "Incremented whenever the task's definition changes materially after it was validated.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "content_hash": {
+      "description": "Fingerprint of what the task asks for, basis task-intent/1 (tools/handoff_contract.py): the task's content and the requirements and architecture decisions it relies on, without timestamps, status or readiness bookkeeping. A consumer compares it to detect a planning change.",
+      "$ref": "common.schema.json#/$defs/contentHash"
+    },
+    "objective": {
+      "description": "The outcome the task delivers and why it matters (the card's Objective or Goal).",
+      "type": "string"
+    },
+    "declared_scope": {
+      "description": "Scope stated on the card itself, when it narrows its feature's; null otherwise.",
+      "$ref": "common.schema.json#/$defs/scope"
+    },
+    "impacts": {
+      "description": "Data, API, UI and integration impact as the card states it. An impact is required only where the task touches that area.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data",
+        "api",
+        "ui",
+        "integration"
+      ],
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stated",
+            "text",
+            "ids",
+            "change",
+            "not_applicable"
+          ],
+          "properties": {
+            "stated": {
+              "type": "boolean"
+            },
+            "text": {
+              "type": "string"
+            },
+            "ids": {
+              "$ref": "common.schema.json#/$defs/anyIdList"
+            },
+            "change": {
+              "description": "API impact only: none, create, modify or remove.",
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": [
+                    "none",
+                    "create",
+                    "modify",
+                    "remove"
+                  ]
+                }
+              ]
+            },
+            "not_applicable": {
+              "type": "boolean"
+            }
+          }
+        },
+        "api": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stated",
+            "text",
+            "ids",
+            "change",
+            "not_applicable"
+          ],
+          "properties": {
+            "stated": {
+              "type": "boolean"
+            },
+            "text": {
+              "type": "string"
+            },
+            "ids": {
+              "$ref": "common.schema.json#/$defs/anyIdList"
+            },
+            "change": {
+              "description": "API impact only: none, create, modify or remove.",
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": [
+                    "none",
+                    "create",
+                    "modify",
+                    "remove"
+                  ]
+                }
+              ]
+            },
+            "not_applicable": {
+              "type": "boolean"
+            }
+          }
+        },
+        "ui": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stated",
+            "text",
+            "ids",
+            "change",
+            "not_applicable"
+          ],
+          "properties": {
+            "stated": {
+              "type": "boolean"
+            },
+            "text": {
+              "type": "string"
+            },
+            "ids": {
+              "$ref": "common.schema.json#/$defs/anyIdList"
+            },
+            "change": {
+              "description": "API impact only: none, create, modify or remove.",
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": [
+                    "none",
+                    "create",
+                    "modify",
+                    "remove"
+                  ]
+                }
+              ]
+            },
+            "not_applicable": {
+              "type": "boolean"
+            }
+          }
+        },
+        "integration": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stated",
+            "text",
+            "ids",
+            "change",
+            "not_applicable"
+          ],
+          "properties": {
+            "stated": {
+              "type": "boolean"
+            },
+            "text": {
+              "type": "string"
+            },
+            "ids": {
+              "$ref": "common.schema.json#/$defs/anyIdList"
+            },
+            "change": {
+              "description": "API impact only: none, create, modify or remove.",
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": [
+                    "none",
+                    "create",
+                    "modify",
+                    "remove"
+                  ]
+                }
+              ]
+            },
+            "not_applicable": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "risk_ids": {
+      "description": "Risks the card links to the task.",
+      "$ref": "common.schema.json#/$defs/anyIdList"
+    },
+    "readiness": {
+      "description": "The Definition of Ready evaluation: every named check, the failures, and the planning status they point to.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "checks",
+            "failures",
+            "recommended_status",
+            "accepted_risk_findings"
+          ],
+          "properties": {
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "checks": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "specification_ready",
+                "task_id_valid",
+                "title_clear",
+                "objective_clear",
+                "source_requirement_valid",
+                "feature_valid",
+                "scope_valid",
+                "acceptance_criteria_valid",
+                "acceptance_criteria_testable",
+                "dependencies_valid",
+                "external_dependencies_available",
+                "architecture_valid",
+                "architecture_conflicts_clear",
+                "security_valid",
+                "data_impact_known",
+                "api_impact_known",
+                "ui_impact_known",
+                "integration_impact_known",
+                "verification_defined",
+                "open_questions_clear",
+                "not_stale",
+                "review_findings_clear",
+                "blocking_risks_clear"
+              ],
+              "properties": {
+                "specification_ready": {
+                  "type": "boolean"
+                },
+                "task_id_valid": {
+                  "type": "boolean"
+                },
+                "title_clear": {
+                  "type": "boolean"
+                },
+                "objective_clear": {
+                  "type": "boolean"
+                },
+                "source_requirement_valid": {
+                  "type": "boolean"
+                },
+                "feature_valid": {
+                  "type": "boolean"
+                },
+                "scope_valid": {
+                  "type": "boolean"
+                },
+                "acceptance_criteria_valid": {
+                  "type": "boolean"
+                },
+                "acceptance_criteria_testable": {
+                  "type": "boolean"
+                },
+                "dependencies_valid": {
+                  "type": "boolean"
+                },
+                "external_dependencies_available": {
+                  "type": "boolean"
+                },
+                "architecture_valid": {
+                  "type": "boolean"
+                },
+                "architecture_conflicts_clear": {
+                  "type": "boolean"
+                },
+                "security_valid": {
+                  "type": "boolean"
+                },
+                "data_impact_known": {
+                  "type": "boolean"
+                },
+                "api_impact_known": {
+                  "type": "boolean"
+                },
+                "ui_impact_known": {
+                  "type": "boolean"
+                },
+                "integration_impact_known": {
+                  "type": "boolean"
+                },
+                "verification_defined": {
+                  "type": "boolean"
+                },
+                "open_questions_clear": {
+                  "type": "boolean"
+                },
+                "not_stale": {
+                  "type": "boolean"
+                },
+                "review_findings_clear": {
+                  "type": "boolean"
+                },
+                "blocking_risks_clear": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "failures": {
+              "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+            },
+            "recommended_status": {
+              "$ref": "common.schema.json#/$defs/taskStatus"
+            },
+            "accepted_risk_findings": {
+              "$ref": "common.schema.json#/$defs/anyIdList"
+            }
+          }
+        }
+      ]
+    },
+    "readiness_history": {
+      "description": "Every readiness transition the card records, oldest first. Its last entry matches the status.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "from",
+          "to",
+          "reason",
+          "change_id"
+        ],
+        "properties": {
+          "date": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/isoDate"
+              }
+            ]
+          },
+          "from": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/taskStatus"
+              }
+            ]
+          },
+          "to": {
+            "$ref": "common.schema.json#/$defs/taskStatus"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "change_id": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "pattern": "^CHANGE-[0-9]{3,}$"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "READY"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "source_requirements": {
+            "minItems": 1
+          },
+          "feature": {
+            "$ref": "common.schema.json#/$defs/featureId"
+          },
+          "epic": {
+            "$ref": "common.schema.json#/$defs/epicId"
+          },
+          "description": {
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "acceptance_criteria": {
+            "minItems": 1
+          },
+          "dependencies_reviewed": {
+            "const": true
+          },
+          "blocking_issues": {
+            "maxItems": 0
+          },
+          "readiness_gaps": {
+            "maxItems": 0
+          },
+          "verification": {
+            "properties": {
+              "required_tests": {
+                "minItems": 1
+              }
+            }
+          },
+          "open_questions": {
+            "items": {
+              "properties": {
+                "blocking": {
+                  "const": false
+                }
+              }
+            }
+          },
+          "scope": {
+            "const": "in_scope"
+          }
+        }
+      }
+    }
+  ]
+}

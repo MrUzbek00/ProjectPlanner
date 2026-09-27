@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "date": "2026-09-10",
+      "question": "How long is a reset link valid? (Q-001)",
+      "options": "15 minutes; 30 minutes; 24 hours",
+      "decision": "Reset links expire 30 minutes after issue",
+      "rationale": "Balances security and convenience",
+      "impact": "Sets RULE-001",
+      "approved_by": "Fixture owner",
+      "related_requirements": [
+        "RULE-001"
+      ],
+      "affected_ids": [
+        "RULE-001"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "DEC-002",
+      "date": "2026-09-12",
+      "question": "How are reset emails sent?",
+      "options": "Existing notification service; new mail integration",
+      "decision": "Use the existing notification service",
+      "rationale": "Avoids a second delivery path",
+      "impact": "Recorded as ADR-001; creates DEP-001",
+      "approved_by": "Fixture owner",
+      "related_requirements": [
+        "FR-AUTH-001"
+      ],
+      "affected_ids": [
+        "FR-AUTH-001",
+        "ADR-001",
+        "DEP-001"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "DEC-003",
+      "date": "2026-09-14",
+      "question": "How are reset tokens stored?",
+      "options": "Hash only; encrypted token",
+      "decision": "Store only a hash of each token",
+      "rationale": "A leaked store must yield no usable token",
+      "impact": "Recorded as ADR-002",
+      "approved_by": "Fixture owner",
+      "related_requirements": [
+        "SR-001"
+      ],
+      "affected_ids": [
+        "SR-001",
+        "ADR-002"
+      ],
+      "supersedes": []
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-001",
+      "question": "How long is a reset link valid?",
+      "why_it_matters": "Sets token expiry",
+      "priority": "HIGH",
+      "blocking": false,
+      "category": "Security",
+      "affected_ids": [
+        "RULE-001"
+      ],
+      "owner": "Fixture owner",
+      "status": "ANSWERED",
+      "resolved": true,
+      "resolution": "30 minutes (DEC-001)"
+    },
+    {
+      "id": "Q-002",
+      "question": "After how many failed sign-ins is an account locked?",
+      "why_it_matters": "Sets the lockout rule",
+      "priority": "BLOCKER",
+      "blocking": true,
+      "category": "Security",
+      "affected_ids": [
+        "FR-AUTH-003",
+        "FEAT-002",
+        "SCOPE-002"
+      ],
+      "owner": "Fixture owner",
+      "status": "OPEN",
+      "resolved": false,
+      "resolution": ""
+    },
+    {
+      "id": "Q-003",
+      "question": "Should the reset email be sent in the user's language?",
+      "why_it_matters": "Affects email template choice",
+      "priority": "MEDIUM",
+      "blocking": false,
+      "category": "Notifications",
+      "affected_ids": [
+        "TASK-002"
+      ],
+      "owner": "Fixture owner",
+      "status": "OPEN",
+      "resolved": false,
+      "resolution": ""
+    },
+    {
+      "id": "Q-004",
+      "question": "What are the baseline and target share of self-service resets?",
+      "why_it_matters": "Needed to measure GOAL-001 after launch",
+      "priority": "LOW",
+      "blocking": false,
+      "category": "Business",
+      "affected_ids": [
+        "GOAL-001"
+      ],
+      "owner": "Fixture owner",
+      "status": "OPEN",
+      "resolved": false,
+      "resolution": ""
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-001",
+      "statement": "Lockout applies per account, not per device",
+      "risk_if_wrong": "Lockout rule changes",
+      "affected_ids": [
+        "FR-AUTH-003"
+      ],
+      "question_ids": [
+        "Q-002"
+      ],
+      "status": "OPEN"
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "The notification service is unavailable, so reset emails are delayed",
+      "category": "dependency",
+      "probability": "low",
+      "impact": "high",
+      "mitigation": "Show a neutral \"check your inbox\" response; delivery failures are logged by the service",
+      "owner": "Fixture owner",
+      "status": "OPEN",
+      "affected_ids": [
+        "DEP-001",
+        "FR-AUTH-001"
+      ],
+      "blocks_readiness": false
+    },
+    {
+      "id": "RISK-002",
+      "description": "The lockout threshold decision is delayed",
+      "category": "stakeholder",
+      "probability": "medium",
+      "impact": "medium",
+      "mitigation": "FR-AUTH-003 held as PENDING DECISION so the rest of the plan proceeds",
+      "owner": "Fixture owner",
+      "status": "MITIGATING",
+      "affected_ids": [
+        "Q-002",
+        "FR-AUTH-003"
+      ],
+      "blocks_readiness": false
+    }
+  ]
+}

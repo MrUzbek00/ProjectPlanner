@@ -1,0 +1,6 @@
+# The machine handoff is hashed byte-for-byte in project.json and compared by
+# tools/validate_handoff.py. Keep generated JSON, the schemas and the generated
+# requirement map in LF on every platform so a checkout validates unchanged.
+**/machine-handoff/** text eol=lf
+schemas/*.json text eol=lf
+**/traceability/requirement-map.md text eol=lf

@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/domain.schema.json",
+  "title": "Process and domain model (domain.json)",
+  "description": "Business processes from specification/process-model.md and business entities from specification/domain-model.md. Logical model only: no database design.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "processes",
+    "entities"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/projectId"
+    },
+    "processes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "perspective",
+          "actors",
+          "trigger",
+          "preconditions",
+          "main_flow",
+          "alternative_flows",
+          "exceptions",
+          "result",
+          "business_rules",
+          "data_involved",
+          "related_requirements",
+          "compares_to",
+          "differences",
+          "confidence",
+          "source_path"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/processId"
+          },
+          "title": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "perspective": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "enum": [
+                  "as_is",
+                  "to_be"
+                ]
+              }
+            ]
+          },
+          "actors": {
+            "type": "string"
+          },
+          "trigger": {
+            "type": "string"
+          },
+          "preconditions": {
+            "type": "string"
+          },
+          "main_flow": {
+            "$ref": "common.schema.json#/$defs/stringList"
+          },
+          "alternative_flows": {
+            "$ref": "common.schema.json#/$defs/stringList"
+          },
+          "exceptions": {
+            "$ref": "common.schema.json#/$defs/stringList"
+          },
+          "result": {
+            "type": "string"
+          },
+          "business_rules": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^RULE-[0-9]{3,}$"
+            }
+          },
+          "data_involved": {
+            "$ref": "common.schema.json#/$defs/entityIdList"
+          },
+          "related_requirements": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "compares_to": {
+            "description": "For a TO-BE process, the AS-IS process it replaces.",
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/processId"
+              }
+            ]
+          },
+          "differences": {
+            "$ref": "common.schema.json#/$defs/stringList"
+          },
+          "confidence": {
+            "$ref": "common.schema.json#/$defs/confidence"
+          },
+          "source_path": {
+            "$ref": "common.schema.json#/$defs/sourcePath"
+          }
+        }
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "purpose",
+          "key_attributes",
+          "relationships",
+          "states",
+          "owner",
+          "permissions",
+          "business_rules",
+          "related_requirements",
+          "confidence",
+          "source_path"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/entityId"
+          },
+          "name": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "key_attributes": {
+            "$ref": "common.schema.json#/$defs/stringList"
+          },
+          "relationships": {
+            "$ref": "common.schema.json#/$defs/stringList"
+          },
+          "states": {
+            "$ref": "common.schema.json#/$defs/stringList"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "string"
+          },
+          "business_rules": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^RULE-[0-9]{3,}$"
+            }
+          },
+          "related_requirements": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "confidence": {
+            "$ref": "common.schema.json#/$defs/confidence"
+          },
+          "source_path": {
+            "$ref": "common.schema.json#/$defs/sourcePath"
+          }
+        }
+      }
+    }
+  }
+}

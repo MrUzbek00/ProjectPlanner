@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/architecture.schema.json",
+  "title": "Architecture document (architecture.json)",
+  "description": "The architecture governance state: the module register from specification/solution-structure.md, the principles, the coverage of architecture concerns and every architecture decision record from architecture/. The Markdown records stay the source of truth.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "summary",
+    "principles",
+    "modules",
+    "coverage",
+    "decisions",
+    "conflict_reviews"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/projectId"
+    },
+    "summary": {
+      "description": "Counts derived from the decisions and the coverage table.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accepted", "proposed", "rejected", "superseded", "deprecated", "decisions_required"],
+      "properties": {
+        "accepted": { "type": "integer", "minimum": 0 },
+        "proposed": { "type": "integer", "minimum": 0 },
+        "rejected": { "type": "integer", "minimum": 0 },
+        "superseded": { "type": "integer", "minimum": 0 },
+        "deprecated": { "type": "integer", "minimum": 0 },
+        "decisions_required": {
+          "description": "Architecture concerns classified DECISION REQUIRED.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "principles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "rationale", "implications", "evidence", "status"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/principleId" },
+          "statement": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "rationale": { "type": "string" },
+          "implications": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "anyOf": [
+                { "$ref": "common.schema.json#/$defs/sourceId" },
+                { "$ref": "common.schema.json#/$defs/decisionId" }
+              ]
+            }
+          },
+          "status": { "enum": ["proposed", "accepted", "retired"] }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "parent",
+          "type",
+          "purpose",
+          "security_boundary",
+          "data_ownership"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/moduleId"
+          },
+          "name": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "common.schema.json#/$defs/moduleId"
+              }
+            ]
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "type": {
+            "description": "Logical area. null until classified.",
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "enum": [
+                  "user_facing",
+                  "administration",
+                  "integration",
+                  "external_service",
+                  "reporting",
+                  "notification",
+                  "platform",
+                  "other"
+                ]
+              }
+            ]
+          },
+          "security_boundary": {
+            "type": "string"
+          },
+          "data_ownership": {
+            "$ref": "common.schema.json#/$defs/entityIdList"
+          }
+        }
+      }
+    },
+    "coverage": {
+      "description": "Every architecture concern and how it stands: decided by an accepted ADR, proposed, a decision still required, delegated to implementation, not applicable, or not yet assessed.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["concern", "status", "adr_ids", "question_ids", "rationale", "evidence"],
+        "properties": {
+          "concern": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+          "status": {
+            "oneOf": [
+              { "type": "null" },
+              { "enum": ["decided", "proposed", "decision_required", "delegated", "not_applicable", "not_assessed"] }
+            ]
+          },
+          "adr_ids": { "$ref": "common.schema.json#/$defs/adrIdList" },
+          "question_ids": { "$ref": "common.schema.json#/$defs/questionIdList" },
+          "rationale": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "anyOf": [
+                { "$ref": "common.schema.json#/$defs/sourceId" },
+                { "$ref": "common.schema.json#/$defs/decisionId" }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "conflict_reviews": {
+      "description": "ARCHITECTURE CONFLICT findings of reviews/architecture-review.md. A task affected by one that is not RESOLVED or WITHDRAWN cannot be READY.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["finding_id", "severity", "status", "adr_ids", "affected_ids", "resolution"],
+        "properties": {
+          "finding_id": { "type": "string", "pattern": "^FIND-[0-9]{3,}$" },
+          "severity": { "type": ["string", "null"] },
+          "status": { "type": "string" },
+          "adr_ids": { "$ref": "common.schema.json#/$defs/adrIdList" },
+          "affected_ids": { "$ref": "common.schema.json#/$defs/anyIdList" },
+          "resolution": { "type": "string" }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "architecture-decision.schema.json"
+      }
+    }
+  }
+}

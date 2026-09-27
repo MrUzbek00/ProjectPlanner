@@ -2,6 +2,8 @@
 
 TEMPLATE — DRAFT — NOT APPROVED
 
+Stage 7. Generate the specification only after gates G2–G6 pass: discovery is sufficient, blocking questions are resolved or scoped out, requirements are reviewed, workflows and entities are modelled, and scope is defined. The specification **consolidates** the approved planning records — requirement registers, process and domain models, the solution structure, the scope register and the discovery registers. It introduces no requirement, rule, role, field or decision of its own; `tools/check_gates.py` fails gate G7 when it mentions an ID that no record defines. When writing it reveals a gap, record a question or finding and return to the stage the gap belongs to; never fill it in here.
+
 Use one confirmed document language throughout the populated specification. Retain all 26 sections. Use sourced content, `TBD (Q-###)` in drafts, or `N/A — reason; evidence`. Repeat detail records for every applicable requirement, page, entity and integration. Normative linked files belong to the same approval manifest.
 
 ## 1. Project Information
@@ -34,7 +36,7 @@ Document language: TBD. Canonical glossary location: TBD. Source inventory: TBD.
 
 Explain why the system is being built, which business processes it will automate, and the expected measurable improvement. Distinguish an unmeasured aspiration from an agreed target.
 
-| BIZ ID | Business objective | Process automated | Measure / unit | Baseline | Target | Measurement window / method | Owner | Evidence |
+| BR ID | Business objective | Process automated | Measure / unit | Baseline | Target | Measurement window / method | Owner | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 3. Project Overview
@@ -45,7 +47,7 @@ TBD — describe actual inputs, actors, systems/documents, handoffs and outputs;
 
 ### 3.2 Current Problems
 
-| Problem | Evidence / observed impact | Affected process / actors | Related BIZ IDs |
+| Problem | Evidence / observed impact | Affected process / actors | Related BR IDs |
 | --- | --- | --- | --- |
 
 ### 3.3 Proposed TO-BE Solution
@@ -58,6 +60,8 @@ TBD — distinguish confirmed behavior from recommendations awaiting a decision.
 | --- | --- | --- | --- |
 
 ### 3.5 Out of Scope
+
+Restate the OUT OF SCOPE, FUTURE and PENDING DECISION entries of `specification/scope.md` (`templates/33`) with their IDs.
 
 | OOS ID | Excluded or deferred item | Reason / consequence | Authorizing source / decision |
 | --- | --- | --- | --- |
@@ -107,9 +111,9 @@ Page map / navigation:
 
 ## 7. Detailed Functional Requirements
 
-Use `FR-<MODULE>-###` IDs. Each row links to a complete [requirement detail record](05-requirement-detail.md), copied into this project or embedded here. Requirement detail is normative, not optional.
+Use `FR-###` or `FR-<MODULE>-###` IDs. The canonical entries are the record blocks in `specification/functional-requirements.md` ([template 26](26-requirement-register.md)); this section lists them by module for reading, with the same IDs and titles, and links each to its entry and any [requirement detail record](05-requirement-detail.md). Requirement detail is normative, not optional.
 
-| FR ID | Module | Requirement summary | Actor | BIZ IDs | BR IDs | Detail location | Source / decision | Acceptance IDs |
+| FR ID | Module | Requirement summary | Actor | BR IDs | RULE IDs | Detail location | Source / decision | Acceptance IDs |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Every FR detail must state: Requirement ID, Module, Requirement, Actor, Precondition, Trigger, System Behaviour, Business Rules, Validation Rules, Permissions, Success Result, Failure Result and Related Requirements. Include provenance and measurable acceptance links.
@@ -125,9 +129,9 @@ Each page defines filters, search, sort, pagination, KPIs, charts, tables, butto
 
 ## 9. Business Rules
 
-`BR-###` identifies rules; business requirements use `BIZ-###`.
+`RULE-###` identifies rules; business requirements use `BR-###`. The canonical rule entries are in `specification/business-rules.md` ([template 26](26-requirement-register.md)); this table restates them for reading and must match.
 
-| BR ID | Rule category | Exact rule / formula / decision table | Inputs / source | Units / precision / rounding | Conditions / exceptions | Result / validation failure | Related FR / entity / state IDs | Evidence |
+| RULE ID | Rule category | Exact rule / formula / decision table | Inputs / source | Units / precision / rounding | Conditions / exceptions | Result / validation failure | Related FR / entity / state IDs | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Review applicability of calculations, status changes, approvals, deletion restrictions, dependencies, automatic values, data consistency, quantity calculations, thresholds and duplicate prevention. For applicable calculations define date basis, null/zero/negative handling, boundary cases and worked examples with expected results. Numerical values remain TBD until confirmed.
@@ -138,7 +142,7 @@ Process model reference: TBD. State dictionary reference: TBD. Record evidence i
 
 State transition table — repeat for every workflow:
 
-| Workflow / entity | Initial status | Actor | Action | Preconditions / permission | Next status | Notification recipient | Rejection behaviour | Required comment | Required attachment | Audit entry | Data change / failure behavior | FR / BR IDs |
+| Workflow / entity | Initial status | Actor | Action | Preconditions / permission | Next status | Notification recipient | Rejection behaviour | Required comment | Required attachment | Audit entry | Data change / failure behavior | FR / RULE IDs |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Define allowed and forbidden transitions, applicable terminal states, alternative paths and what happens when a request becomes stale. Diagrams must agree with this table.
@@ -216,9 +220,9 @@ Confirm applicable file naming, replacement, ownership, deleted-parent behavior,
 
 ## 18. Non-Functional Requirements
 
-Assign `NFR-###` and use measurable targets with test conditions. Capture actual constraints or reasoned N/A for every category; do not invent numeric values.
+Assign `NFR-###` and use measurable targets with test conditions. Capture actual constraints or reasoned N/A for every category; do not invent numeric values. The canonical entries are in `specification/non-functional-requirements.md` ([template 26](26-requirement-register.md)); this table restates them.
 
-| NFR ID | Category | Required behavior / measurable target | Workload / environment / assumptions | Measurement / acceptance method | Owner | Evidence / status | Related BIZ / FR / AT IDs |
+| NFR ID | Category | Required behavior / measurable target | Workload / environment / assumptions | Measurement / acceptance method | Owner | Evidence / status | Related BR / FR / TEST IDs |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Coverage topics:
@@ -252,7 +256,7 @@ Keep confirmed technologies and recommendations visibly separate. Technology sel
 | Deployment | TBD | TBD | TBD | TBD | TBD |
 | Monitoring | TBD | TBD | TBD | TBD | TBD |
 
-System architecture: TBD — confirmed boundaries, components, data flows, external systems and deployment assumptions. Approved technical requirements use TR-### and link to BIZ/FR/NFR as appropriate.
+System architecture: TBD — confirmed boundaries, components, data flows, external systems and deployment assumptions, maintained in `specification/solution-structure.md` ([template 37](37-solution-structure.md)). Every significant architecture choice is an Architecture Decision Record in `architecture/ADR-###-*.md` ([template 28](28-architecture-decision-record.md)), registered in `architecture/architecture-register.md` ([template 27](27-architecture-register.md)); a confirmed technology above cites its accepted ADR, and a recommended one cites its proposed ADR or the DECISION REQUIRED concern. Restate each accepted ADR's constraints here with its ID; gate G7 warns about an accepted ADR the specification does not reference. The specification introduces no architecture decision of its own. Approved technical requirements use TR-### and link to BR/FR/NFR as appropriate.
 
 ## 20. Data Model
 
@@ -275,14 +279,14 @@ ERD: TBD or reasoned N/A. Include Mermaid source when useful and confirmed. Life
 
 ## 21. Acceptance Criteria
 
-| AC ID | Requirement IDs | Given | When | Then / And — measurable outcome | Test data / boundary | AT IDs | Acceptance authority |
+| AC ID | Requirement IDs | Given | When | Then / And — measurable outcome | Test data / boundary | TEST IDs | Acceptance authority |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Include observable success, permission denial, validation, failure and side-effect outcomes as applicable. Avoid “works correctly,” “fast” or “user-friendly” without measurable definitions.
 
 ## 22. Testing Requirements
 
-| Test type | Applicable scope / requirement IDs | Environment / data | Expected evidence | Responsibility | Entry / exit criteria | AT references |
+| Test type | Applicable scope / requirement IDs | Environment / data | Expected evidence | Responsibility | Entry / exit criteria | TEST references |
 | --- | --- | --- | --- | --- | --- | --- |
 | Functional testing | TBD | TBD | TBD | TBD | TBD | TBD |
 | Permission testing | TBD | TBD | TBD | TBD | TBD | TBD |
@@ -330,7 +334,7 @@ These categories may overlap or be N/A with evidence. After approval, the develo
 | Project Development Cards | All requested fields, dependencies and requirement/test links | TBD | TBD | After specification approval | Pending — specification not approved |
 | Implementation Roadmap | Dependency-ordered phases, deliverables and exit criteria | TBD | TBD | After specification approval | Pending — specification not approved |
 | Traceability Matrix | Forward/reverse coverage | TBD | TBD | Progressive; final at handoff | TBD |
-| Specification Quality Report | Evidence-based checks and remaining weaknesses | TBD | TBD | Pre-approval and final handoff | TBD |
+| Specification review, final planning review and gate report | Evidence-based checks, findings and remaining weaknesses | TBD | TBD | Pre-approval and final handoff | TBD |
 
 Record reasoned N/A where a supporting artifact does not apply. Distinguish planned content from a completed deliverable.
 
@@ -339,7 +343,7 @@ Record reasoned N/A where a supporting artifact does not apply. Distinguish plan
 | Q ID | Missing decision / question | Why it matters | Affected IDs | Blocking? | Owner | Status | Resolution / deferral authority |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 
-Before approval, resolve major ambiguities or explicitly exclude the affected scope. Retain resolved decision history in the register; do not delete it to hide earlier uncertainty.
+Before approval, resolve major ambiguities or explicitly exclude the affected scope. Retain resolved decision history in the register; do not delete it to hide earlier uncertainty. The canonical register is `discovery/open-questions.md`; this section lists the questions relevant to the specification with the same IDs.
 
 ## 26. Risks and Dependencies
 

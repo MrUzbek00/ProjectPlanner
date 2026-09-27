@@ -72,10 +72,12 @@ Each coverage area must be investigated, confirmed, or marked N/A with evidence.
 
 ### Gap / question register
 
-| Question ID | Focused question | Why it matters | Blocking? / rationale | Affected requirement/artifact IDs | Decision owner | Round | Status | Answer / source / decision | Resolution impact |
+Keep this register in `discovery/open-questions.md` (see `templates/02`) and link to it from here, so each question has one canonical row with its Category and Priority (BLOCKER, HIGH, MEDIUM, LOW). The gate checker and the machine handoff read it from there. Record coverage by category in `discovery/discovery-log.md` (`templates/30`).
+
+| Question ID | Category | Focused question | Why it matters | Priority | Affected IDs | Decision owner | Round | Status | Answer / source / decision | Resolution impact |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
-Statuses: OPEN, ANSWERED, RESOLVED, DEFERRED. An answer is RESOLVED only after affected records are updated. Deferred blocking scope must be explicitly excluded from the current release.
+Statuses: OPEN, ANSWERED, RESOLVED, DEFERRED, WITHDRAWN, CLOSED. An answer is RESOLVED only after affected records are updated. Deferred blocking scope must be explicitly excluded from the current release.
 
 ## 6. Conflicts / Ambiguities
 

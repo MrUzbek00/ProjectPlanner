@@ -36,9 +36,9 @@ Governing specification revision: TBD. Document language: TBD.
 
 ## 3. Background and Objectives
 
-TBD — two or three paragraphs stating the business situation and what this engagement is to achieve. Objectives restate approved `BIZ-###` records; they do not add new ones.
+TBD — two or three paragraphs stating the business situation and what this engagement is to achieve. Objectives restate approved `BR-###` records; they do not add new ones.
 
-| Objective | BIZ reference | How completion is demonstrated |
+| Objective | BR reference | How completion is demonstrated |
 | --- | --- | --- |
 
 ## 4. Scope Statement
@@ -170,7 +170,7 @@ The responsibility assignment matrix is maintained once, in the Project Plan and
 
 ## 12. Change Control
 
-A change to scope, deliverables, acceptance criteria or milestones follows this procedure and is recorded as `CR-###`.
+A change to scope, deliverables, acceptance criteria or milestones follows this procedure and is recorded as a change record `CHANGE-###` with its impact analysis.
 
 | Step | Action | Owner | Output |
 | --- | --- | --- | --- |

@@ -6,6 +6,17 @@ This document sequences the approved development cards into phases, sprints and 
 
 Calendar dates require a confirmed start date, a confirmed team and confirmed availability. Without them, publish sequence, dependencies and complexity, and record every date as `TBD (Q-###)`. Never convert a complexity estimate into a date by assumption.
 
+Every date in the plan carries a basis, and the basis is stated wherever the date appears:
+
+| Date basis | Meaning | Required evidence |
+| --- | --- | --- |
+| Target | A date someone would like; nobody has checked it is achievable | Who wants it |
+| Estimate | Derived from sized work and known capacity | The sizing and the capacity it assumes |
+| Commitment | Agreed by the people accountable for delivering it | A decision (DEC-###) recording the agreement |
+| None | No date is set | — |
+
+A date without a basis, or a commitment without a decision, fails gate G11 in the roadmap records this document restates. Without confirmed capacity there are no estimates, only targets or no date; do not convert complexity into calendar time by assumption.
+
 <!-- doc-meta
 title: Project Plan and Roadmap
 subtitle: Phases, milestones, sprints, dependencies, resources and release plan
@@ -138,10 +149,10 @@ Leaf tasks in dependency order. This is the executable sequence; epics and featu
 
 <!-- xlsx: workbook=plan; sheet=Task Schedule -->
 
-| Card ID | Task | Type | Epic / Feature | Phase | Sprint | Complexity | Owner role | Blocked by | Blocking cards | Related FR / NFR / TR | Related story | Acceptance tests | Definition completeness | Status | Planned start | Planned end | Date basis |
+| Task ID | Task | Type | Epic | Feature | Phase | Sprint | Complexity | Owner role | Blocked by | Blocks | Related FR / NFR / TR | Related story | Acceptance tests | Status | Planned start | Planned end | Date basis |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
-Planning statuses are DRAFT, BLOCKED, READY, IN_PROGRESS, DONE and DEFERRED. Definition completeness is recorded separately as COMPLETE or INCOMPLETE. A future card may be READY in definition and still blocked purely on a predecessor.
+Planning statuses are DRAFT, NEEDS_DISCOVERY, BLOCKED, READY, IN_PROGRESS, DONE and DEFERRED. READY means the task meets the Definition of Ready; a READY task may still wait on a predecessor, and the order above comes from its dependencies. Copy status, epic, feature and *Blocked by* from the task cards — the handoff generator warns when this schedule disagrees with them — and take the order from `traceability/requirement-map.md` or `machine-handoff/backlog.json`.
 
 ## 10. Dependencies and Critical Path
 

@@ -1,0 +1,347 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "requirements": [
+    {
+      "requirement_id": "BR-001",
+      "requirement_type": "business",
+      "status": "approved",
+      "upstream_requirement_ids": [
+        "GOAL-001"
+      ],
+      "downstream_requirement_ids": [
+        "FR-AUTH-001",
+        "FR-AUTH-002",
+        "FR-AUTH-003",
+        "RULE-001",
+        "SR-001"
+      ],
+      "feature_ids": [],
+      "task_ids": [],
+      "test_ids": [],
+      "adr_ids": [],
+      "coverage": "covered",
+      "scope": "in_scope",
+      "module_ids": [],
+      "process_ids": [
+        "PROC-001",
+        "PROC-002"
+      ]
+    },
+    {
+      "requirement_id": "FR-AUTH-001",
+      "requirement_type": "functional",
+      "status": "approved",
+      "upstream_requirement_ids": [
+        "BR-001"
+      ],
+      "downstream_requirement_ids": [],
+      "feature_ids": [
+        "FEAT-001"
+      ],
+      "task_ids": [
+        "TASK-002"
+      ],
+      "test_ids": [
+        "TEST-002"
+      ],
+      "adr_ids": [
+        "ADR-001"
+      ],
+      "coverage": "covered",
+      "scope": "in_scope",
+      "module_ids": [
+        "MOD-001",
+        "MOD-002"
+      ],
+      "process_ids": [
+        "PROC-002"
+      ]
+    },
+    {
+      "requirement_id": "FR-AUTH-002",
+      "requirement_type": "functional",
+      "status": "approved",
+      "upstream_requirement_ids": [
+        "BR-001"
+      ],
+      "downstream_requirement_ids": [],
+      "feature_ids": [
+        "FEAT-001"
+      ],
+      "task_ids": [
+        "TASK-003"
+      ],
+      "test_ids": [
+        "TEST-003"
+      ],
+      "adr_ids": [],
+      "coverage": "covered",
+      "scope": "in_scope",
+      "module_ids": [
+        "MOD-001"
+      ],
+      "process_ids": [
+        "PROC-002"
+      ]
+    },
+    {
+      "requirement_id": "FR-AUTH-003",
+      "requirement_type": "functional",
+      "status": "confirmed",
+      "upstream_requirement_ids": [
+        "BR-001"
+      ],
+      "downstream_requirement_ids": [],
+      "feature_ids": [
+        "FEAT-002"
+      ],
+      "task_ids": [
+        "TASK-004"
+      ],
+      "test_ids": [
+        "TEST-004"
+      ],
+      "adr_ids": [],
+      "coverage": "excluded",
+      "scope": "pending_decision",
+      "module_ids": [
+        "MOD-001"
+      ],
+      "process_ids": []
+    },
+    {
+      "requirement_id": "GOAL-001",
+      "requirement_type": "business_goal",
+      "status": "approved",
+      "upstream_requirement_ids": [],
+      "downstream_requirement_ids": [
+        "BR-001"
+      ],
+      "feature_ids": [],
+      "task_ids": [],
+      "test_ids": [],
+      "adr_ids": [],
+      "coverage": "covered",
+      "scope": "in_scope",
+      "module_ids": [],
+      "process_ids": []
+    },
+    {
+      "requirement_id": "RULE-001",
+      "requirement_type": "business_rule",
+      "status": "approved",
+      "upstream_requirement_ids": [
+        "BR-001"
+      ],
+      "downstream_requirement_ids": [
+        "FR-AUTH-001",
+        "FR-AUTH-002"
+      ],
+      "feature_ids": [
+        "FEAT-001"
+      ],
+      "task_ids": [
+        "TASK-001",
+        "TASK-003"
+      ],
+      "test_ids": [
+        "TEST-003"
+      ],
+      "adr_ids": [],
+      "coverage": "covered",
+      "scope": "in_scope",
+      "module_ids": [
+        "MOD-001"
+      ],
+      "process_ids": []
+    },
+    {
+      "requirement_id": "SR-001",
+      "requirement_type": "security",
+      "status": "approved",
+      "upstream_requirement_ids": [
+        "BR-001"
+      ],
+      "downstream_requirement_ids": [],
+      "feature_ids": [
+        "FEAT-001"
+      ],
+      "task_ids": [
+        "TASK-001"
+      ],
+      "test_ids": [
+        "TEST-001"
+      ],
+      "adr_ids": [
+        "ADR-002"
+      ],
+      "coverage": "covered",
+      "scope": "in_scope",
+      "module_ids": [
+        "MOD-001"
+      ],
+      "process_ids": [
+        "PROC-002"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "TASK-001",
+      "requirement_ids": [
+        "RULE-001",
+        "SR-001"
+      ],
+      "feature_id": "FEAT-001",
+      "epic_id": "EPIC-001",
+      "test_ids": [
+        "TEST-001"
+      ],
+      "acceptance_criteria_ids": [
+        "AC-006"
+      ],
+      "adr_ids": [
+        "ADR-001",
+        "ADR-002"
+      ],
+      "delivery": {
+        "pull_requests": [],
+        "commits": [],
+        "releases": []
+      }
+    },
+    {
+      "task_id": "TASK-002",
+      "requirement_ids": [
+        "FR-AUTH-001"
+      ],
+      "feature_id": "FEAT-001",
+      "epic_id": "EPIC-001",
+      "test_ids": [
+        "TEST-002"
+      ],
+      "acceptance_criteria_ids": [
+        "AC-001",
+        "AC-002"
+      ],
+      "adr_ids": [
+        "ADR-001",
+        "ADR-002"
+      ],
+      "delivery": {
+        "pull_requests": [],
+        "commits": [],
+        "releases": []
+      }
+    },
+    {
+      "task_id": "TASK-003",
+      "requirement_ids": [
+        "FR-AUTH-002",
+        "RULE-001"
+      ],
+      "feature_id": "FEAT-001",
+      "epic_id": "EPIC-001",
+      "test_ids": [
+        "TEST-003"
+      ],
+      "acceptance_criteria_ids": [
+        "AC-003",
+        "AC-004"
+      ],
+      "adr_ids": [
+        "ADR-001",
+        "ADR-002"
+      ],
+      "delivery": {
+        "pull_requests": [],
+        "commits": [],
+        "releases": []
+      }
+    },
+    {
+      "task_id": "TASK-004",
+      "requirement_ids": [
+        "FR-AUTH-003"
+      ],
+      "feature_id": "FEAT-002",
+      "epic_id": "EPIC-001",
+      "test_ids": [
+        "TEST-004"
+      ],
+      "acceptance_criteria_ids": [
+        "AC-005"
+      ],
+      "adr_ids": [
+        "ADR-002"
+      ],
+      "delivery": {
+        "pull_requests": [],
+        "commits": [],
+        "releases": []
+      }
+    }
+  ],
+  "architecture": [
+    {
+      "adr_id": "ADR-001",
+      "status": "accepted",
+      "active": true,
+      "requirement_ids": [
+        "FR-AUTH-001"
+      ],
+      "feature_ids": [
+        "FEAT-001"
+      ],
+      "task_ids": [
+        "TASK-001",
+        "TASK-002",
+        "TASK-003"
+      ],
+      "module_ids": [
+        "MOD-002"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "adr_id": "ADR-002",
+      "status": "accepted",
+      "active": true,
+      "requirement_ids": [
+        "SR-001"
+      ],
+      "feature_ids": [
+        "FEAT-001",
+        "FEAT-002"
+      ],
+      "task_ids": [
+        "TASK-001",
+        "TASK-002",
+        "TASK-003",
+        "TASK-004"
+      ],
+      "module_ids": [
+        "MOD-001"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    }
+  ],
+  "coverage_summary": {
+    "in_release_requirements": 6,
+    "covered": 6,
+    "missing_task": 0,
+    "missing_test": 0,
+    "missing_task_and_test": 0,
+    "missing_downstream": 0,
+    "excluded": 1,
+    "tasks_without_requirements": 0
+  },
+  "orphans": {
+    "requirements": [],
+    "features": [],
+    "tasks": []
+  }
+}

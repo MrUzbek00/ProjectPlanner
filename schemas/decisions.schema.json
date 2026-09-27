@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/decisions.schema.json",
+  "title": "Decision and uncertainty registers (decisions.json)",
+  "description": "Decision log, open questions, assumptions and risks from discovery/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "decisions",
+    "questions",
+    "assumptions",
+    "risks"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/projectId"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "date",
+          "question",
+          "options",
+          "decision",
+          "rationale",
+          "impact",
+          "approved_by",
+          "related_requirements",
+          "affected_ids",
+          "supersedes"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/decisionId"
+          },
+          "date": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "options": {
+            "type": "string"
+          },
+          "decision": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "impact": {
+            "type": "string"
+          },
+          "approved_by": {
+            "type": "string"
+          },
+          "related_requirements": {
+            "$ref": "common.schema.json#/$defs/requirementIdList"
+          },
+          "affected_ids": {
+            "$ref": "common.schema.json#/$defs/anyIdList"
+          },
+          "supersedes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "common.schema.json#/$defs/decisionId"
+            }
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "question",
+          "why_it_matters",
+          "priority",
+          "blocking",
+          "category",
+          "affected_ids",
+          "owner",
+          "status",
+          "resolved",
+          "resolution"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/questionId"
+          },
+          "question": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "why_it_matters": {
+            "type": "string"
+          },
+          "blocking": {
+            "description": "True exactly when priority is BLOCKER.",
+            "type": "boolean"
+          },
+          "affected_ids": {
+            "$ref": "common.schema.json#/$defs/anyIdList"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OPEN",
+              "ANSWERED",
+              "RESOLVED",
+              "DEFERRED",
+              "WITHDRAWN",
+              "CLOSED"
+            ]
+          },
+          "resolved": {
+            "type": "boolean"
+          },
+          "resolution": {
+            "type": "string"
+          },
+          "priority": {
+            "description": "BLOCKER means planning that depends on the answer cannot be trusted until it is resolved.",
+            "enum": [
+              "BLOCKER",
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          },
+          "category": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "risk_if_wrong",
+          "affected_ids",
+          "question_ids",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/assumptionId"
+          },
+          "statement": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "risk_if_wrong": {
+            "type": "string"
+          },
+          "affected_ids": {
+            "$ref": "common.schema.json#/$defs/anyIdList"
+          },
+          "question_ids": {
+            "$ref": "common.schema.json#/$defs/questionIdList"
+          },
+          "status": {
+            "enum": [
+              "OPEN",
+              "CONFIRMED",
+              "REJECTED"
+            ]
+          }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "category",
+          "probability",
+          "impact",
+          "mitigation",
+          "owner",
+          "status",
+          "affected_ids",
+          "blocks_readiness"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/riskId"
+          },
+          "description": {
+            "$ref": "common.schema.json#/$defs/nonEmptyString"
+          },
+          "category": {
+            "enum": [
+              "scope",
+              "technical",
+              "business",
+              "dependency",
+              "integration",
+              "security",
+              "data",
+              "timeline",
+              "stakeholder",
+              "other"
+            ]
+          },
+          "probability": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "unknown"
+            ]
+          },
+          "impact": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "unknown"
+            ]
+          },
+          "mitigation": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OPEN",
+              "MITIGATING",
+              "ACCEPTED",
+              "CLOSED",
+              "OCCURRED"
+            ]
+          },
+          "affected_ids": {
+            "$ref": "common.schema.json#/$defs/anyIdList"
+          },
+          "blocks_readiness": {
+            "description": "True when the risk register states that, while the risk is open, the work it names cannot be READY.",
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

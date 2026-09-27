@@ -1,0 +1,197 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "id": "TASK-004",
+  "title": "Accounts lock after repeated failed sign-ins",
+  "revision": 1,
+  "content_hash": "sha256:0619c2c36549a0724ed96de49dfac259774c1c4210febb300d3950c4fc7ea37a",
+  "status": "NEEDS_DISCOVERY",
+  "type": "backend",
+  "objective": "Stop repeated guessing of a password by locking the account (FR-AUTH-003).",
+  "declared_scope": null,
+  "source_requirements": [
+    "FR-AUTH-003"
+  ],
+  "feature": "FEAT-002",
+  "epic": "EPIC-001",
+  "description": "Lock the account after the confirmed number of consecutive failed sign-ins: TBD (Q-002).",
+  "acceptance_criteria": [
+    "AC-005: Given TBD (Q-002) consecutive failed sign-ins, when another sign-in is attempted, then the account is locked"
+  ],
+  "dependencies": [],
+  "constraints": {
+    "architecture": [],
+    "security": [
+      "Lockout applies per account (unconfirmed, ASM-001) (Q-002)"
+    ],
+    "performance": [],
+    "data": [],
+    "compliance": [],
+    "other": [],
+    "not_applicable": {
+      "architecture": "no architecture decision beyond the existing module"
+    }
+  },
+  "verification": {
+    "required_tests": [
+      "unit",
+      "integration"
+    ],
+    "test_ids": [
+      "TEST-004"
+    ]
+  },
+  "open_questions": [
+    {
+      "id": "Q-002",
+      "question": "After how many failed sign-ins is an account locked?",
+      "blocking": true
+    }
+  ],
+  "blocking_issues": [
+    "The lockout threshold is unknown until Q-002 is answered"
+  ],
+  "priority": "medium",
+  "priority_confirmed": false,
+  "complexity": "S",
+  "phase": "PHASE-02",
+  "parent_task": null,
+  "dependencies_reviewed": true,
+  "blocks": [],
+  "architecture_decisions": [
+    {
+      "id": "ADR-002",
+      "status": "accepted",
+      "applies_via": [
+        "module:MOD-001"
+      ]
+    }
+  ],
+  "related_modules": [
+    "MOD-001"
+  ],
+  "readiness_gaps": [
+    "Description contains TBD.",
+    "Source requirement FR-AUTH-003 is confirmed, not approved.",
+    "Feature FEAT-002 is not in scope (scope: pending_decision).",
+    "An acceptance criterion contains TBD.",
+    "Unresolved blocker: The lockout threshold is unknown until Q-002 is answered",
+    "Unresolved critical question Q-002."
+  ],
+  "scope": "pending_decision",
+  "external_dependencies": [],
+  "impacts": {
+    "data": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    },
+    "api": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    },
+    "ui": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    },
+    "integration": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    }
+  },
+  "risk_ids": [],
+  "readiness": {
+    "result": "FAIL",
+    "checks": {
+      "specification_ready": true,
+      "task_id_valid": true,
+      "title_clear": true,
+      "objective_clear": false,
+      "source_requirement_valid": false,
+      "feature_valid": true,
+      "scope_valid": false,
+      "acceptance_criteria_valid": false,
+      "acceptance_criteria_testable": true,
+      "dependencies_valid": true,
+      "external_dependencies_available": true,
+      "architecture_valid": true,
+      "architecture_conflicts_clear": true,
+      "security_valid": true,
+      "data_impact_known": true,
+      "api_impact_known": true,
+      "ui_impact_known": true,
+      "integration_impact_known": true,
+      "verification_defined": true,
+      "open_questions_clear": false,
+      "not_stale": true,
+      "review_findings_clear": true,
+      "blocking_risks_clear": true
+    },
+    "failures": [
+      "Description contains TBD.",
+      "Source requirement FR-AUTH-003 is confirmed, not approved.",
+      "Feature FEAT-002 is not in scope (scope: pending_decision).",
+      "An acceptance criterion contains TBD.",
+      "Unresolved blocker: The lockout threshold is unknown until Q-002 is answered",
+      "Unresolved critical question Q-002."
+    ],
+    "recommended_status": "NEEDS_DISCOVERY",
+    "accepted_risk_findings": []
+  },
+  "readiness_history": [
+    {
+      "date": "2026-09-22",
+      "from": null,
+      "to": "DRAFT",
+      "reason": "Card written from FEAT-002",
+      "change_id": null
+    },
+    {
+      "date": "2026-09-22",
+      "from": "DRAFT",
+      "to": "NEEDS_DISCOVERY",
+      "reason": "Threshold awaits Q-002",
+      "change_id": null
+    }
+  ],
+  "details": {
+    "testing_checklist": {
+      "text": "",
+      "items": [],
+      "tables": [
+        {
+          "headers": [
+            "TEST ID",
+            "Type",
+            "Fixture / preconditions",
+            "Expected evidence",
+            "Required for this card? / reason",
+            "Execution status / evidence"
+          ],
+          "rows": [
+            [
+              "TEST-004",
+              "Integration",
+              "Account with failed attempts",
+              "Account locked at the threshold",
+              "Yes — FR-AUTH-003",
+              "NOT RUN"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "source_path": "backlog/tasks/TASK-004.md"
+}

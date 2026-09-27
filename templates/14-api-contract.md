@@ -45,5 +45,5 @@ Template only. Populate for actual required interfaces; do not invent endpoints,
 
 Provide valid/invalid request and response examples after the contract is established. Example values are labeled test data, never production secrets. Verify third-party facts against actual accessible documentation when developing a project specification; record the version/date and unresolved access limitations.
 
-| Scenario | Input / fixture | Expected output / state | AT ID | Verification evidence / not yet executed |
+| Scenario | Input / fixture | Expected output / state | TEST ID | Verification evidence / not yet executed |
 | --- | --- | --- | --- | --- |

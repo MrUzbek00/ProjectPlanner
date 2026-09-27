@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "name": "Sample Portal",
+  "version": "1.0",
+  "specification_status": "approved",
+  "specification_approval": {
+    "approval_id": "APR-001",
+    "approved_by": "Fixture owner",
+    "approved_on": "2026-09-20",
+    "specification_version": "1.0"
+  },
+  "specification_review": {
+    "result": "PASS_WITH_WARNINGS",
+    "review_cycle": 2,
+    "review_version": "1.0"
+  },
+  "backlog_status": "READY",
+  "priority_scheme": "levels",
+  "handoff_status": "ready",
+  "generated_at": "2026-09-26T00:00:00Z",
+  "generator": {
+    "name": "project-planning-workflow/generate_handoff",
+    "version": "1.5.0"
+  },
+  "source_fingerprint": "aafedbfe04a9f2bdf66a64aa66891421bca7531ecf6725b468ab25d828bef652",
+  "language": "English",
+  "requirements_count": 7,
+  "tasks_count": 4,
+  "ready_tasks_count": 3,
+  "blocked_tasks_count": 0,
+  "task_status_counts": {
+    "DRAFT": 0,
+    "NEEDS_DISCOVERY": 1,
+    "NEEDS_REVIEW": 0,
+    "BLOCKED": 0,
+    "READY": 3,
+    "CANCELLED": 0
+  },
+  "artifacts": [
+    {
+      "path": "architecture.json",
+      "schema": "architecture.schema.json",
+      "sha256": "7f87d35983461880bbf840778c72542174f82d4ed60e06e59e5ac72b3c01a304"
+    },
+    {
+      "path": "backlog-readiness.json",
+      "schema": "backlog-readiness.schema.json",
+      "sha256": "dea8bde627fd491584726c561d14b90ce24ff51f9379e3361aaccf72cff7d2b6"
+    },
+    {
+      "path": "backlog.json",
+      "schema": "backlog.schema.json",
+      "sha256": "6465f8dbd79d367f6b10e6413b155b2f65cdb68eec6e28ab6df425070ce70932"
+    },
+    {
+      "path": "changes.json",
+      "schema": "changes.schema.json",
+      "sha256": "f37096fa6604ae9429e9eac049879774d7d095abe71550f95dd43aed7d451f4c"
+    },
+    {
+      "path": "decisions.json",
+      "schema": "decisions.schema.json",
+      "sha256": "d96f689a8150c378691dac060f994b6671aba7830bc3faeeeab0982fbce93da2"
+    },
+    {
+      "path": "domain.json",
+      "schema": "domain.schema.json",
+      "sha256": "8c82e9d855ab39fc5de3d9ddfb3502193c635490a73ee6609ee311dc2c688c28"
+    },
+    {
+      "path": "requirements.json",
+      "schema": "requirements.schema.json",
+      "sha256": "918a7c6fd3e3d5b6d85ed85cf21404d4b865c3397f4d75bd62743b412bb5e7a5"
+    },
+    {
+      "path": "specification-review.json",
+      "schema": "specification-review.schema.json",
+      "sha256": "89b50e61fdb2d9a8ab28dd3317849d9ca61eb079b1972cf684308386e650a7b5"
+    },
+    {
+      "path": "tests.json",
+      "schema": "tests.schema.json",
+      "sha256": "77ad2faac432f0950f1bc326909b07a29a9b43aeee3743cf168ec56d14ec871c"
+    },
+    {
+      "path": "traceability.json",
+      "schema": "traceability.schema.json",
+      "sha256": "c1b48ba8eded26f5c5052b388e957a2057c7bad5d9b64deb0fe5b66181d4c657"
+    },
+    {
+      "path": "tasks/TASK-001.json",
+      "schema": "task.schema.json",
+      "sha256": "9881a6af3df2f250a8629d7815baf5d383205de4e4133acbde010e85833331d6"
+    },
+    {
+      "path": "tasks/TASK-002.json",
+      "schema": "task.schema.json",
+      "sha256": "5229a75429da0a8a6cbb48e33db82db795e3714663b49ff3db925e3e72346675"
+    },
+    {
+      "path": "tasks/TASK-003.json",
+      "schema": "task.schema.json",
+      "sha256": "db0a1c3780856915f832cf7b32cf0a5c0c5f146266a5ae2c12c533feb2a64bca"
+    },
+    {
+      "path": "tasks/TASK-004.json",
+      "schema": "task.schema.json",
+      "sha256": "09246e99511c012eceed5077958def996b78e4efc9c6fcd9fa503fd1a349be39"
+    }
+  ]
+}

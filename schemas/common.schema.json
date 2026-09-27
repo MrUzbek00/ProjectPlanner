@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/common.schema.json",
+  "title": "Shared definitions for the machine handoff contract",
+  "description": "Identifier patterns and value types shared by every machine-handoff schema. Identifier patterns here are the single definition used by the generator, the validator and every other schema.",
+  "$defs": {
+    "schemaVersion": { "const": "1.5" },
+    "projectId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*$" },
+    "nonEmptyString": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "text": { "type": "string" },
+    "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?Z$"
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "sourcePath": {
+      "description": "Path of the Markdown source record, relative to the project folder.",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^/\\\\].*\\.md$"
+    },
+    "priority": {
+      "description": "One project-wide scheme, declared in project.json priority_scheme: levels (critical, high, medium, low) or moscow (must, should, could, wont). unspecified means not yet prioritised.",
+      "enum": ["critical", "high", "medium", "low", "must", "should", "could", "wont", "unspecified"]
+    },
+    "scope": {
+      "description": "Release boundary. null means not yet classified.",
+      "oneOf": [{ "type": "null" }, { "enum": ["in_scope", "out_of_scope", "future", "pending_decision"] }]
+    },
+    "confidence": {
+      "description": "Evidence behind a statement: confirmed by an attributable source or decision, likely, an assumption, or unknown. null means not yet classified.",
+      "oneOf": [{ "type": "null" }, { "enum": ["confirmed", "likely", "assumption", "unknown"] }]
+    },
+
+    "requirementId": {
+      "type": "string",
+      "pattern": "^(?:GOAL-[0-9]{3,}|BR-[0-9]{3,}|RULE-[0-9]{3,}|FR-(?:[A-Z][A-Z0-9]{1,11}-)?[0-9]{3,}|NFR-[0-9]{3,}|DR-[0-9]{3,}|IR-[0-9]{3,}|SR-[0-9]{3,}|UXR-[0-9]{3,}|TR-[0-9]{3,})$"
+    },
+    "requirementType": {
+      "enum": ["business_goal", "business", "business_rule", "functional", "non_functional", "data", "integration", "security", "ux", "technical"]
+    },
+    "epicId": { "type": "string", "pattern": "^EPIC-[0-9]{3,}$" },
+    "featureId": { "type": "string", "pattern": "^FEAT-[0-9]{3,}$" },
+    "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}(?:-S[0-9]{2,})?$" },
+    "testId": { "type": "string", "pattern": "^TEST-[0-9]{3,}$" },
+    "acceptanceCriterionId": { "type": "string", "pattern": "^AC-[0-9]{3,}$" },
+    "adrId": { "type": "string", "pattern": "^ADR-[0-9]{3,}$" },
+    "principleId": { "type": "string", "pattern": "^PRIN-[0-9]{3,}$" },
+    "adrStatus": {
+      "description": "ADR lifecycle. Only accepted governs planning; proposed is under consideration; rejected, superseded and deprecated never apply to new work.",
+      "enum": ["proposed", "accepted", "rejected", "superseded", "deprecated"]
+    },
+    "adrLink": {
+      "description": "An architecture decision that applies to a record, with its current status and how it applies: named by the record itself (requirement, feature, task), named by the ADR (adr), or reached through a requirement, module or feature.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "applies_via"],
+      "properties": {
+        "id": { "$ref": "#/$defs/adrId" },
+        "status": { "$ref": "#/$defs/adrStatus" },
+        "applies_via": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(?:requirement|feature|task|adr|requirement:[A-Z0-9-]+|module:MOD-[0-9]{3,}|feature:FEAT-[0-9]{3,})$"
+          }
+        }
+      }
+    },
+    "adrLinkList": { "type": "array", "items": { "$ref": "#/$defs/adrLink" } },
+    "decisionId": { "type": "string", "pattern": "^DEC-[0-9]{3,}$" },
+    "questionId": { "type": "string", "pattern": "^Q-[0-9]{3,}$" },
+    "assumptionId": { "type": "string", "pattern": "^ASM-[0-9]{3,}$" },
+    "sourceId": { "type": "string", "pattern": "^SRC-[0-9]{3,}$" },
+    "moduleId": { "type": "string", "pattern": "^MOD-[0-9]{3,}$" },
+    "phaseId": { "type": "string", "pattern": "^PHASE-[0-9]{2,}$" },
+    "riskId": { "type": "string", "pattern": "^RISK-[0-9]{3,}$" },
+    "dependencyId": { "type": "string", "pattern": "^DEP-[0-9]{3,}$" },
+    "scopeItemId": { "type": "string", "pattern": "^SCOPE-[0-9]{3,}$" },
+    "processId": { "type": "string", "pattern": "^PROC-[0-9]{3,}$" },
+    "entityId": { "type": "string", "pattern": "^ENT-[0-9]{3,}$" },
+    "reviewFindingId": { "type": "string", "pattern": "^REVIEW-[0-9]{3,}$" },
+    "reviewResult": {
+      "description": "Result of the independent specification review. FAIL: an unresolved CRITICAL or MAJOR finding, or a defective review record. PASS_WITH_WARNINGS: only open MINOR or OBSERVATION findings, or accepted risks. PASS: no open finding. NOT_REVIEWED: no review exists.",
+      "enum": ["PASS", "PASS_WITH_WARNINGS", "FAIL", "NOT_REVIEWED"]
+    },
+    "anyId": {
+      "description": "Any identifier the workflow defines. Used for free cross-references such as a question's affected records.",
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+    },
+
+    "requirementIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/requirementId" } },
+    "taskIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/taskId" } },
+    "testIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/testId" } },
+    "featureIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/featureId" } },
+    "adrIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/adrId" } },
+    "principleIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/principleId" } },
+    "moduleIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/moduleId" } },
+    "questionIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/questionId" } },
+    "dependencyIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/dependencyId" } },
+    "processIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/processId" } },
+    "entityIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/entityId" } },
+    "acceptanceCriterionIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/acceptanceCriterionId" } },
+    "anyIdList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/anyId" } },
+    "stringList": { "type": "array", "items": { "type": "string" } },
+    "nonEmptyStringList": { "type": "array", "items": { "$ref": "#/$defs/nonEmptyString" } },
+
+    "taskStatus": {
+      "description": "Planning statuses of an epic, feature or task. READY is earned by passing the Definition of Ready. Engineering execution states (in progress, testing, merged, deployed, done) belong to downstream delivery, not to the plan.",
+      "enum": ["DRAFT", "NEEDS_DISCOVERY", "NEEDS_REVIEW", "BLOCKED", "READY", "CANCELLED"]
+    },
+    "readinessCheck": {
+      "enum": [
+        "specification_ready", "task_id_valid", "title_clear", "objective_clear", "source_requirement_valid",
+        "feature_valid", "scope_valid", "acceptance_criteria_valid", "acceptance_criteria_testable", "dependencies_valid",
+        "external_dependencies_available", "architecture_valid", "architecture_conflicts_clear", "security_valid",
+        "data_impact_known", "api_impact_known", "ui_impact_known", "integration_impact_known", "verification_defined",
+        "open_questions_clear", "not_stale", "review_findings_clear", "blocking_risks_clear"
+      ]
+    },
+    "backlogStatus": {
+      "description": "READY: every active task is READY and passes the Definition of Ready. PARTIALLY_READY: a valid subset is. NOT_READY: none is.",
+      "enum": ["READY", "PARTIALLY_READY", "NOT_READY"]
+    },
+    "requirementStatus": {
+      "description": "Lifecycle only. Whether a requirement is in the current release is its scope, not its status.",
+      "enum": ["draft", "confirmed", "approved", "superseded", "rejected"]
+    },
+    "specificationStatus": {
+      "enum": ["not_started", "draft", "in_review", "approved", "superseded"]
+    },
+    "testLevel": {
+      "enum": ["unit", "integration", "contract", "e2e", "security", "performance", "accessibility", "migration", "manual", "uat"]
+    },
+    "complexity": { "enum": ["XS", "S", "M", "L", "XL", "unspecified"] },
+
+    "markdownSection": {
+      "description": "A named section of a Markdown record: its prose, its list items and its tables, preserved without reinterpretation.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "items", "tables"],
+      "properties": {
+        "text": { "type": "string" },
+        "items": { "$ref": "#/$defs/stringList" },
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["headers", "rows"],
+            "properties": {
+              "headers": { "$ref": "#/$defs/stringList" },
+              "rows": { "type": "array", "items": { "$ref": "#/$defs/stringList" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

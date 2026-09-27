@@ -1,0 +1,282 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "status": "READY",
+  "summary": {
+    "total": 4,
+    "active": 3,
+    "draft": 0,
+    "needs_discovery": 1,
+    "needs_review": 0,
+    "blocked": 0,
+    "ready": 3,
+    "cancelled": 0,
+    "out_of_scope": 1,
+    "ready_valid": 3,
+    "ready_percentage": 100.0,
+    "meets_definition_of_ready_not_marked_ready": []
+  },
+  "validation": {
+    "dependency_graph_valid": true,
+    "dependency_cycles": 0,
+    "architecture_conflicts": 0,
+    "traceability_valid": true,
+    "traceability_issues": [],
+    "unresolved_critical_findings": 0,
+    "unresolved_major_findings_affecting_backlog": [],
+    "critical_blockers": [],
+    "specification_approved": true,
+    "specification_review_passed": true,
+    "ready_tasks_failing_definition_of_ready": []
+  },
+  "coverage": {
+    "requirements_in_scope": 3,
+    "requirements_with_task_coverage": 3,
+    "features_in_scope": 1,
+    "features_with_tasks": 1,
+    "features_without_tasks_explained": 0,
+    "tasks_active": 3,
+    "tasks_with_valid_acceptance_criteria": 3,
+    "tasks_with_valid_dependencies": 3,
+    "tasks_architecture_relevant": 3,
+    "tasks_architecture_relevant_with_adr_links": 3,
+    "tasks_needing_review": 0
+  },
+  "phases": [
+    {
+      "id": "PHASE-01",
+      "title": "Core product: password reset",
+      "status": "READY",
+      "active_tasks": 3,
+      "ready_tasks": 3,
+      "status_counts": {
+        "DRAFT": 0,
+        "NEEDS_DISCOVERY": 0,
+        "NEEDS_REVIEW": 0,
+        "BLOCKED": 0,
+        "READY": 3,
+        "CANCELLED": 0
+      },
+      "planning_questions": [
+        {
+          "key": "what",
+          "question": "Do we know what needs to be built?",
+          "answered": true,
+          "unanswered_for": []
+        },
+        {
+          "key": "why",
+          "question": "Why does it need to exist?",
+          "answered": true,
+          "unanswered_for": []
+        },
+        {
+          "key": "requirement",
+          "question": "What requirement supports it?",
+          "answered": true,
+          "unanswered_for": []
+        },
+        {
+          "key": "success",
+          "question": "What does success look like?",
+          "answered": true,
+          "unanswered_for": []
+        },
+        {
+          "key": "dependencies",
+          "question": "What does it depend on?",
+          "answered": true,
+          "unanswered_for": []
+        },
+        {
+          "key": "constraints",
+          "question": "What constraints apply?",
+          "answered": true,
+          "unanswered_for": []
+        },
+        {
+          "key": "blockers",
+          "question": "What could block it?",
+          "answered": true,
+          "unanswered_for": []
+        },
+        {
+          "key": "verification",
+          "question": "How will completion be verified?",
+          "answered": true,
+          "unanswered_for": []
+        }
+      ]
+    },
+    {
+      "id": "PHASE-02",
+      "title": "Enhancement: account lockout",
+      "status": "EMPTY",
+      "active_tasks": 0,
+      "ready_tasks": 0,
+      "status_counts": {
+        "DRAFT": 0,
+        "NEEDS_DISCOVERY": 1,
+        "NEEDS_REVIEW": 0,
+        "BLOCKED": 0,
+        "READY": 0,
+        "CANCELLED": 0
+      },
+      "planning_questions": [
+        {
+          "key": "what",
+          "question": "Do we know what needs to be built?",
+          "answered": false,
+          "unanswered_for": []
+        },
+        {
+          "key": "why",
+          "question": "Why does it need to exist?",
+          "answered": false,
+          "unanswered_for": []
+        },
+        {
+          "key": "requirement",
+          "question": "What requirement supports it?",
+          "answered": false,
+          "unanswered_for": []
+        },
+        {
+          "key": "success",
+          "question": "What does success look like?",
+          "answered": false,
+          "unanswered_for": []
+        },
+        {
+          "key": "dependencies",
+          "question": "What does it depend on?",
+          "answered": false,
+          "unanswered_for": []
+        },
+        {
+          "key": "constraints",
+          "question": "What constraints apply?",
+          "answered": false,
+          "unanswered_for": []
+        },
+        {
+          "key": "blockers",
+          "question": "What could block it?",
+          "answered": false,
+          "unanswered_for": []
+        },
+        {
+          "key": "verification",
+          "question": "How will completion be verified?",
+          "answered": false,
+          "unanswered_for": []
+        }
+      ]
+    }
+  ],
+  "work_sets": [
+    {
+      "id": "WS-01",
+      "task_ids": [
+        "TASK-001"
+      ]
+    },
+    {
+      "id": "WS-02",
+      "task_ids": [
+        "TASK-002",
+        "TASK-003"
+      ]
+    }
+  ],
+  "flags": [],
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "title": "Reset tokens are stored so that they cannot be recovered",
+      "status": "READY",
+      "scope": "in_scope",
+      "priority": "high",
+      "sequence": 1,
+      "phase": "PHASE-01",
+      "revision": 1,
+      "readiness_valid": true,
+      "result": "PASS",
+      "recommended_status": "READY",
+      "failed_checks": [],
+      "failures": [],
+      "accepted_risk_findings": [],
+      "related_risks": [],
+      "flags": []
+    },
+    {
+      "id": "TASK-002",
+      "title": "Users can request a password-reset email",
+      "status": "READY",
+      "scope": "in_scope",
+      "priority": "high",
+      "sequence": 2,
+      "phase": "PHASE-01",
+      "revision": 1,
+      "readiness_valid": true,
+      "result": "PASS",
+      "recommended_status": "READY",
+      "failed_checks": [],
+      "failures": [],
+      "accepted_risk_findings": [],
+      "related_risks": [
+        "RISK-001"
+      ],
+      "flags": []
+    },
+    {
+      "id": "TASK-003",
+      "title": "Users can set a new password from a valid reset link",
+      "status": "READY",
+      "scope": "in_scope",
+      "priority": "high",
+      "sequence": 3,
+      "phase": "PHASE-01",
+      "revision": 1,
+      "readiness_valid": true,
+      "result": "PASS",
+      "recommended_status": "READY",
+      "failed_checks": [],
+      "failures": [],
+      "accepted_risk_findings": [],
+      "related_risks": [],
+      "flags": []
+    },
+    {
+      "id": "TASK-004",
+      "title": "Accounts lock after repeated failed sign-ins",
+      "status": "NEEDS_DISCOVERY",
+      "scope": "pending_decision",
+      "priority": "medium",
+      "sequence": 4,
+      "phase": "PHASE-02",
+      "revision": 1,
+      "readiness_valid": false,
+      "result": "FAIL",
+      "recommended_status": "NEEDS_DISCOVERY",
+      "failed_checks": [
+        "acceptance_criteria_valid",
+        "objective_clear",
+        "open_questions_clear",
+        "scope_valid",
+        "source_requirement_valid"
+      ],
+      "failures": [
+        "Description contains TBD.",
+        "Source requirement FR-AUTH-003 is confirmed, not approved.",
+        "Feature FEAT-002 is not in scope (scope: pending_decision).",
+        "An acceptance criterion contains TBD.",
+        "Unresolved blocker: The lockout threshold is unknown until Q-002 is answered",
+        "Unresolved critical question Q-002."
+      ],
+      "accepted_risk_findings": [],
+      "related_risks": [],
+      "flags": []
+    }
+  ]
+}

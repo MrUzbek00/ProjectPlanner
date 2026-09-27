@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "id": "TASK-002",
+  "title": "Users can request a password-reset email",
+  "revision": 1,
+  "content_hash": "sha256:4c42ced1315ac258108c9d8a6eb2d2414ced5704e9a8cb8bee9f2615d954a7f6",
+  "status": "READY",
+  "type": "fullstack",
+  "objective": "Let a user start a password reset without contacting the help desk (BR-001).",
+  "declared_scope": null,
+  "source_requirements": [
+    "FR-AUTH-001"
+  ],
+  "feature": "FEAT-001",
+  "epic": "EPIC-001",
+  "description": "A user enters an email address. When it belongs to an active account, a reset token is issued and the reset link is emailed through the notification service. The response is identical whether or not the address belongs to an account.",
+  "acceptance_criteria": [
+    "AC-001: Given an active account with that email, when a reset is requested, then one reset email is sent",
+    "AC-002: Given an address with no active account, when a reset is requested, then the request is rejected silently: no email is sent and the response is identical"
+  ],
+  "dependencies": [
+    "TASK-001"
+  ],
+  "constraints": {
+    "architecture": [
+      "Send the email through the existing notification service (ADR-001)"
+    ],
+    "security": [
+      "Do not reveal whether an email address belongs to an account (FR-AUTH-001)"
+    ],
+    "performance": [],
+    "data": [],
+    "compliance": [],
+    "other": [],
+    "not_applicable": {}
+  },
+  "verification": {
+    "required_tests": [
+      "unit",
+      "integration",
+      "security",
+      "e2e"
+    ],
+    "test_ids": [
+      "TEST-002"
+    ]
+  },
+  "open_questions": [
+    {
+      "id": "Q-003",
+      "question": "Should the reset email be sent in the user's language?",
+      "blocking": false
+    }
+  ],
+  "blocking_issues": [],
+  "priority": "high",
+  "priority_confirmed": true,
+  "complexity": "M",
+  "phase": "PHASE-01",
+  "parent_task": null,
+  "dependencies_reviewed": true,
+  "blocks": [],
+  "architecture_decisions": [
+    {
+      "id": "ADR-001",
+      "status": "accepted",
+      "applies_via": [
+        "requirement:FR-AUTH-001",
+        "module:MOD-002",
+        "feature:FEAT-001"
+      ]
+    },
+    {
+      "id": "ADR-002",
+      "status": "accepted",
+      "applies_via": [
+        "module:MOD-001",
+        "feature:FEAT-001"
+      ]
+    }
+  ],
+  "related_modules": [
+    "MOD-001",
+    "MOD-002"
+  ],
+  "readiness_gaps": [],
+  "scope": "in_scope",
+  "external_dependencies": [
+    "DEP-001"
+  ],
+  "impacts": {
+    "data": {
+      "stated": true,
+      "text": "- Affected entities: ENT-002 (reset token) is created when an active account requests a reset; ENT-001 is read, not changed.\n- Migration expected: none.",
+      "ids": [
+        "ENT-002",
+        "ENT-001"
+      ],
+      "change": null,
+      "not_applicable": false
+    },
+    "api": {
+      "stated": false,
+      "text": "",
+      "ids": [],
+      "change": null,
+      "not_applicable": false
+    },
+    "ui": {
+      "stated": true,
+      "text": "- Modified screen: the sign-in screen gains a \"Forgot password\" entry; a new request screen takes an email address.\n- User states: the same confirmation message for every submitted address (AC-002); a validation error for an empty or malformed address.",
+      "ids": [
+        "AC-002"
+      ],
+      "change": null,
+      "not_applicable": false
+    },
+    "integration": {
+      "stated": true,
+      "text": "- Provider: the existing notification service (DEP-001, ADR-001); purpose: deliver the reset email.\n- Request: recipient address and reset link. Response: accepted or rejected by the service. Authentication: the service's existing credentials.\n- Failure behaviour: when the service is unavailable the user still sees the neutral confirmation, and the failure is logged (RISK-001). Timeout and retry: as the notification service already handles them. Fallback: none in scope.",
+      "ids": [
+        "DEP-001",
+        "ADR-001",
+        "RISK-001"
+      ],
+      "change": null,
+      "not_applicable": false
+    }
+  },
+  "risk_ids": [
+    "RISK-001"
+  ],
+  "readiness": {
+    "result": "PASS",
+    "checks": {
+      "specification_ready": true,
+      "task_id_valid": true,
+      "title_clear": true,
+      "objective_clear": true,
+      "source_requirement_valid": true,
+      "feature_valid": true,
+      "scope_valid": true,
+      "acceptance_criteria_valid": true,
+      "acceptance_criteria_testable": true,
+      "dependencies_valid": true,
+      "external_dependencies_available": true,
+      "architecture_valid": true,
+      "architecture_conflicts_clear": true,
+      "security_valid": true,
+      "data_impact_known": true,
+      "api_impact_known": true,
+      "ui_impact_known": true,
+      "integration_impact_known": true,
+      "verification_defined": true,
+      "open_questions_clear": true,
+      "not_stale": true,
+      "review_findings_clear": true,
+      "blocking_risks_clear": true
+    },
+    "failures": [],
+    "recommended_status": "READY",
+    "accepted_risk_findings": []
+  },
+  "readiness_history": [
+    {
+      "date": "2026-09-22",
+      "from": null,
+      "to": "DRAFT",
+      "reason": "Card written from FEAT-001",
+      "change_id": null
+    },
+    {
+      "date": "2026-09-22",
+      "from": "DRAFT",
+      "to": "READY",
+      "reason": "Definition of Ready passed; validated by the fixture analyst",
+      "change_id": null
+    }
+  ],
+  "details": {
+    "testing_checklist": {
+      "text": "",
+      "items": [],
+      "tables": [
+        {
+          "headers": [
+            "TEST ID",
+            "Type",
+            "Fixture / preconditions",
+            "Expected evidence",
+            "Required for this card? / reason",
+            "Execution status / evidence"
+          ],
+          "rows": [
+            [
+              "TEST-002",
+              "Integration",
+              "One active account",
+              "Email sent; responses identical",
+              "Yes — FR-AUTH-001",
+              "NOT RUN"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "source_path": "backlog/tasks/TASK-002.md"
+}

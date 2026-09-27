@@ -1,0 +1,5 @@
+# Dependencies for tools/generate_handoff.py and tools/validate_handoff.py
+# Install with: python -m pip install -r tools/requirements-handoff.txt
+# jsonschema 4.18+ provides the `referencing` registry used to resolve
+# cross-file $ref between the schemas in schemas/.
+jsonschema>=4.18,<5

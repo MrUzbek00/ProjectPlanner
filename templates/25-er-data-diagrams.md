@@ -23,7 +23,7 @@ A table, column, key or index that no confirmed entity or attribute supports is 
 
 ## 2. Diagram Inventory
 
-| DIAG ID | Diagram title | Type (ER / state / data flow / workflow) | Subject | Source records | `.drawio` file | Exported PNG or SVG | Embedded in | Status |
+| DIAG ID | Diagram title | Type (ER / state / data flow / workflow) | Subject | Source records | `.drawio` file in `diagrams/source/` | Exported PNG or SVG in `diagrams/exported/` | Embedded in | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 3. Entity-Relationship Diagram
@@ -132,7 +132,7 @@ Export PNG for embedding in the Word deliverables and keep the `.drawio` file fo
 Reference each exported diagram from the deliverable that carries it, using a relative path from the deliverable Markdown file:
 
 ```markdown
-![DIAG-010 — Proposed physical data model. Derived from the confirmed logical entities; types, keys and indexes are design recommendations.](diagrams/diag-010-er-model.png)
+![DIAG-010 — Proposed physical data model. Derived from the confirmed logical entities; types, keys and indexes are design recommendations.](../diagrams/exported/diag-010-er-model.png)
 ```
 
 The build tool embeds the image and renders the caption beneath it.

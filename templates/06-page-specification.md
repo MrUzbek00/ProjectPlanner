@@ -65,7 +65,7 @@ Additional formatting, units, null handling, conditional visibility, aggregation
 | Field name | Field type | Required? | Default value | Source | Validation | Auto-complete logic | Dependencies | Read-only conditions | Visibility conditions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
-For select/reference fields, define permitted options, source ownership, unavailable-option behavior and refresh assumptions. For uploads and calculations, link file-management and BR requirements. Do not add fields solely because they are common in similar systems.
+For select/reference fields, define permitted options, source ownership, unavailable-option behavior and refresh assumptions. For uploads and calculations, link file-management and RULE requirements. Do not add fields solely because they are common in similar systems.
 
 ## Button / Action — repeat for every action
 
@@ -76,7 +76,7 @@ For select/reference fields, define permitted options, source ownership, unavail
 | Preconditions | Record state, required data and dependencies |
 | Confirmation required? | Yes / No / Conditional / TBD; exact decision and rationale |
 | Confirmation content if applicable | Entity, consequence and confirm/cancel behavior |
-| System action | Ordered behavior and linked API / FR / BR IDs |
+| System action | Ordered behavior and linked API / FR / RULE IDs |
 | Status change | Initial → next entity state, or confirmed no change |
 | Notification | Recipient, trigger, channel and NOTIF ID, or reasoned N/A |
 | Audit log entry | Event, entity and captured values, or reasoned N/A |
@@ -85,7 +85,7 @@ For select/reference fields, define permitted options, source ownership, unavail
 | Repeated / concurrent action | Confirmed handling or tracked gap |
 | Source / acceptance IDs | TBD |
 
-Do not silently choose confirmation behavior for deletion or other destructive actions. Document the consequence and confirmed decision; surface undefined behavior in the quality report.
+Do not silently choose confirmation behavior for deletion or other destructive actions. Document the consequence and confirmed decision; surface undefined behavior as an open question and a specification-review finding.
 
 ## State and error behavior
 
@@ -96,5 +96,5 @@ Cover relevant first use/no data, no results, loading, validation failure, insuf
 
 ## Page acceptance and traceability
 
-| FR / BR IDs | Scenario / role / data scope | AC IDs | AT IDs | Card IDs after approval |
+| FR / RULE IDs | Scenario / role / data scope | AC IDs | TEST IDs | Task IDs after approval |
 | --- | --- | --- | --- | --- |

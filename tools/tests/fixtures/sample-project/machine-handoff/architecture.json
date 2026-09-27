@@ -1,0 +1,394 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "summary": {
+    "accepted": 2,
+    "proposed": 0,
+    "rejected": 0,
+    "superseded": 0,
+    "deprecated": 0,
+    "decisions_required": 0
+  },
+  "principles": [
+    {
+      "id": "PRIN-001",
+      "statement": "Reuse an existing organizational service before adding a new delivery path",
+      "rationale": "Every delivery path must be secured and monitored",
+      "implications": "A new channel needs an ADR that explains why the existing one cannot serve",
+      "evidence": [
+        "DEC-002"
+      ],
+      "status": "accepted"
+    }
+  ],
+  "modules": [
+    {
+      "id": "MOD-001",
+      "name": "Authentication",
+      "parent": null,
+      "type": "user_facing",
+      "purpose": "Sign-in, password reset and lockout",
+      "security_boundary": "Public entry point; account data is private to its holder",
+      "data_ownership": [
+        "ENT-001",
+        "ENT-002"
+      ]
+    },
+    {
+      "id": "MOD-002",
+      "name": "Notifications",
+      "parent": null,
+      "type": "notification",
+      "purpose": "Outbound email through the existing notification service",
+      "security_boundary": "Internal; called only by other modules",
+      "data_ownership": []
+    }
+  ],
+  "coverage": [
+    {
+      "concern": "Architecture style",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "The project extends the existing portal and chooses no architecture style (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Backend platform",
+      "status": "delegated",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "The portal team's existing platform is used unchanged (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Frontend architecture",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "The reset pages are added to the existing portal (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Data storage",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "Reset tokens use the portal's existing store (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Authentication",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "Sign-in itself is unchanged by this project (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Authorization model",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "Reset needs no role; possession of the link is the credential (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "API style",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "No API is published (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Integration strategy",
+      "status": "decided",
+      "adr_ids": [
+        "ADR-001"
+      ],
+      "question_ids": [],
+      "rationale": "Reuse of the notification service (DEC-002)",
+      "evidence": [
+        "DEC-002"
+      ]
+    },
+    {
+      "concern": "Event-driven messaging",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "No asynchronous messaging is in scope (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Background processing",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "No scheduled or queued work is in scope (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Caching",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "No caching need is stated (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "File storage",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "No files are stored (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Deployment model",
+      "status": "delegated",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "Released with the portal's existing deployment (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Multi-tenancy",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "Single organization (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Data ownership",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "Entity ownership is recorded per module in the solution structure (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    },
+    {
+      "concern": "Module communication",
+      "status": "decided",
+      "adr_ids": [
+        "ADR-001"
+      ],
+      "question_ids": [],
+      "rationale": "Authentication calls Notifications (DEC-002)",
+      "evidence": [
+        "DEC-002"
+      ]
+    },
+    {
+      "concern": "Logging and observability",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "Delivery is logged by the existing notification service (DEC-002)",
+      "evidence": [
+        "DEC-002"
+      ]
+    },
+    {
+      "concern": "Security architecture",
+      "status": "decided",
+      "adr_ids": [
+        "ADR-002"
+      ],
+      "question_ids": [],
+      "rationale": "Token storage (DEC-003)",
+      "evidence": [
+        "DEC-003"
+      ]
+    },
+    {
+      "concern": "External service dependencies",
+      "status": "decided",
+      "adr_ids": [
+        "ADR-001"
+      ],
+      "question_ids": [],
+      "rationale": "DEP-001 (DEC-002)",
+      "evidence": [
+        "DEC-002"
+      ]
+    },
+    {
+      "concern": "Scalability strategy",
+      "status": "not_applicable",
+      "adr_ids": [],
+      "question_ids": [],
+      "rationale": "No volume target is stated (SRC-001)",
+      "evidence": [
+        "SRC-001"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ADR-001",
+      "title": "Send reset emails through the existing notification service",
+      "status": "accepted",
+      "active": true,
+      "date": "2026-09-12",
+      "decision_owner": "Fixture owner",
+      "approval_evidence": [
+        "DEC-002"
+      ],
+      "decision_questions": [],
+      "context": "FR-AUTH-001 requires an email. The organization already operates a notification service with delivery logging.",
+      "decision": "Password-reset emails are sent by calling the existing notification service. No new mail integration is added.",
+      "rationale": "One delivery path keeps sending, logging and monitoring in one place (PRIN-001), and the owner chose it in DEC-002.",
+      "alternatives": [
+        {
+          "option": "Existing notification service",
+          "description": "Reuse the current service",
+          "advantages": "One delivery path; existing logging",
+          "disadvantages": "Depends on that service's availability",
+          "outcome": "Chosen"
+        },
+        {
+          "option": "Direct SMTP integration",
+          "description": "Send mail from the authentication module",
+          "advantages": "No dependency on another service",
+          "disadvantages": "Second delivery path to secure and monitor",
+          "outcome": "Rejected"
+        }
+      ],
+      "consequences": {
+        "positive": [
+          "Delivery failures are visible in the notification service's existing log."
+        ],
+        "negative": [
+          "The reset request depends on the notification service being reachable."
+        ],
+        "other": []
+      },
+      "risks": [
+        "RISK-001 — the notification service is unavailable and reset emails are delayed."
+      ],
+      "risk_ids": [
+        "RISK-001"
+      ],
+      "constraints": [
+        "Reset emails are sent only through MOD-002; no module sends email directly.",
+        "A new delivery channel for account emails requires a new ADR."
+      ],
+      "related_requirements": [
+        "FR-AUTH-001"
+      ],
+      "related_features": [],
+      "affected_modules": [
+        "MOD-002"
+      ],
+      "related_decisions": [
+        "DEC-002"
+      ],
+      "principles": [
+        "PRIN-001"
+      ],
+      "depends_on": [
+        "DEP-001"
+      ],
+      "conflicts_with": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "notes": "",
+      "source_path": "architecture/ADR-001-reset-email-delivery.md"
+    },
+    {
+      "id": "ADR-002",
+      "title": "Store only a hash of each reset token",
+      "status": "accepted",
+      "active": true,
+      "date": "2026-09-14",
+      "decision_owner": "Fixture owner",
+      "approval_evidence": [
+        "DEC-003"
+      ],
+      "decision_questions": [],
+      "context": "SR-001 forbids storing reset tokens in a recoverable form.",
+      "decision": "The token store keeps a one-way hash of each token, its account, its issue time and its used flag. The token itself exists only in the email.",
+      "rationale": "A leaked token store must not let anyone reset a password (SR-001); only a one-way hash guarantees that.",
+      "alternatives": [
+        {
+          "option": "Hash only",
+          "description": "Store a hash of the token",
+          "advantages": "A leaked store yields no usable token",
+          "disadvantages": "Tokens cannot be re-sent",
+          "outcome": "Chosen"
+        },
+        {
+          "option": "Encrypted token",
+          "description": "Store the token encrypted",
+          "advantages": "Tokens can be re-sent",
+          "disadvantages": "A leaked key exposes every live token",
+          "outcome": "Rejected"
+        }
+      ],
+      "consequences": {
+        "positive": [
+          "A leaked token store yields no usable token."
+        ],
+        "negative": [
+          "A lost email means requesting a new link; the old one cannot be re-sent."
+        ],
+        "other": []
+      },
+      "risks": [],
+      "risk_ids": [],
+      "constraints": [
+        "No reset token is stored in a recoverable form, encrypted or plain.",
+        "A reset link cannot be re-sent; a new request issues a new token."
+      ],
+      "related_requirements": [
+        "SR-001"
+      ],
+      "related_features": [],
+      "affected_modules": [
+        "MOD-001"
+      ],
+      "related_decisions": [
+        "DEC-003"
+      ],
+      "principles": [],
+      "depends_on": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "notes": "",
+      "source_path": "architecture/ADR-002-reset-token-storage.md"
+    }
+  ],
+  "conflict_reviews": []
+}

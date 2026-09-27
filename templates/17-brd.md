@@ -67,12 +67,12 @@ TBD — the measurable improvement available if the confirmed problems are resol
 
 <!-- xlsx: workbook=requirements; sheet=Business Requirements -->
 
-| BIZ ID | Business objective | Business process automated / changed | Measure | Unit | Baseline | Target | Measurement method | Measurement window | Owner | Priority | Related FR | Evidence | Status |
+| BR ID | Business objective | Business process automated / changed | Measure | Unit | Baseline | Target | Measurement method | Measurement window | Owner | Priority | Related FR | Evidence | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ### 5.1 Objective Dependencies
 
-| BIZ ID | Depends on | Nature of dependency | Owner | Risk if unmet |
+| BR ID | Depends on | Nature of dependency | Owner | Risk if unmet |
 | --- | --- | --- | --- | --- |
 
 ## 6. Market and Comparative Justification
@@ -123,19 +123,19 @@ TBD — trigger, actors, steps, handoffs, systems, documents and outputs. Refere
 
 TBD — the business view of the future process: what changes, who does what differently, and which manual effort is removed. Technical design is out of scope for this document and belongs to the SRS.
 
-| Change | Affected role | Removed / added effort | Enabled by (FR / feature) | Business benefit | Related BIZ |
+| Change | Affected role | Removed / added effort | Enabled by (FR / feature) | Business benefit | Related BR |
 | --- | --- | --- | --- | --- | --- |
 
 ## 10. Business Requirements
 
-| ID | Business requirement | Category | Rationale | Priority (MoSCoW) | Source | Related BIZ | Related FR | Acceptance evidence | Status |
+| ID | Business requirement | Category | Rationale | Priority (MoSCoW) | Source | Related BR | Related FR | Acceptance evidence | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 11. Business Rules and Policies
 
 <!-- xlsx: workbook=requirements; sheet=Business Rules -->
 
-| BR ID | Rule statement | Applies to (process / entity / role) | Condition | Outcome when satisfied | Outcome when violated | Exception handling | Authority / policy source | Related FR | Status |
+| RULE ID | Rule statement | Applies to (process / entity / role) | Condition | Outcome when satisfied | Outcome when violated | Exception handling | Authority / policy source | Related FR | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Record only rules the business confirmed. Do not derive a policy from an example or from common practice.

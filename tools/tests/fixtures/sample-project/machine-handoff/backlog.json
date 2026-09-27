@@ -1,0 +1,272 @@
+{
+  "schema_version": "1.5",
+  "project_id": "SAMPLE",
+  "specification_version": "1.0",
+  "epics": [
+    {
+      "id": "EPIC-001",
+      "title": "Self-service account access",
+      "goal": "Users regain access without the help desk",
+      "status": "READY",
+      "priority": "high",
+      "requirement_ids": [
+        "BR-001"
+      ],
+      "feature_ids": [
+        "FEAT-001",
+        "FEAT-002"
+      ],
+      "source_path": "backlog/backlog.md"
+    }
+  ],
+  "features": [
+    {
+      "id": "FEAT-001",
+      "epic": "EPIC-001",
+      "title": "Password reset by email",
+      "goal": "A user resets a forgotten password from an emailed link",
+      "status": "READY",
+      "priority": "high",
+      "requirement_ids": [
+        "FR-AUTH-001",
+        "FR-AUTH-002",
+        "SR-001",
+        "RULE-001"
+      ],
+      "task_ids": [
+        "TASK-001",
+        "TASK-002",
+        "TASK-003"
+      ],
+      "source_path": "backlog/backlog.md",
+      "scope": "in_scope",
+      "module_ids": [
+        "MOD-001",
+        "MOD-002"
+      ],
+      "dependencies": [],
+      "external_dependencies": [
+        "DEP-001"
+      ],
+      "architecture_decisions": [
+        {
+          "id": "ADR-001",
+          "status": "accepted",
+          "applies_via": [
+            "feature",
+            "requirement:FR-AUTH-001",
+            "module:MOD-002"
+          ]
+        },
+        {
+          "id": "ADR-002",
+          "status": "accepted",
+          "applies_via": [
+            "feature",
+            "requirement:SR-001",
+            "module:MOD-001"
+          ]
+        }
+      ],
+      "no_tasks_reason": null
+    },
+    {
+      "id": "FEAT-002",
+      "epic": "EPIC-001",
+      "title": "Account lockout",
+      "goal": "Repeated failed sign-ins lock the account",
+      "status": "NEEDS_DISCOVERY",
+      "priority": "medium",
+      "requirement_ids": [
+        "FR-AUTH-003"
+      ],
+      "task_ids": [
+        "TASK-004"
+      ],
+      "source_path": "backlog/backlog.md",
+      "scope": "pending_decision",
+      "module_ids": [
+        "MOD-001"
+      ],
+      "dependencies": [],
+      "external_dependencies": [],
+      "architecture_decisions": [
+        {
+          "id": "ADR-002",
+          "status": "accepted",
+          "applies_via": [
+            "module:MOD-001"
+          ]
+        }
+      ],
+      "no_tasks_reason": null
+    }
+  ],
+  "phases": [
+    {
+      "id": "PHASE-01",
+      "title": "Core product: password reset",
+      "order": 1,
+      "objective": "Users can reset a forgotten password end to end",
+      "exit_criteria": "TEST-001 to TEST-003 defined and passing in the test environment",
+      "task_ids": [
+        "TASK-001",
+        "TASK-002",
+        "TASK-003"
+      ],
+      "source_path": "backlog/backlog.md",
+      "date": null,
+      "date_basis": "none",
+      "commitment_decision": null
+    },
+    {
+      "id": "PHASE-02",
+      "title": "Enhancement: account lockout",
+      "order": 2,
+      "objective": "Accounts lock after the confirmed number of failed sign-ins, once Q-002 is answered",
+      "exit_criteria": "TEST-004 defined and passing",
+      "task_ids": [
+        "TASK-004"
+      ],
+      "source_path": "backlog/backlog.md",
+      "date": null,
+      "date_basis": "none",
+      "commitment_decision": null
+    }
+  ],
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "title": "Reset tokens are stored so that they cannot be recovered",
+      "status": "READY",
+      "type": "database",
+      "priority": "high",
+      "complexity": "S",
+      "epic": "EPIC-001",
+      "feature": "FEAT-001",
+      "phase": "PHASE-01",
+      "source_requirements": [
+        "SR-001",
+        "RULE-001"
+      ],
+      "dependencies": [],
+      "blocks": [
+        "TASK-002",
+        "TASK-003"
+      ],
+      "sequence": 1,
+      "depth": 0,
+      "file": "tasks/TASK-001.json",
+      "scope": "in_scope",
+      "external_dependencies": []
+    },
+    {
+      "id": "TASK-002",
+      "title": "Users can request a password-reset email",
+      "status": "READY",
+      "type": "fullstack",
+      "priority": "high",
+      "complexity": "M",
+      "epic": "EPIC-001",
+      "feature": "FEAT-001",
+      "phase": "PHASE-01",
+      "source_requirements": [
+        "FR-AUTH-001"
+      ],
+      "dependencies": [
+        "TASK-001"
+      ],
+      "blocks": [],
+      "sequence": 2,
+      "depth": 1,
+      "file": "tasks/TASK-002.json",
+      "scope": "in_scope",
+      "external_dependencies": [
+        "DEP-001"
+      ]
+    },
+    {
+      "id": "TASK-003",
+      "title": "Users can set a new password from a valid reset link",
+      "status": "READY",
+      "type": "fullstack",
+      "priority": "high",
+      "complexity": "M",
+      "epic": "EPIC-001",
+      "feature": "FEAT-001",
+      "phase": "PHASE-01",
+      "source_requirements": [
+        "FR-AUTH-002",
+        "RULE-001"
+      ],
+      "dependencies": [
+        "TASK-001"
+      ],
+      "blocks": [],
+      "sequence": 3,
+      "depth": 1,
+      "file": "tasks/TASK-003.json",
+      "scope": "in_scope",
+      "external_dependencies": []
+    },
+    {
+      "id": "TASK-004",
+      "title": "Accounts lock after repeated failed sign-ins",
+      "status": "NEEDS_DISCOVERY",
+      "type": "backend",
+      "priority": "medium",
+      "complexity": "S",
+      "epic": "EPIC-001",
+      "feature": "FEAT-002",
+      "phase": "PHASE-02",
+      "source_requirements": [
+        "FR-AUTH-003"
+      ],
+      "dependencies": [],
+      "blocks": [],
+      "sequence": 4,
+      "depth": 0,
+      "file": "tasks/TASK-004.json",
+      "scope": "pending_decision",
+      "external_dependencies": []
+    }
+  ],
+  "sequencing": {
+    "method": "topological",
+    "tie_break": [
+      "phase_order",
+      "priority",
+      "id"
+    ],
+    "order": [
+      "TASK-001",
+      "TASK-002",
+      "TASK-003",
+      "TASK-004"
+    ]
+  },
+  "ready_task_ids": [
+    "TASK-001",
+    "TASK-002",
+    "TASK-003"
+  ],
+  "executable_now": [
+    "TASK-001"
+  ],
+  "external_dependencies": [
+    {
+      "id": "DEP-001",
+      "description": "Existing notification service accepts reset emails",
+      "type": "external_system",
+      "owner": "Fixture owner",
+      "status": "AVAILABLE",
+      "needed_for": [
+        "FEAT-001",
+        "TASK-002"
+      ],
+      "risk_ids": [
+        "RISK-001"
+      ]
+    }
+  ]
+}

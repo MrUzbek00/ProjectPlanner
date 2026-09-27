@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/project.schema.json",
+  "title": "Project metadata (project.json)",
+  "description": "Entry point of the machine handoff. A consumer reads this file first: it states the contract version, whether the specification is approved, whether the handoff is ready, and the hash of every other artifact so that a hand-edited or stale file is detectable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "name",
+    "version",
+    "specification_status",
+    "priority_scheme",
+    "specification_approval",
+    "specification_review",
+    "handoff_status",
+    "backlog_status",
+    "generated_at",
+    "generator",
+    "source_fingerprint",
+    "language",
+    "requirements_count",
+    "tasks_count",
+    "ready_tasks_count",
+    "blocked_tasks_count",
+    "task_status_counts",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/projectId"
+    },
+    "name": {
+      "$ref": "common.schema.json#/$defs/nonEmptyString"
+    },
+    "version": {
+      "description": "Specification version the handoff was generated from.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "specification_status": {
+      "$ref": "common.schema.json#/$defs/specificationStatus"
+    },
+    "specification_approval": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "approval_id",
+            "approved_by",
+            "approved_on",
+            "specification_version"
+          ],
+          "properties": {
+            "approval_id": {
+              "type": "string"
+            },
+            "approved_by": {
+              "$ref": "common.schema.json#/$defs/nonEmptyString"
+            },
+            "approved_on": {
+              "type": "string"
+            },
+            "specification_version": {
+              "$ref": "common.schema.json#/$defs/nonEmptyString"
+            }
+          }
+        }
+      ]
+    },
+    "specification_review": {
+      "description": "Summary of machine-handoff/specification-review.json: the independent review's result, cycle and the specification version it covers. handoff_status is ready only when the result is PASS or PASS_WITH_WARNINGS for the current version.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result",
+        "review_cycle",
+        "review_version"
+      ],
+      "properties": {
+        "result": {
+          "$ref": "common.schema.json#/$defs/reviewResult"
+        },
+        "review_cycle": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "review_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "handoff_status": {
+      "description": "ready: no validation errors, approved specification, a passing independent specification review of the current version and at least one READY task. not_ready: valid but nothing may be handed off yet. invalid: validation errors exist; consume nothing.",
+      "enum": [
+        "ready",
+        "not_ready",
+        "invalid"
+      ]
+    },
+    "generated_at": {
+      "$ref": "common.schema.json#/$defs/dateTime"
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "const": "project-planning-workflow/generate_handoff"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "source_fingerprint": {
+      "description": "SHA-256 over every Markdown source file the generator read, in path order. A different value on re-computation means the handoff is stale.",
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "language": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requirements_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tasks_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ready_tasks_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "blocked_tasks_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "task_status_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "DRAFT",
+        "NEEDS_DISCOVERY",
+        "NEEDS_REVIEW",
+        "BLOCKED",
+        "READY",
+        "CANCELLED"
+      ],
+      "properties": {
+        "DRAFT": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "NEEDS_DISCOVERY": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "NEEDS_REVIEW": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "BLOCKED": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "READY": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "CANCELLED": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "artifacts": {
+      "description": "Every other JSON file in the handoff, with its SHA-256. project.json and validation-report.json are not listed.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "schema",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^[a-z0-9/_.-]+\\.json$|^tasks/TASK-[0-9]{3,}(?:-S[0-9]{2,})?\\.json$"
+          },
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-z-]+\\.schema\\.json$"
+          },
+          "sha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "priority_scheme": {
+      "description": "The one prioritisation scheme used project-wide.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "enum": [
+            "levels",
+            "moscow"
+          ]
+        }
+      ]
+    },
+    "backlog_status": {
+      "$ref": "common.schema.json#/$defs/backlogStatus"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "handoff_status": {
+            "const": "ready"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "specification_status": {
+            "const": "approved"
+          },
+          "specification_approval": {
+            "type": "object"
+          },
+          "ready_tasks_count": {
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "specification_status": {
+            "const": "approved"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "specification_approval": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  ]
+}

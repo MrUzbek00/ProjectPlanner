@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/schemas/1.5/requirement.schema.json",
+  "title": "Requirement",
+  "description": "One business goal (GOAL), business requirement (BR), business rule (RULE), functional (FR), non-functional (NFR), data (DR), integration (IR), security (SR), UX (UXR) or technical (TR) requirement, generated from its Markdown register entry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "type", "title", "description", "rationale", "source", "status", "priority", "acceptance_criteria",
+    "dependencies", "related_modules", "stakeholder", "notes", "evidence", "priority_confirmed", "confidence", "scope",
+    "actor", "trigger", "permissions", "category", "business_measure", "open_questions", "superseded_by", "architecture_decisions", "source_path"
+  ],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/requirementId" },
+    "type": { "$ref": "common.schema.json#/$defs/requirementType" },
+    "title": { "$ref": "common.schema.json#/$defs/nonEmptyString" },
+    "description": { "type": "string" },
+    "rationale": { "type": "string" },
+    "source": {
+      "description": "Upstream requirements this one realises: the GOAL a BR serves, the BR an FR serves.",
+      "$ref": "common.schema.json#/$defs/requirementIdList"
+    },
+    "status": { "$ref": "common.schema.json#/$defs/requirementStatus" },
+    "priority": { "$ref": "common.schema.json#/$defs/priority" },
+    "acceptance_criteria": {
+      "description": "Acceptance conditions as written in the register. A criterion with an identifier is rendered 'AC-###: text'.",
+      "$ref": "common.schema.json#/$defs/nonEmptyStringList"
+    },
+    "dependencies": { "$ref": "common.schema.json#/$defs/requirementIdList" },
+    "related_modules": { "$ref": "common.schema.json#/$defs/moduleIdList" },
+    "stakeholder": { "type": "string" },
+    "notes": { "type": "string" },
+    "evidence": {
+      "description": "Source (SRC) and decision (DEC) records that establish this requirement.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "anyOf": [
+          { "$ref": "common.schema.json#/$defs/sourceId" },
+          { "$ref": "common.schema.json#/$defs/decisionId" }
+        ]
+      }
+    },
+    "priority_confirmed": { "type": "boolean" },
+    "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+    "scope": { "$ref": "common.schema.json#/$defs/scope" },
+    "actor": { "type": ["string", "null"] },
+    "trigger": { "type": ["string", "null"] },
+    "permissions": { "type": ["string", "null"] },
+    "category": { "type": ["string", "null"] },
+    "business_measure": {
+      "description": "Measure, baseline and target for a business goal; null for other types.",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["measure", "baseline", "target"],
+          "properties": {
+            "measure": { "type": "string" },
+            "baseline": { "type": "string" },
+            "target": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "open_questions": {
+      "description": "Unresolved questions that affect this requirement.",
+      "$ref": "common.schema.json#/$defs/questionIdList"
+    },
+    "superseded_by": {
+      "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/requirementId" }]
+    },
+    "architecture_decisions": {
+      "description": "Architecture decisions that materially affect this requirement: named by the requirement (requirement) or by the ADR's Related requirements (adr). Rejected, superseded and deprecated ADRs appear only when the requirement itself names them, which is an error for a live requirement.",
+      "$ref": "common.schema.json#/$defs/adrLinkList"
+    },
+    "source_path": { "$ref": "common.schema.json#/$defs/sourcePath" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": { "enum": ["functional", "non_functional", "data", "integration", "security", "ux", "technical"] },
+          "status": { "const": "approved" }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance_criteria": { "minItems": 1 },
+          "description": { "minLength": 1 }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "enum": ["confirmed", "approved"] } } },
+      "then": { "properties": { "confidence": { "const": "confirmed" } } }
+    },
+    {
+      "if": { "properties": { "status": { "const": "superseded" } } },
+      "then": { "properties": { "superseded_by": { "$ref": "common.schema.json#/$defs/requirementId" } } }
+    }
+  ]
+}

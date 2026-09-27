@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/project-planning-workflow/integration/1.0/architecture-reference.schema.json",
+  "title": "Architecture decision reference (consumer view)",
+  "description": "One entry of machine-handoff/architecture.json `decisions`, as a downstream engineering system reads it when a task relies on the decision. The planner's full shape is fixed by schemas/architecture-decision.schema.json; other fields are tolerated. Only an accepted decision governs work.",
+  "type": "object",
+  "required": ["id", "title", "status", "active", "decision", "constraints", "superseded_by"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^ADR-[0-9]{3,}$" },
+    "title": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["proposed", "accepted", "rejected", "superseded", "deprecated"] },
+    "active": {
+      "description": "True only for an accepted decision.",
+      "type": "boolean"
+    },
+    "decision": { "type": "string" },
+    "constraints": {
+      "description": "Constraints the decision places on downstream work, in reviewable language.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "superseded_by": {
+      "anyOf": [{ "type": "null" }, { "type": "string", "pattern": "^ADR-[0-9]{3,}$" }]
+    }
+  }
+}
