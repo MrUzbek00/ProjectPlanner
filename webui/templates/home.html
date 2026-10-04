@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block body_class %}app{% endblock %}
+{% block topbar_class %}wide-bar{% endblock %}
+{% block main_class %}wide{% endblock %}
+{% block footer %}{% endblock %}
+{% block content %}
+{% set m = wmap %}
+<section class="wm-shell" data-shell>
+  <aside class="wm-side" id="wm-side">
+    <div class="wm-side-head">
+      <span class="wm-side-title">Workflow map / views</span>
+      <button type="button" class="wm-collapse" data-side-toggle aria-controls="wm-side" aria-expanded="true"
+              title="Collapse the sidebar">‹</button>
+    </div>
+
+    <div class="wm-side-body">
+      <label class="wm-label" for="wm-project">Project</label>
+      <select id="wm-project" class="wm-select" data-navigate>
+        {% for p, v in cards %}
+        <option value="?project={{ p.slug }}" {{ 'selected' if view and view.project.slug == p.slug }}>
+          {{ v.name if v.name is defined else p.label }}{% if v.message is defined %} (cannot evaluate){% endif %}
+        </option>
+        {% endfor %}
+        <option value="?project=none" {{ 'selected' if not view }}>— The method only —</option>
+      </select>
+
+      <div class="wm-label">Run</div>
+      <table class="wm-run"><tbody>
+        {% if view %}
+          {% set p = view.doc('project.json') %}
+          {% set t = view.gate_tally %}
+          <tr><th>mode</th><td>project</td></tr>
+          <tr><th>project id</th><td>{{ view.project_id }}</td></tr>
+          <tr><th>project</th><td>{{ view.name }}</td></tr>
+          <tr><th>current stage</th><td>{{ view.state.get('current stage') or '—' }}</td></tr>
+          <tr><th>gates passed</th><td>{{ t.pass + t.warn }} / {{ t.pass + t.warn + t.fail }}{% if t.notdue %} <span class="wm-dim">({{ t.notdue }} not due)</span>{% endif %}</td></tr>
+          <tr><th>specification</th><td>{{ p.get('version') or '—' }} {{ p.get('specification_status') or '—' }}</td></tr>
+          <tr><th>spec review</th><td>{{ (p.get('specification_review') or {}).get('result', 'NOT_REVIEWED') | human }}</td></tr>
+          <tr><th>backlog</th><td>{{ (view.doc('backlog-readiness.json').get('status') or 'NOT_READY') | human }} · {{ p.get('ready_tasks_count', 0) }}/{{ p.get('tasks_count', 0) }} ready</td></tr>
+          <tr><th>handoff</th><td>{{ ((view.handoff.manifest or {}).get('handoff_status') or 'not generated') | human }}{% if view.handoff.stale %} <span class="wm-bad">stale</span>{% endif %}</td></tr>
+          <tr><th>source</th><td class="wm-dim">{{ view.fingerprint[:12] }}</td></tr>
+          <tr><th>path</th><td class="wm-dim wm-break">{{ view.project.path }}</td></tr>
+        {% else %}
+          <tr><th>mode</th><td>method</td></tr>
+          <tr><th>stages</th><td>{{ stage_count }} (with 8A/8B and 10A/10B)</td></tr>
+          <tr><th>gates</th><td>{{ m.nodes | length }} + GC</td></tr>
+          <tr><th>source</th><td class="wm-dim">WORKFLOW.md</td></tr>
+        {% endif %}
+      </tbody></table>
+
+      {% if view %}
+      <div class="wm-label">Views</div>
+      <nav class="wm-views">
+        {% for key, name in tabs %}<a href="{{ url_for(key, slug=view.project.slug) }}">{{ name }}</a>{% endfor %}
+        <a href="{{ url_for('method_overview') }}">The method</a>
+      </nav>
+      {% endif %}
+
+      <div class="wm-label">Projects</div>
+      <div class="wm-projects">
+        {% for p, v in cards %}
+        <a class="wm-proj{{ ' on' if view and view.project.slug == p.slug }}" href="{{ url_for('overview', slug=p.slug) }}">
+          {% if v.message is defined %}
+            <span class="wm-proj-name">{{ p.label }}</span>
+            <span class="wm-proj-meta wm-bad">cannot evaluate: {{ v.message }}</span>
+          {% else %}
+            <span class="wm-proj-name">{{ v.name }}</span>
+            <span class="wm-proj-meta">{{ v.project_id }} · stage {{ v.current_stage or '—' }} · {{ v.gate_tally.fail }} failing</span>
+            <span class="wm-proj-steps">{% for s in v.steps %}<i class="{{ s.state }}" title="Stage {{ s.label }}: {{ s.name }}"></i>{% endfor %}</span>
+          {% endif %}
+        </a>
+        {% else %}
+        <div class="wm-empty">
+          <strong>No projects yet.</strong> Projects are folders containing a <code>project-state.md</code>{% if projects_dir %} under <code>{{ projects_dir }}</code>{% endif %}.
+          Open the committed example with <code>python -m webui --sample</code>.
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="wm-label">Legend</div>
+      <ul class="wm-legend">
+        <li><span class="wm-dot pass"></span>gate passed</li>
+        <li><span class="wm-dot warn"></span>passed with warnings</li>
+        <li><span class="wm-dot fail"></span>failing</li>
+        <li><span class="wm-dot current"></span>current stage</li>
+        <li><span class="wm-dot notdue"></span>not reached yet</li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="wm-main">
+    <header class="wm-head">
+      <h1>Workflow <span>Map</span></h1>
+      <p>A map of the {{ stage_count }}-stage planning workflow this repository defines, drawn from <code>WORKFLOW.md</code>.</p>
+      {% if view %}
+      <p>Gate status computed from the records in <code>{{ view.project.path }}</code>. Every status comes from <code>tools/check_gates.py</code>; open a stage to see why.</p>
+      {% else %}
+      <p>No project selected: the map shows the method. Open a stage to read its procedure.</p>
+      {% endif %}
+    </header>
+
+    <div class="wm-stage" data-map-stage>
+      <div class="wm-canvas" data-map-canvas data-width="{{ m.width }}" data-height="{{ m.height }}"
+           style="width:{{ m.width }}px;height:{{ m.height }}px">
+        {% for lane in m.lanes %}
+        <div class="wm-lane" style="left:{{ lane.x }}px;width:{{ lane.w }}px">
+          <div class="wm-lane-head" style="color:{{ lane.color }}">{{ lane.title }}</div>
+        </div>
+        {% endfor %}
+
+        <svg class="wm-edges" width="{{ m.width }}" height="{{ m.height }}" viewBox="0 0 {{ m.width }} {{ m.height }}" aria-hidden="true">
+          {% for e in m.edges %}
+          <path d="{{ e.path }}" stroke="{{ e.color }}" class="wm-edge{{ ' dashed' if e.dashed }}{{ ' idle' if not e.flow }}"/>
+          {% endfor %}
+          {# Flow: marching dashes and a glowing particle travelling from each stage to the next. #}
+          {% for e in m.edges if e.flow %}
+          <path d="{{ e.path }}" class="wm-flow" style="animation-delay:-{{ e.delay }}s"/>
+          <circle class="wm-particle" r="3.2" fill="{{ e.color }}" style="color:{{ e.color }}" opacity="0">
+            <animateMotion dur="{{ e.duration }}s" begin="{{ e.delay }}s" repeatCount="indefinite" path="{{ e.path }}"/>
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.85;1"
+                     dur="{{ e.duration }}s" begin="{{ e.delay }}s" repeatCount="indefinite"/>
+          </circle>
+          {% endfor %}
+          {% for e in m.edges if e.gate %}
+          <g class="wm-gate {{ e.gate_status or 'none' }}" transform="translate({{ e.mx }} {{ e.my }})">
+            <circle r="9"/>
+            <text class="wm-gate-mark" y="3.5">{{ {'pass': '✓', 'warn': '!', 'fail': '✕', 'notdue': '·'}.get(e.gate_status, '') }}</text>
+            <text class="wm-gate-label" x="{{ 14 if e.label_dx else 0 }}" y="{{ 3.5 if e.label_dx else 22 }}" text-anchor="{{ 'start' if e.label_dx else 'middle' }}">{{ e.gate }}</text>
+          </g>
+          {% endfor %}
+        </svg>
+
+        {% for n in m.nodes %}
+        <a class="wm-card st-{{ n.status or 'none' }}{{ ' current' if n.current }}" href="{{ n.href }}" draggable="false"
+           style="left:{{ n.x }}px;top:{{ n.y }}px" title="Stage {{ n.label }} — {{ n.name }} · exit gate {{ n.gate }} — {{ n.gate_name }}{% if n.issues %} · {{ n.issues }} issue(s){% endif %}">
+          <span class="wm-bar" style="background:{{ n.color }}"></span>
+          <span class="wm-title">{{ n.short }}</span>
+          <span class="wm-sub">{{ n.purpose }}</span>
+          <span class="wm-chips">
+            <span class="wm-chip">stage {{ n.label }}</span>
+            <span class="wm-chip gate">{{ n.gate }}</span>
+            {% if n.status %}
+              <span class="wm-chip status {{ n.status }}">{{ {'pass': 'passed', 'warn': 'warnings', 'fail': 'failing', 'notdue': 'not due'}[n.status] }}</span>
+              {% if n.current %}<span class="wm-chip status current">current</span>{% endif %}
+            {% else %}
+              <span class="wm-chip">{{ n.templates }} templates</span>
+            {% endif %}
+          </span>
+        </a>
+        {% endfor %}
+
+        <div class="wm-terminal" style="left:{{ m.terminal.x }}px;top:{{ m.terminal.y }}px;width:{{ m.terminal.w }}px">
+          {{ m.terminal.text }}
+          {% if m.terminal.status %}<span class="wm-terminal-status">{{ m.terminal.status | human }}</span>{% endif %}
+        </div>
+
+        {% if m.loop_caption %}
+        <div class="wm-caption" style="left:{{ m.loop_caption.x }}px;top:{{ m.loop_caption.y }}px;width:{{ m.loop_caption.w }}px">{{ m.loop_caption.text }}</div>
+        {% endif %}
+      </div>
+
+      <div class="wm-hint">Drag to move · scroll to zoom · double-click to fit</div>
+      <div class="wm-tools" role="toolbar" aria-label="Map view">
+        <button type="button" data-zoom="out" title="Zoom out" aria-label="Zoom out">−</button>
+        <span class="wm-zoom" data-zoom-level>100%</span>
+        <button type="button" data-zoom="in" title="Zoom in" aria-label="Zoom in">+</button>
+        <button type="button" data-zoom="fit" title="Fit the whole map">Fit</button>
+      </div>
+    </div>
+
+    <div class="wm-change">
+      <span class="wm-chip gate">GC</span>
+      <strong>Change control — continuous.</strong>
+      Once the specification is approved, every meaningful change is recorded, analysed and human-decided, and the gates re-run from the earliest affected stage.
+      {% if m.change_gate %}<span class="wm-chip status {{ m.change_gate.css }}">{{ {'pass': 'passed', 'warn': 'warnings', 'fail': 'failing', 'notdue': 'not due'}[m.change_gate.css] }}</span>{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

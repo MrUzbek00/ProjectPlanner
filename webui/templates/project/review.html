@@ -1,0 +1,56 @@
+{% extends "project/_layout.html" %}
+{% block body %}
+{% set r = v.doc('specification-review.json') %}
+{% set s = r.get('summary') or {} %}
+<p class="muted-text">The specification is never trusted on its author's word. A reviewer who did not write it records evidenced findings; the author resolves them where they belong, and a later cycle verifies the resolution.</p>
+<div class="grid">
+  <div class="card stat"><span class="value">{{ (r.get('overall_result') or 'NOT_REVIEWED') | badge }}</span><span class="name">Result · cycle {{ r.get('review_cycle', 0) }} · version {{ r.get('review_version') or '—' }}</span></div>
+  <div class="card stat"><span class="value">{{ s.get('critical', 0) }} / {{ s.get('major', 0) }}</span><span class="name">Open critical / major</span></div>
+  <div class="card stat"><span class="value">{{ s.get('minor', 0) }} / {{ s.get('observation', 0) }}</span><span class="name">Open minor / observations</span></div>
+  <div class="card stat"><span class="value">{{ s.get('accepted_risk', 0) }}</span><span class="name">Accepted risks</span></div>
+</div>
+<div class="card" style="margin-top:1rem">
+  <table class="kv"><tbody>
+    <tr><th>Reviewer</th><td>{{ r.get('reviewer') or '—' }}</td></tr>
+    <tr><th>Specification author</th><td>{{ r.get('specification_author') or '—' }}</td></tr>
+    <tr><th>Review date</th><td>{{ r.get('review_date') or '—' }}</td></tr>
+  </tbody></table>
+</div>
+
+{% if r.get('issues') %}
+<div class="notice bad" style="margin-top:1rem"><strong>Defects in the review record itself</strong> (these alone make the result FAIL)
+  <ul>{% for i in r.issues %}<li>{{ i if i is string else (i.get('message') or i) }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<h2>Findings</h2>
+{% for f in r.get('findings', []) | sort(attribute='id') %}
+<details class="card gate {{ 'pass' if f.status in ['RESOLVED', 'REJECTED'] else ('fail' if f.severity in ['CRITICAL', 'MAJOR'] else 'warn') }}">
+  <summary>
+    <span class="gid">{{ f.id }}</span>
+    <span class="gname">{{ f.title }}<span class="gstage">{{ f.category | human }} · raised in cycle {{ f.raised_in_cycle }}{% if f.closed_in_cycle %} · closed in cycle {{ f.closed_in_cycle }}{% endif %}</span></span>
+    {{ f.severity | badge }} {{ f.status | badge }}
+  </summary>
+  <table class="kv" style="margin-top:.6rem"><tbody>
+    <tr><th>Affected</th><td>{{ ids(f.affected_artifacts, v) }}</td></tr>
+    <tr><th>Evidence</th><td>{{ linkify(f.evidence, v) }}</td></tr>
+    <tr><th>Why it matters</th><td>{{ linkify(f.why_it_matters, v) }}</td></tr>
+    <tr><th>Required action</th><td>{{ linkify(f.required_action, v) }}</td></tr>
+    <tr><th>Resolved in stage</th><td>{{ f.return_to_stage or '—' }}</td></tr>
+    {% if f.get('resolution') %}<tr><th>Resolution</th><td>{{ linkify(f.resolution if f.resolution is string else (f.resolution.get('summary') or f.resolution), v) }}</td></tr>{% endif %}
+  </tbody></table>
+</details>
+{% else %}
+<div class="card empty">No findings recorded.</div>
+{% endfor %}
+
+{% if r.get('cycles') %}
+<h2>Review cycles</h2>
+<div class="card table-wrap"><table>
+  <thead><tr><th>Cycle</th><th>Date</th><th>Version</th><th>Result</th><th>Findings</th><th>Critical / major / minor / obs.</th><th>Resolved since previous</th></tr></thead>
+  <tbody>
+  {% for c in r.cycles %}<tr><td>{{ c.review_cycle }}</td><td>{{ c.review_date }}</td><td>{{ c.review_version }}</td><td>{{ c.overall_result | badge }}</td><td>{{ c.finding_count }}</td><td>{{ c.critical_count }} / {{ c.major_count }} / {{ c.minor_count }} / {{ c.observation_count }}</td><td>{{ c.resolved_since_previous }}</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% macro gate_card(g) -%}
+<details class="gate {{ g.css }}" id="gate-{{ g.gate }}"{% if g.css == 'fail' %} open{% endif %}>
+  <summary>
+    <span class="gid">{{ g.gate }}</span>
+    <span class="gname">{{ g.name }}<span class="gstage">{{ g.label }}{% if g.number %} · {{ g.stage }}{% endif %}</span></span>
+    {{ g.result | badge }}
+  </summary>
+  {% if g.claimed and g.due %}<p class="small muted-text">project-state.md records: {{ g.claimed | human }}</p>{% endif %}
+  {% if g.issues and g.due %}
+  <ul>
+    {% for i in g.issues %}<li class="{{ i.level }}">{{ i.message }}{% if i.location %}<span class="issue-loc">{{ i.location }}</span>{% endif %}</li>{% endfor %}
+  </ul>
+  {% elif g.due %}<p class="small muted-text">Every automated criterion is met.</p>
+  {% else %}<p class="small muted-text">The project has not reached this stage yet.</p>{% endif %}
+</details>
+{%- endmacro %}
+
+{% macro kv(rows) -%}
+<table class="kv"><tbody>
+{% for k, val in rows %}<tr><th>{{ k }}</th><td>{{ val }}</td></tr>{% endfor %}
+</tbody></table>
+{%- endmacro %}
+
+{% macro criteria(items, v) -%}
+{% if items %}<ul class="ac-list">{% for c in items %}<li>{{ linkify(c, v) }}</li>{% endfor %}</ul>
+{% else %}<p class="muted-text">None.</p>{% endif %}
+{%- endmacro %}
+
+{% macro source(path) -%}
+{% if path %}<p class="small muted-text">Source record: <code>{{ path }}</code></p>{% endif %}
+{%- endmacro %}

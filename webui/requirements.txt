@@ -1,0 +1,4 @@
+# Web UI dependencies (python -m webui). Install: python -m pip install -r webui/requirements.txt
+flask>=3.0
+markdown>=3.5
+-r ../tools/requirements-handoff.txt

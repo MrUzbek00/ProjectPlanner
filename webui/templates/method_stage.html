@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · The method{% endblock %}
+{% block content %}
+<div class="crumbs"><a href="{{ url_for('method_overview') }}">The method</a> / Stage {{ number }}</div>
+<h1>{{ title }}</h1>
+{% for s in stages %}
+<p>Exit gate {{ s.gate | badge(s.gate ~ ' — ' ~ s.gate_name) }}{% if s.label != number|string %} <span class="small muted-text">(stage {{ s.label }})</span>{% endif %}</p>
+{% endfor %}
+<div class="card prose">{{ html }}</div>
+<p style="margin-top:1rem">
+  {% if number > 1 %}<a class="button" href="{{ url_for('method_stage', number=number - 1) }}">← Stage {{ number - 1 }}</a>{% endif %}
+  {% if number < last %}<a class="button" href="{{ url_for('method_stage', number=number + 1) }}">Stage {{ number + 1 }} →</a>{% endif %}
+</p>
+<p class="small muted-text">Rendered from <code>WORKFLOW.md</code>.</p>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "project/_layout.html" %}
+{% block body %}
+{% set h = v.handoff %}
+{% set m = h.manifest or {} %}
+{% set rep = h.report or {} %}
+<p class="muted-text">The machine handoff is the versioned JSON contract read by downstream engineering, through <code>handoff-manifest.json</code>. This page shows what is <em>on disk</em>; this UI never regenerates it.</p>
+
+{% if not h.exists %}
+<div class="notice warn">No machine handoff has been generated. Generate it with <code>python tools/generate_handoff.py {{ v.project.path }}</code>.</div>
+{% elif h.stale %}
+<div class="notice warn"><strong>Stale.</strong> The records changed after this handoff was generated ({{ h.generated_at or 'unknown time' }}). Regenerate it before handing anything to engineering.</div>
+{% else %}
+<div class="notice good">Current: generated {{ h.generated_at or '—' }} from the records as they are now.</div>
+{% endif %}
+
+{% if h.exists %}
+<div class="grid">
+  <div class="card stat"><span class="value">{{ (m.get('handoff_status') or 'NO MANIFEST') | badge }}</span><span class="name">Handoff status</span></div>
+  <div class="card stat"><span class="value">{{ m.get('handoff_version') or '—' }}</span><span class="name">Handoff version · contract {{ m.get('schema_version') or '—' }} · format {{ m.get('planner_schema_version') or (h.project or {}).get('schema_version') or '—' }}</span></div>
+  <div class="card stat"><span class="value">{{ (rep.get('result') or '—') | badge }}</span><span class="name">Validation · {{ (rep.get('summary') or {}).get('errors', 0) }} errors · {{ (rep.get('summary') or {}).get('warnings', 0) }} warnings</span></div>
+  <div class="card stat"><span class="value">{{ (m.get('ready_tasks') or []) | length }}</span><span class="name">Tasks ready for handoff</span></div>
+</div>
+
+{% if m %}
+<div class="cols" style="margin-top:1rem">
+  <div class="card">
+    <h3>Ready for engineering</h3>
+    {{ ids(m.get('ready_tasks'), v) }}
+    <h3>Task identity</h3>
+    <div class="table-wrap"><table><thead><tr><th>Task</th><th>Status</th><th>Revision</th><th>Content hash</th></tr></thead><tbody>
+    {% for t in m.get('tasks', []) %}<tr><td>{{ linkify(t.id, v) }}</td><td>{{ t.status | badge }}</td><td>{{ t.revision }}</td><td class="small mono" title="{{ t.content_hash }}">{{ t.content_hash[:19] }}…</td></tr>{% endfor %}
+    </tbody></table></div>
+  </div>
+  <div class="card">
+    <h3>Validation flags</h3>
+    {% for k, ok in (m.get('validation') or {}).items() %}<div class="check {{ 'ok' if ok else 'no' }}" style="margin-bottom:.35rem"><span class="dot"></span>{{ k | human | label }}</div>{% endfor %}
+  </div>
+</div>
+<div class="card table-wrap" style="margin-top:1rem">
+  <h3>Files</h3>
+  <table><thead><tr><th>File</th><th>Role</th><th>SHA-256</th></tr></thead><tbody>
+  {% for f in m.get('files', []) %}<tr><td><code>{{ f.path }}</code></td><td>{{ f.role | human }}</td><td class="small mono">{{ f.sha256[:16] }}…</td></tr>{% endfor %}
+  </tbody></table>
+</div>
+{% endif %}
+
+{% if rep.get('errors') or rep.get('warnings') %}
+<h2>Validation findings</h2>
+<div class="card table-wrap"><table><thead><tr><th>Level</th><th>Code</th><th>Message</th><th>Location</th></tr></thead><tbody>
+{% for f in rep.get('errors', []) %}<tr><td>{{ 'FAIL' | badge('error') }}</td><td class="mono small">{{ f.code }}</td><td>{{ linkify(f.message, v) }}</td><td class="small mono">{{ f.location }}</td></tr>{% endfor %}
+{% for f in rep.get('warnings', []) %}<tr><td>{{ 'WARN' | badge('warning') }}</td><td class="mono small">{{ f.code }}</td><td>{{ linkify(f.message, v) }}</td><td class="small mono">{{ f.location }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+
+{% if rep.get('non_ready_tasks') %}
+<h2>Not ready, and why</h2>
+{% for t in rep.non_ready_tasks %}
+<div class="card"><p>{{ linkify(t.id, v) }} {{ t.status | badge }}</p><ul class="small">{% for r in t.reasons %}<li>{{ linkify(r, v) }}</li>{% endfor %}</ul></div>
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endblock %}

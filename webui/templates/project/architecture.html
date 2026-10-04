@@ -1,0 +1,66 @@
+{% extends "project/_layout.html" %}
+{% block body %}
+{% set a = v.doc('architecture.json') %}
+{% set s = a.get('summary') or {} %}
+<div class="grid">
+  {% for key in ['accepted', 'proposed', 'rejected', 'superseded', 'deprecated', 'decisions_required'] %}
+  <div class="card stat"><span class="value">{{ s.get(key, 0) }}</span><span class="name">{{ key | human | label }}</span></div>
+  {% endfor %}
+</div>
+
+<h2>Architecture decisions</h2>
+<div class="card table-wrap">
+  <table>
+    <thead><tr><th>ADR</th><th>Decision</th><th>Status</th><th>Owner</th><th>Reaches</th></tr></thead>
+    <tbody>
+    {% for d in v.adrs %}
+      {% set reach = v.adr_reach(d.id) %}
+      <tr>
+        <td><a class="rid" href="{{ url_for('adr', slug=v.project.slug, item_id=d.id) }}">{{ d.id }}</a></td>
+        <td>{{ d.title }}</td>
+        <td>{{ d.status | badge }}</td>
+        <td>{{ d.decision_owner or '—' }}</td>
+        <td class="small">{{ (reach.get('requirement_ids') or []) | length }} requirements · {{ (reach.get('task_ids') or []) | length }} tasks</td>
+      </tr>
+    {% else %}<tr><td colspan="5" class="muted-text">No ADRs recorded yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if a.get('conflict_reviews') %}
+<h2>Architecture conflicts</h2>
+<div class="card table-wrap"><table><thead><tr><th>Item</th><th>ADR</th><th>Resolution</th></tr></thead><tbody>
+{% for c in a.conflict_reviews %}<tr><td>{{ linkify(c.get('item') or c.get('id'), v) }}</td><td>{{ linkify(c.get('adr') or c.get('adr_id'), v) }}</td><td>{{ c.get('resolution') or c.get('status') }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+
+<h2>Concern coverage</h2>
+<p class="muted-text">Every architecture concern is classified, with evidence. An open choice that shapes requirements, security or the backlog is DECISION REQUIRED, never an invented answer.</p>
+<div class="card table-wrap">
+  <table>
+    <thead><tr><th>Concern</th><th>Status</th><th>ADRs / questions</th><th>Rationale</th></tr></thead>
+    <tbody>
+    {% for c in a.get('coverage', []) %}
+      <tr><td>{{ c.concern }}</td><td>{{ c.status | badge }}</td><td>{{ ids((c.adr_ids or []) + (c.question_ids or []), v) }}</td><td class="small">{{ linkify(c.rationale, v) }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if a.get('principles') %}
+<h2>Principles</h2>
+<div class="grid wide">
+  {% for p in a.principles %}
+  <div class="card"><p><span class="mono">{{ p.id }}</span> {{ p.status | badge }}</p><p><strong>{{ p.statement }}</strong></p><p class="small muted-text">{{ p.rationale }}</p></div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if a.get('modules') %}
+<h2>Modules</h2>
+<div class="card table-wrap"><table><thead><tr><th>Module</th><th>Name</th><th>Type</th><th>Purpose</th></tr></thead><tbody>
+{% for m in a.modules %}<tr><td class="mono">{{ m.id }}</td><td>{{ m.get('name') or m.get('title') }}</td><td>{{ (m.get('type') or '') | human }}</td><td class="small">{{ m.get('purpose') or m.get('description') or '' }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+{% endblock %}

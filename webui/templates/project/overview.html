@@ -1,0 +1,53 @@
+{% extends "project/_layout.html" %}
+{% from "_macros.html" import gate_card %}
+{% block body %}
+{% set p = v.doc('project.json') %}
+{% set br = v.doc('backlog-readiness.json') %}
+{% set t = v.gate_tally %}
+
+<div class="card">
+  <h2>Progress through the stages</h2>
+  <div class="stepper">{% for s in v.steps %}<div class="step {{ s.state }}" title="Stage {{ s.label }}: {{ s.name }}"></div>{% endfor %}</div>
+  <div class="stepper-labels">{% for s in v.steps %}<span class="{{ 'on' if s.number == v.current_stage }}">{{ s.number }}</span>{% endfor %}</div>
+  <p class="small muted-text" style="margin-top:.6rem">Teal: gates passed · amber: passed with warnings · red: failing · blue: current stage · grey: not reached.</p>
+</div>
+
+<div class="grid" style="margin-top:1rem">
+  <div class="card stat"><span class="value">{{ t.pass + t.warn }}/{{ t.pass + t.warn + t.fail }}</span><span class="name">Due gates passing{% if t.warn %} ({{ t.warn }} with warnings){% endif %}</span></div>
+  <div class="card stat"><span class="value">{{ v.requirements | length }}</span><span class="name">Requirements</span></div>
+  <div class="card stat"><span class="value">{{ p.get('ready_tasks_count', 0) }}/{{ p.get('tasks_count', 0) }}</span><span class="name">Tasks READY · backlog {{ (br.get('status') or 'NOT_READY') | badge }}</span></div>
+  <div class="card stat"><span class="value">{{ (p.get('specification_review') or {}).get('result', 'NOT_REVIEWED') | badge }}</span><span class="name">Independent specification review, cycle {{ (p.get('specification_review') or {}).get('review_cycle', 0) }}</span></div>
+</div>
+
+{% if v.violations %}
+<div class="notice bad" style="margin-top:1rem">
+  <strong>project-state.md claims more than the records support</strong>
+  <ul>{% for i in v.violations %}<li>{{ i.message }}{% if i.location %} <span class="issue-loc">{{ i.location }}</span>{% endif %}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+{% if v.handoff.stale %}
+<div class="notice warn" style="margin-top:1rem">The machine handoff on disk was generated from older records. Regenerate it with <code>python tools/generate_handoff.py {{ v.project.path }}</code>.</div>
+{% endif %}
+
+<div class="section-head"><h2>Gates</h2><button class="button small" type="button" data-toggle-all="details.gate">Expand / collapse all</button></div>
+<div class="gates">{% for g in v.gates %}{{ gate_card(g) }}{% endfor %}</div>
+
+<div class="cols" style="margin-top:1.5rem">
+  <div class="card">
+    <h2>Project state</h2>
+    <table class="kv"><tbody>
+      {% for key, value in v.state.items() %}<tr><th>{{ key | label }}</th><td>{{ value }}</td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+  <div class="card">
+    <h2>Specification review</h2>
+    {% if v.review_summary %}
+    <table class="kv"><tbody>
+      {% for key, value in v.review_summary.items() %}<tr><th>{{ key | label }}</th><td>{% if loop.first %}{{ value | badge }}{% else %}{{ value }}{% endif %}</td></tr>{% endfor %}
+    </tbody></table>
+    {% else %}<p class="muted-text">No review summary recorded in project-state.md.</p>{% endif %}
+    <p><a href="{{ url_for('review', slug=v.project.slug) }}">Findings and cycles →</a></p>
+  </div>
+</div>
+{% endblock %}

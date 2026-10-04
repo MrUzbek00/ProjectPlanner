@@ -1,0 +1,64 @@
+{% extends "project/_layout.html" %}
+{% block body %}
+{% set b = v.doc('backlog.json') %}
+{% set br = v.doc('backlog-readiness.json') %}
+{% set sm = br.get('summary') or {} %}
+<div class="grid">
+  <div class="card stat"><span class="value">{{ (br.get('status') or 'NOT_READY') | badge }}</span><span class="name">Backlog readiness</span></div>
+  <div class="card stat"><span class="value">{{ sm.get('ready', 0) }}/{{ sm.get('active', 0) }}</span><span class="name">Active tasks READY</span></div>
+  <div class="card stat"><span class="value">{{ sm.get('needs_discovery', 0) + sm.get('needs_review', 0) + sm.get('draft', 0) }}</span><span class="name">Need discovery, review or drafting</span></div>
+  <div class="card stat"><span class="value">{{ sm.get('blocked', 0) }}</span><span class="name">Blocked</span></div>
+</div>
+
+{% if br.get('work_sets') %}
+<h2>Ready work sets</h2>
+<p class="muted-text">What can start now (WS-01), and what follows once its predecessors are done.</p>
+<div class="grid">
+  {% for ws in br.work_sets %}
+  <div class="card"><h3>{{ ws.id }}</h3>{{ ids(ws.task_ids, v) }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if br.get('flags') %}
+<h2>Review flags</h2>
+<p class="muted-text">Flags are for discussion; the tools never merge, split or change a task on a flag alone.</p>
+<div class="card table-wrap"><table><thead><tr><th>Flag</th><th>Tasks</th><th>Message</th></tr></thead><tbody>
+{% for f in br.flags %}<tr><td>{{ f.kind | badge }}</td><td>{{ ids(f.task_ids, v) }}</td><td>{{ linkify(f.message, v) }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+
+<h2>Epics, features and tasks</h2>
+{% for e in b.get('epics', []) %}
+<div class="card epic">
+  <h3 style="margin-top:0"><span class="mono">{{ e.id }}</span> — {{ e.title }} {{ e.status | badge }}</h3>
+  <p class="small muted-text">{{ e.goal }}</p>
+  {% for fid in e.feature_ids %}{% set f = v.feature(fid) %}{% if f %}
+  <div class="feature">
+    <strong><span class="mono">{{ f.id }}</span> — {{ f.title }}</strong> {{ f.status | badge }} {{ f.scope | badge }}
+    <div class="small muted-text">{{ f.goal }} · requirements {{ ids(f.requirement_ids, v) }}</div>
+    <ul class="tasklist">
+      {% for tid in f.task_ids %}{% set t = v.task(tid) %}{% if t %}
+      {% set entry = (b.tasks | selectattr('id', 'equalto', t.id) | first) or {} %}
+      <li>
+        <span class="seq">#{{ entry.get('sequence') or '–' }}</span>
+        <a class="rid" href="{{ url_for('task', slug=v.project.slug, item_id=t.id) }}">{{ t.id }}</a>
+        <span style="flex:1">{{ t.title }}</span>
+        {{ t.status | badge }}
+      </li>
+      {% endif %}{% else %}<li class="muted-text small">{{ f.get('no_tasks_reason') or 'No tasks yet.' }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}{% endfor %}
+</div>
+{% else %}
+<div class="card empty">No backlog yet — epics, features and tasks are created only after the specification is reviewed and approved (gate G8).</div>
+{% endfor %}
+
+{% if b.get('phases') %}
+<h2>Roadmap phases</h2>
+<div class="card table-wrap"><table><thead><tr><th>Phase</th><th>Objective</th><th>Exit criteria</th><th>Tasks</th></tr></thead><tbody>
+{% for ph in b.phases | sort(attribute='order') %}<tr><td><strong>{{ ph.id }}</strong><br><span class="small">{{ ph.title }}</span></td><td class="small">{{ ph.objective }}</td><td class="small">{{ linkify(ph.exit_criteria, v) }}</td><td>{{ ids(ph.task_ids, v) }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+{% endblock %}

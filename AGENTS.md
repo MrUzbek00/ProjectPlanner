@@ -161,7 +161,7 @@ The machine handoff is the only channel to downstream engineering (SoftwareFacto
 
 ## Scope boundaries
 
-This workflow authorises local planning work: the project records, the diagram skills, `tools/check_gates.py`, `tools/specification_review.py`, `tools/backlog_readiness.py`, `tools/analyze_change_impact.py` (and its alias `tools/impact_analysis.py`), `tools/build_deliverables.py`, `tools/generate_handoff.py` and `tools/handoff_contract.py`, writing into the project's own folders. It does not authorise application implementation, deployments, tracker publication, uploading documents to an external service, or messages to other people. Continue authorised local, reversible planning work without unnecessary permission questions.
+This workflow authorises local planning work: the project records, the diagram skills, `tools/check_gates.py`, `tools/specification_review.py`, `tools/backlog_readiness.py`, `tools/analyze_change_impact.py` (and its alias `tools/impact_analysis.py`), `tools/build_deliverables.py`, `tools/generate_handoff.py` and `tools/handoff_contract.py`, writing into the project's own folders, and the read-only web UI (`python -m webui`), which never writes to a project. It does not authorise application implementation, deployments, tracker publication, uploading documents to an external service, or messages to other people. Continue authorised local, reversible planning work without unnecessary permission questions.
 
 Use one language per project's final documents unless bilingual output is explicitly requested. Preserve necessary Uzbek/Russian domain terminology with normalised definitions. Use Mermaid inside working records only when it clarifies a confirmed model; it is a thinking aid, not a delivered diagram.
 

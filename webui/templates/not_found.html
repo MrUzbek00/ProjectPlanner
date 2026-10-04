@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card empty">
+  <h1>Not found</h1>
+  <p>There is no such project, record or page.</p>
+  <p><a class="button" href="{{ url_for('home') }}">Back to projects</a></p>
+</div>
+{% endblock %}

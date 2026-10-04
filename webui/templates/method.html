@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}The method · Project Planning Workflow{% endblock %}
+{% block content %}
+<h1>The method</h1>
+<p class="lead">The workflow reduces uncertainty progressively. Each stage turns unknowns into confirmed facts, records what is still unknown, and ends in a gate that <code>tools/check_gates.py</code> verifies against the records. A gate cannot pass while an earlier one fails.</p>
+
+<div class="notice small">Three layers: the <strong>Markdown records</strong> are the source of truth; the <strong>Word, Excel and diagrams</strong> are generated for people; the <strong>machine handoff</strong> JSON is generated for engineering. Nothing is ever edited in an output.</div>
+
+<h2>Stages and gates</h2>
+<div class="timeline">
+  {% for s in stages %}
+  <div class="tl-item" data-label="{{ s.label }}">
+    <div class="card">
+      <h3 style="margin:0"><a href="{{ url_for('method_stage', number=s.number) }}">{{ s.name }}</a></h3>
+      <p class="muted-text" style="margin:.2rem 0 0">{{ s.purpose }}</p>
+      <dl class="tl-meta">
+        <dt>Exit gate</dt><dd><span class="mono"><strong>{{ s.gate }}</strong></span> — {{ s.gate_name }}</dd>
+        {% if s.checks %}<dt>Gate checks</dt><dd>{{ s.checks }}</dd>{% endif %}
+        <dt>Outputs</dt><dd>{{ s.outputs }}</dd>
+        {% if s.templates %}<dt>Templates</dt><dd>{% for t in s.templates %}<a class="chip" href="{{ url_for('method_template', name=t.file) }}">{{ t.title }}</a>{% endfor %}</dd>{% endif %}
+      </dl>
+    </div>
+  </div>
+  {% endfor %}
+  <div class="tl-item continuous" data-label="GC">
+    <div class="card">
+      <h3 style="margin:0">{{ continuous.name }}</h3>
+      <p class="muted-text" style="margin:.2rem 0 0">{{ continuous.purpose }}</p>
+      <dl class="tl-meta">
+        <dt>Gate</dt><dd><span class="mono"><strong>{{ continuous.gate }}</strong></span> — {{ continuous.gate_name }}</dd>
+        {% if continuous.checks %}<dt>Gate checks</dt><dd>{{ continuous.checks }}</dd>{% endif %}
+        {% if continuous.templates %}<dt>Templates</dt><dd>{% for t in continuous.templates %}<a class="chip" href="{{ url_for('method_template', name=t.file) }}">{{ t.title }}</a>{% endfor %}</dd>{% endif %}
+      </dl>
+    </div>
+  </div>
+</div>
+
+{% if tools %}
+<h2>Tools</h2>
+<div class="card table-wrap">
+  <table><thead><tr><th>Tool</th><th>Purpose</th></tr></thead><tbody>
+  {% for t in tools %}<tr><td><code>{{ t.tool }}</code></td><td>{{ t.purpose }}</td></tr>{% endfor %}
+  </tbody></table>
+</div>
+{% endif %}
+{% endblock %}

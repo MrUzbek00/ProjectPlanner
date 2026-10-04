@@ -1,0 +1,91 @@
+{% extends "project/_layout.html" %}
+{% from "_macros.html" import criteria, source %}
+{% block page_title %}{{ item.id }}{% endblock %}
+{% block body %}
+{% set t = item %}
+{% set rd = t.readiness or {} %}
+<div class="crumbs"><a href="{{ url_for('backlog', slug=v.project.slug) }}">Backlog</a> / {{ t.id }}</div>
+<h2 style="margin-top:0"><span class="mono">{{ t.id }}</span> — {{ t.title }}</h2>
+<p>{{ t.status | badge }} {{ t.scope | badge }} <span class="small muted-text">{{ t.type | human }} · priority {{ t.priority | human }} · complexity {{ t.complexity or '—' }} · {{ t.phase or 'no phase' }} · revision {{ t.revision }}</span></p>
+
+{% if t.readiness_gaps %}
+<div class="notice warn"><strong>Why this task is not READY</strong>
+  <ul>{% for g in t.readiness_gaps %}<li>{{ linkify(g, v) }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<div class="cols">
+  <div>
+    <div class="card">
+      <h3>Objective</h3><p>{{ linkify(t.objective, v) }}</p>
+      <h3>Description</h3><p>{{ linkify(t.description, v) }}</p>
+      <h3>Acceptance criteria</h3>{{ criteria(t.acceptance_criteria, v) }}
+    </div>
+    <div class="card">
+      <h3>Constraints</h3>
+      {% set any_constraint = namespace(found=false) %}
+      {% for kind in ['architecture', 'security', 'performance', 'data', 'compliance', 'other'] %}{% if t.constraints.get(kind) %}
+        {% set any_constraint.found = true %}
+        <p class="small"><strong>{{ kind | label }}</strong></p><ul class="ac-list">{% for c in t.constraints[kind] %}<li>{{ linkify(c, v) }}</li>{% endfor %}</ul>
+      {% endif %}{% endfor %}
+      {% if not any_constraint.found %}<p class="muted-text">None recorded.</p>{% endif %}
+      <h3>Impact</h3>
+      <table class="kv"><tbody>
+      {% for kind, impact in t.impacts.items() %}
+        <tr><th>{{ {'data': 'Data', 'api': 'API', 'ui': 'UI', 'integration': 'Integration'}.get(kind, kind | label) }}</th><td class="small">{% if impact.not_applicable %}Not applicable{% elif impact.stated %}{{ linkify(impact.text, v) | replace('\n', '<br>' | safe) }}{% else %}<span class="muted-text">Not touched / not stated</span>{% endif %}</td></tr>
+      {% endfor %}
+      </tbody></table>
+    </div>
+    <div class="card">
+      <h3>Definition of Ready {{ (rd.get('result') or 'NOT EVALUATED') | badge }}</h3>
+      {% if rd.get('checks') %}
+      <div class="checks">
+        {% for name, ok in rd.checks.items() %}<div class="check {{ 'ok' if ok else 'no' }}"><span class="dot"></span>{{ name | human | label }}</div>{% endfor %}
+      </div>
+      {% endif %}
+      {% if rd.get('failures') %}<ul class="small" style="margin-top:.6rem">{% for f in rd.failures %}<li>{{ f if f is string else (f.get('message') or f) }}</li>{% endfor %}</ul>{% endif %}
+      {% if t.readiness_history %}
+      <h3>Readiness history</h3>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>From</th><th>To</th><th>Reason</th></tr></thead><tbody>
+      {% for h in t.readiness_history %}<tr><td>{{ h.date }}</td><td>{{ (h['from'] or '—') }}</td><td>{{ h.to | badge }}</td><td class="small">{{ linkify(h.reason, v) }}{% if h.change_id %} ({{ h.change_id }}){% endif %}</td></tr>{% endfor %}
+      </tbody></table></div>
+      {% endif %}
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h3>Traceability</h3>
+      <table class="kv"><tbody>
+        <tr><th>Epic</th><td>{{ ids([t.epic], v) }}</td></tr>
+        <tr><th>Feature</th><td>{{ ids([t.feature], v) }}</td></tr>
+        <tr><th>Requirements</th><td>{{ ids(t.source_requirements, v) }}</td></tr>
+        <tr><th>Tests</th><td>{{ ids(t.verification.test_ids, v) }}</td></tr>
+        <tr><th>Test levels</th><td>{{ t.verification.required_tests | join(', ') or '—' }}</td></tr>
+        <tr><th>Depends on</th><td>{{ ids(t.dependencies, v) }}</td></tr>
+        <tr><th>Blocks</th><td>{{ ids(t.blocks, v) }}</td></tr>
+        <tr><th>External</th><td>{{ ids(t.external_dependencies, v) }}</td></tr>
+        <tr><th>Risks</th><td>{{ ids(t.risk_ids, v) }}</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <h3>Architecture decisions</h3>
+      {% for a in t.architecture_decisions %}
+      <p>{{ linkify(a.id, v) }} {{ a.status | badge }}<br><span class="small muted-text">applies via {{ a.applies_via | join(', ') }}</span></p>
+      {% else %}<p class="muted-text">None apply.</p>{% endfor %}
+    </div>
+    <div class="card">
+      <h3>Open questions</h3>
+      {% for q in t.open_questions %}<p class="small"><span class="mono">{{ q.id }}</span> {% if q.blocking %}{{ 'BLOCKER' | badge('blocking') }}{% endif %} {{ q.question }}</p>
+      {% else %}<p class="muted-text">None.</p>{% endfor %}
+      {% if t.blocking_issues %}<h3>Blocking issues</h3><ul class="small">{% for b in t.blocking_issues %}<li>{{ linkify(b, v) }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+    <div class="card">
+      <h3>Engineering handoff identity</h3>
+      <p class="small">Revision <strong>{{ t.revision }}</strong></p>
+      <p class="small muted-text" style="word-break:break-all"><code>{{ t.content_hash or '—' }}</code></p>
+      <p class="small muted-text">Engineering compares these to detect a planning change.</p>
+      {{ source(t.source_path) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

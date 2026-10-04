@@ -1,0 +1,67 @@
+{% extends "project/_layout.html" %}
+{% block body %}
+{% set d = v.doc('decisions.json') %}
+{% set open_q = d.get('questions', []) | rejectattr('resolved') | list %}
+<div class="grid">
+  <div class="card stat"><span class="value">{{ open_q | length }}</span><span class="name">Open questions ({{ open_q | selectattr('blocking') | list | length }} blocking)</span></div>
+  <div class="card stat"><span class="value">{{ d.get('risks', []) | length }}</span><span class="name">Risks</span></div>
+  <div class="card stat"><span class="value">{{ d.get('assumptions', []) | length }}</span><span class="name">Assumptions</span></div>
+  <div class="card stat"><span class="value">{{ d.get('decisions', []) | length }}</span><span class="name">Decisions</span></div>
+</div>
+
+<h2>Questions</h2>
+<p class="muted-text">A gap is a question with an owner — never a plausible answer.</p>
+<div class="filters">
+  <input type="search" placeholder="Search questions…" data-filter="q-table" aria-label="Search questions">
+  <select data-filter="q-table" data-column="status" aria-label="Status"><option value="">All</option><option value="open">Open</option><option value="resolved">Resolved</option></select>
+</div>
+<div class="card table-wrap"><table id="q-table">
+  <thead><tr><th>ID</th><th>Question</th><th>Priority</th><th>Owner</th><th>Affects</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for q in d.get('questions', []) %}
+  <tr data-status="{{ 'resolved' if q.resolved else 'open' }}">
+    <td class="mono">{{ q.id }}</td>
+    <td>{{ q.question }}<br><span class="small muted-text">{{ q.why_it_matters }}</span>{% if q.resolution %}<br><span class="small">→ {{ linkify(q.resolution, v) }}</span>{% endif %}</td>
+    <td>{{ q.priority | badge }}{% if q.blocking %} {{ 'BLOCKER' | badge('blocking') }}{% endif %}</td>
+    <td class="small">{{ q.owner }}</td>
+    <td>{{ ids(q.affected_ids, v) }}</td>
+    <td>{{ q.status | badge }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+
+<h2>Risks</h2>
+<div class="card table-wrap"><table>
+  <thead><tr><th>ID</th><th>Risk</th><th>Probability</th><th>Impact</th><th>Mitigation</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for r in d.get('risks', []) %}
+  <tr><td class="mono">{{ r.id }}</td><td>{{ linkify(r.description, v) }}<br><span class="small muted-text">{{ r.category | human }} · owner {{ r.owner }}{% if r.blocks_readiness %} · blocks readiness{% endif %}</span></td>
+    <td>{{ r.probability | badge }}</td><td>{{ r.impact | badge }}</td><td class="small">{{ linkify(r.mitigation, v) }}</td><td>{{ r.status | badge }}</td></tr>
+  {% else %}<tr><td colspan="6" class="muted-text">No risks recorded.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+
+<h2>Assumptions</h2>
+<div class="card table-wrap"><table>
+  <thead><tr><th>ID</th><th>Assumption</th><th>Risk if wrong</th><th>Settled by</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for a in d.get('assumptions', []) %}
+  <tr><td class="mono">{{ a.id }}</td><td>{{ linkify(a.statement, v) }}</td><td class="small">{{ a.risk_if_wrong }}</td><td>{{ ids(a.question_ids, v) }}</td><td>{{ a.status | badge }}</td></tr>
+  {% else %}<tr><td colspan="5" class="muted-text">No assumptions recorded.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+
+<h2>Decision log</h2>
+<div class="card table-wrap"><table>
+  <thead><tr><th>ID</th><th>Date</th><th>Decision</th><th>Rationale</th><th>Approved by</th></tr></thead>
+  <tbody>
+  {% for x in d.get('decisions', []) %}
+  <tr><td class="mono">{{ x.id }}</td><td class="small">{{ x.date }}</td><td><strong>{{ linkify(x.decision, v) }}</strong><br><span class="small muted-text">{{ linkify(x.question, v) }}</span></td><td class="small">{{ x.rationale }}</td><td class="small">{{ x.approved_by }}</td></tr>
+  {% else %}<tr><td colspan="5" class="muted-text">No decisions recorded.</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "project/_layout.html" %}
+{% block body %}
+{% set reqs = v.requirements %}
+<p class="muted-text">Goals, business requirements, rules and functional, non-functional, data, integration, security, UX and technical requirements. One ID is one need.</p>
+<div class="filters">
+  <input type="search" placeholder="Search ID, title or text…" data-filter="req-table" aria-label="Search requirements">
+  <select data-filter="req-table" data-column="type" aria-label="Type">
+    <option value="">All types</option>
+    {% for t in reqs | map(attribute='type') | unique | sort %}<option value="{{ t }}">{{ t | human }}</option>{% endfor %}
+  </select>
+  <select data-filter="req-table" data-column="status" aria-label="Status">
+    <option value="">All statuses</option>
+    {% for s in reqs | map(attribute='status') | unique | sort %}<option value="{{ s }}">{{ s | human }}</option>{% endfor %}
+  </select>
+  <select data-filter="req-table" data-column="scope" aria-label="Scope">
+    <option value="">All scopes</option>
+    {% for s in reqs | map(attribute='scope') | map('string') | unique | sort %}<option value="{{ s }}">{{ s | human }}</option>{% endfor %}
+  </select>
+</div>
+<div class="card table-wrap">
+  <table id="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Type</th><th>Priority</th><th>Status</th><th>Scope</th><th>Coverage</th></tr></thead>
+    <tbody>
+    {% for r in reqs %}
+      {% set tr = v.trace_for(r.id) %}
+      <tr data-type="{{ r.type }}" data-status="{{ r.status }}" data-scope="{{ r.scope }}">
+        <td><a class="rid" href="{{ url_for('requirement', slug=v.project.slug, item_id=r.id) }}">{{ r.id }}</a></td>
+        <td>{{ r.title }}</td>
+        <td>{{ r.type | human }}</td>
+        <td>{{ r.priority | human }}</td>
+        <td>{{ r.status | badge }}</td>
+        <td>{{ r.scope | badge }}</td>
+        <td>{{ (tr.get('coverage') or '—') | badge }}</td>
+      </tr>
+    {% else %}<tr><td colspan="7" class="muted-text">No requirements recorded yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

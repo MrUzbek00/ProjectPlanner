@@ -1,0 +1,61 @@
+{% extends "project/_layout.html" %}
+{% block body %}
+{% set tr = v.doc('traceability.json') %}
+{% set cs = tr.get('coverage_summary') or {} %}
+<p class="muted-text">Every in-release requirement should reach a task and a test; every task should trace back to a requirement. Orphans are defects.</p>
+<div class="grid">
+  {% for key, value in cs.items() %}
+  <div class="card stat"><span class="value">{{ value }}</span><span class="name">{{ key | human | label }}</span></div>
+  {% endfor %}
+</div>
+
+{% set orphans = tr.get('orphans') or {} %}
+{% if orphans.values() | select | list %}
+<div class="notice bad" style="margin-top:1rem"><strong>Orphans</strong>
+  {% for kind, items in orphans.items() %}{% if items %}<p class="small">{{ kind | label }}: {{ ids(items, v) }}</p>{% endif %}{% endfor %}
+</div>
+{% else %}
+<div class="notice good" style="margin-top:1rem">No orphan requirements, features or tasks.</div>
+{% endif %}
+
+<h2>Requirement chains</h2>
+<div class="filters"><input type="search" placeholder="Filter by any ID…" data-filter="trace-table" aria-label="Filter chains"></div>
+<div class="card table-wrap">
+  <table id="trace-table">
+    <thead><tr><th>Requirement</th><th>Realises</th><th>Features</th><th>Tasks</th><th>Tests</th><th>ADRs</th><th>Coverage</th></tr></thead>
+    <tbody>
+    {% for r in tr.get('requirements', []) %}
+      <tr>
+        <td>{{ linkify(r.requirement_id, v) }}<br><span class="small muted-text">{{ v.title_of(r.requirement_id) }}</span></td>
+        <td>{{ ids(r.upstream_requirement_ids, v) }}</td>
+        <td>{{ ids(r.feature_ids, v) }}</td>
+        <td>{{ ids(r.task_ids, v) }}</td>
+        <td>{{ ids(r.test_ids, v) }}</td>
+        <td>{{ ids(r.adr_ids, v) }}</td>
+        <td>{{ r.coverage | badge }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2>Tasks</h2>
+<div class="card table-wrap">
+  <table>
+    <thead><tr><th>Task</th><th>Requirements</th><th>Acceptance criteria</th><th>Tests</th><th>ADRs</th><th>Delivery</th></tr></thead>
+    <tbody>
+    {% for t in tr.get('tasks', []) %}
+      {% set d = t.get('delivery') or {} %}
+      <tr>
+        <td>{{ linkify(t.task_id, v) }}</td>
+        <td>{{ ids(t.requirement_ids, v) }}</td>
+        <td>{{ ids(t.acceptance_criteria_ids, v) }}</td>
+        <td>{{ ids(t.test_ids, v) }}</td>
+        <td>{{ ids(t.adr_ids, v) }}</td>
+        <td class="small muted-text">{{ (d.get('pull_requests') or []) | length }} PRs · {{ (d.get('commits') or []) | length }} commits</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

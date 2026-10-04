@@ -1,0 +1,57 @@
+{% extends "project/_layout.html" %}
+{% block body %}
+{% set c = v.doc('changes.json') %}
+{% set s = c.get('summary') or {} %}
+{% set base = c.get('baseline') or {} %}
+<p class="muted-text">After approval, a meaningful change is a recorded, analysed, human-decided change — never a quiet edit. Everything it reaches is reviewed before the plan is trusted again.</p>
+<div class="grid">
+  {% for key, value in s.items() %}
+  <div class="card stat"><span class="value">{{ value }}</span><span class="name">{{ key | human | label }}</span></div>
+  {% endfor %}
+</div>
+
+<div class="card" style="margin-top:1rem">
+  <h3>Baseline</h3>
+  {% if base.get('exists') %}
+  <p>Recorded {{ base.get('created_at') or '—' }} for specification version {{ base.get('specification_version') or '—' }}. Incorporated changes: {{ ids(base.get('incorporated_changes'), v) }}</p>
+  {% else %}
+  <p class="muted-text">No baseline yet. It is recorded at approval with <code>python tools/analyze_change_impact.py {{ v.project.path }} --baseline --reason "…"</code>; until then changes are not tracked.</p>
+  {% endif %}
+</div>
+
+{% if c.get('unrecorded_changes') %}
+<div class="notice bad" style="margin-top:1rem"><strong>Edits with no approved change record</strong> — record them before any other work.
+  <div class="table-wrap"><table><thead><tr><th>Record</th><th>Change</th><th>Affects</th><th>File</th></tr></thead><tbody>
+  {% for u in c.unrecorded_changes %}<tr><td>{{ linkify(u.id, v) }}</td><td>{{ u.change | badge }}</td><td>{{ ids(u.affected, v) }}</td><td class="small"><code>{{ u.source_path }}</code></td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+{% endif %}
+
+<h2>Change records</h2>
+{% for ch in c.get('changes', []) %}
+<details class="card gate {{ 'fail' if ch.computed_severity in ['CRITICAL', 'HIGH'] else 'warn' }}">
+  <summary>
+    <span class="gid">{{ ch.change_id }}</span>
+    <span class="gname">{{ ch.title }}<span class="gstage">{{ ch.change_type | human }} · {{ ch.date or 'undated' }}</span></span>
+    {{ ch.status | badge }} {{ (ch.computed_severity or '—') | badge }}
+  </summary>
+  <table class="kv" style="margin-top:.6rem"><tbody>
+    <tr><th>Changed</th><td>{{ ids(ch.changed_artifacts, v) }}</td></tr>
+    <tr><th>Reason</th><td>{{ linkify(ch.reason, v) }}</td></tr>
+    <tr><th>Direct impact</th><td>{{ ids(ch.direct_impact, v) }}</td></tr>
+    <tr><th>Indirect impact</th><td>{{ ids(ch.indirect_impact, v) }}</td></tr>
+    <tr><th>Potential impact</th><td>{{ ids(ch.potential_impact, v) }}</td></tr>
+    <tr><th>Readiness withdrawn</th><td>{{ ids(ch.invalidated_items, v) }}</td></tr>
+    <tr><th>Approved by</th><td>{{ ch.approved_by or '—' }} {{ ids(ch.approval_evidence, v) }}</td></tr>
+    <tr><th>Gates to re-run</th><td>{{ (ch.rerun_gates or []) | join(', ') or '—' }}</td></tr>
+  </tbody></table>
+  {% if ch.affected %}
+  <div class="table-wrap"><table><thead><tr><th>Artifact</th><th>Level</th><th>Confidence</th><th>Review state</th><th>Reason</th></tr></thead><tbody>
+  {% for a in ch.affected %}<tr><td>{{ linkify(a.id, v) }}</td><td>{{ a.level | human }}</td><td>{{ a.confidence | human }}</td><td>{{ (a.review_state or '—') | badge }}</td><td class="small">{{ linkify(a.reason, v) }}</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% endif %}
+</details>
+{% else %}
+<div class="card empty">No change records.</div>
+{% endfor %}
+{% endblock %}

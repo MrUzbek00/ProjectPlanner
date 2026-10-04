@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ name }} · Templates{% endblock %}
+{% block content %}
+<div class="crumbs"><a href="{{ url_for('method_overview') }}">The method</a> / Templates / {{ name }}</div>
+<div class="cols">
+  <div class="card prose">{{ html }}</div>
+  <div class="card">
+    <h3>All templates</h3>
+    <ul class="small" style="padding-left:1rem">
+      {% for f in files %}<li>{% if f == name %}<strong>{{ f }}</strong>{% else %}<a href="{{ url_for('method_template', name=f) }}">{{ f }}</a>{% endif %}</li>{% endfor %}
+    </ul>
+  </div>
+</div>
+<p class="small muted-text">Rendered from <code>templates/{{ name }}</code>. Copy templates into a project folder; never fill them in place.</p>
+{% endblock %}

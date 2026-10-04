@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Project Planning Workflow{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='map.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <header class="topbar">
+    <div class="{% block topbar_class %}container{% endblock %} inner">
+      <a class="brand" href="{{ url_for('home') }}"><span class="logo">PW</span> Project Planning Workflow</a>
+      <nav class="topnav">
+        <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' or (request.view_args and request.view_args.get('slug')) }}">Projects</a>
+        <a href="{{ url_for('method_overview') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('method') }}">The method</a>
+      </nav>
+      <span class="readonly" title="This UI never changes your records">Read-only view</span>
+    </div>
+  </header>
+  <main class="{% block main_class %}container{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
+  {% block footer %}<footer>Markdown records are the source of truth. Everything here is computed from them; nothing is written back.</footer>{% endblock %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

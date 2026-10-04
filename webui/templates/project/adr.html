@@ -1,0 +1,53 @@
+{% extends "project/_layout.html" %}
+{% from "_macros.html" import source %}
+{% block page_title %}{{ item.id }}{% endblock %}
+{% block body %}
+{% set d = item %}
+{% set reach = v.adr_reach(d.id) %}
+<div class="crumbs"><a href="{{ url_for('architecture', slug=v.project.slug) }}">Architecture</a> / {{ d.id }}</div>
+<h2 style="margin-top:0"><span class="mono">{{ d.id }}</span> — {{ d.title }}</h2>
+<p>{{ d.status | badge }} <span class="small muted-text">Decision owner: {{ d.decision_owner or '—' }} · {{ d.date or 'undated' }} · approval {{ ids(d.approval_evidence, v) }}</span></p>
+{% if d.superseded_by %}<div class="notice warn">Superseded by {{ linkify(d.superseded_by, v) }}. It governs nothing new.</div>{% endif %}
+
+<div class="cols">
+  <div>
+    <div class="card">
+      <h3>Context</h3><p>{{ linkify(d.context, v) }}</p>
+      <h3>Decision</h3><p><strong>{{ linkify(d.decision, v) }}</strong></p>
+      <h3>Rationale</h3><p>{{ linkify(d.rationale, v) }}</p>
+      <h3>Constraints introduced</h3>
+      {% if d.constraints %}<ul class="ac-list">{% for c in d.constraints %}<li>{{ linkify(c, v) }}</li>{% endfor %}</ul>{% else %}<p class="muted-text">None.</p>{% endif %}
+    </div>
+    {% if d.alternatives %}
+    <div class="card table-wrap">
+      <h3>Alternatives considered</h3>
+      <table><thead><tr><th>Option</th><th>Advantages</th><th>Disadvantages</th><th>Outcome</th></tr></thead><tbody>
+      {% for a in d.alternatives %}<tr><td><strong>{{ a.option }}</strong><br><span class="small muted-text">{{ a.description }}</span></td><td class="small">{{ a.advantages }}</td><td class="small">{{ a.disadvantages }}</td><td>{{ a.outcome }}</td></tr>{% endfor %}
+      </tbody></table>
+    </div>
+    {% endif %}
+    <div class="card">
+      <h3>Consequences</h3>
+      {% for kind in ['positive', 'negative', 'other'] %}{% if d.consequences.get(kind) %}
+      <p class="small"><strong>{{ kind | label }}</strong></p><ul class="ac-list">{% for c in d.consequences[kind] %}<li>{{ linkify(c, v) }}</li>{% endfor %}</ul>
+      {% endif %}{% endfor %}
+      {% if d.risks %}<p class="small"><strong>Risks</strong></p><ul class="ac-list">{% for r in d.risks %}<li>{{ linkify(r, v) }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+  </div>
+  <div class="card">
+    <h3>What it reaches</h3>
+    <table class="kv"><tbody>
+      <tr><th>Requirements</th><td>{{ ids(reach.get('requirement_ids'), v) }}</td></tr>
+      <tr><th>Features</th><td>{{ ids(reach.get('feature_ids'), v) }}</td></tr>
+      <tr><th>Tasks</th><td>{{ ids(reach.get('task_ids'), v) }}</td></tr>
+      <tr><th>Modules</th><td>{{ ids(d.affected_modules, v) }}</td></tr>
+      <tr><th>Principles</th><td>{{ ids(d.principles, v) }}</td></tr>
+      <tr><th>Depends on</th><td>{{ ids(d.depends_on, v) }}</td></tr>
+      <tr><th>Conflicts with</th><td>{{ ids(d.conflicts_with, v) }}</td></tr>
+      <tr><th>Supersedes</th><td>{{ ids(d.supersedes, v) }}</td></tr>
+      <tr><th>Decision questions</th><td>{{ ids(d.decision_questions, v) }}</td></tr>
+    </tbody></table>
+    {{ source(d.source_path) }}
+  </div>
+</div>
+{% endblock %}

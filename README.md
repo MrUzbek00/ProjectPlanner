@@ -35,6 +35,17 @@ An idea alone is enough to begin; an unnamed project gets a temporary folder lab
 
 > Resume projects/[project-folder]. Read project-state.md, run tools/check_gates.py, and continue at the first failing gate without repeating confirmed questions.
 
+## Web UI
+
+A local, read-only web interface shows the method and every project in a browser: the stage progress bar, every gate with its reasons, requirements, ADRs, the backlog with each task's Definition of Ready checks, traceability chains, review findings, changes, decisions and risks, and the state of the machine handoff.
+
+```bash
+python -m pip install -r webui/requirements.txt
+python -m webui --sample        # the projects under projects/, plus the committed sample project
+```
+
+Open http://127.0.0.1:5000. Everything is computed live from the Markdown records with the same functions `tools/check_gates.py` uses, so an edited record shows on the next page load. The UI never writes to a project: **Re-run checks** only re-evaluates. Options: `--projects-dir`, `--project PATH` (repeatable), `--port`, `--host` (default 127.0.0.1, local only). Tests: `python -m unittest discover -s webui/tests`.
+
 ## How it works
 
 ```text
@@ -258,6 +269,7 @@ python -m unittest discover -s tools/tests
 | [prompts/](prompts/) | Portable entry prompt and the independent reviewer's prompt |
 | [templates/](templates/) | One template per record type, indexed in [templates/README.md](templates/README.md) |
 | [tools/](tools/) | Gate checker, review verifier, readiness and impact analysis, document builder, handoff generator and validator, tests |
+| [webui/](webui/) | Read-only Flask web UI for the method and the projects (`python -m webui`) |
 | [schemas/](schemas/) | JSON Schemas for the handoff files; [schemas/integration/](schemas/integration/README.md) for the engineering contract |
 | [projects/](projects/README.md) | One folder per project, and how to resume one |
 | [reference/](reference/) | The original workflow request and a coverage review |

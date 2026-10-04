@@ -1,0 +1,49 @@
+{% extends "project/_layout.html" %}
+{% from "_macros.html" import criteria, source %}
+{% block page_title %}{{ item.id }}{% endblock %}
+{% block body %}
+{% set r = item %}
+{% set tr = v.trace_for(r.id) %}
+<div class="crumbs"><a href="{{ url_for('requirements', slug=v.project.slug) }}">Requirements</a> / {{ r.id }}</div>
+<h2 style="margin-top:0"><span class="mono">{{ r.id }}</span> — {{ r.title }}</h2>
+<p>{{ r.status | badge }} {{ r.scope | badge }} {{ r.confidence | badge }} <span class="small muted-text">{{ r.type | human }} · priority {{ r.priority | human }}</span></p>
+
+<div class="cols">
+  <div>
+    <div class="card">
+      <h3>Statement</h3>
+      <p>{{ linkify(r.description, v) }}</p>
+      {% if r.rationale %}<h3>Rationale</h3><p>{{ linkify(r.rationale, v) }}</p>{% endif %}
+      <h3>Acceptance criteria</h3>
+      {{ criteria(r.acceptance_criteria, v) }}
+      {% if r.business_measure %}<h3>Business measure</h3><p>{{ r.business_measure }}</p>{% endif %}
+    </div>
+    <div class="card">
+      <h3>Delivered by</h3>
+      <table class="kv"><tbody>
+        <tr><th>Features</th><td>{{ ids(tr.get('feature_ids'), v) }}</td></tr>
+        <tr><th>Tasks</th><td>{{ ids(tr.get('task_ids'), v) }}</td></tr>
+        <tr><th>Tests</th><td>{{ ids(tr.get('test_ids'), v) }}</td></tr>
+        <tr><th>Coverage</th><td>{{ (tr.get('coverage') or '—') | badge }}</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Context</h3>
+    <table class="kv"><tbody>
+      <tr><th>Realises</th><td>{{ ids(r.source, v) }}</td></tr>
+      <tr><th>Realised by</th><td>{{ ids(tr.get('downstream_requirement_ids'), v) }}</td></tr>
+      <tr><th>Depends on</th><td>{{ ids(r.dependencies, v) }}</td></tr>
+      <tr><th>Architecture</th><td>{{ ids(r.architecture_decisions | map(attribute='id') | list, v) }}</td></tr>
+      <tr><th>Modules</th><td>{{ ids(r.related_modules, v) }}</td></tr>
+      <tr><th>Evidence</th><td>{{ ids(r.evidence, v) }}</td></tr>
+      <tr><th>Open questions</th><td>{{ ids(r.open_questions, v) }}</td></tr>
+      <tr><th>Stakeholder</th><td>{{ r.stakeholder or '—' }}</td></tr>
+      {% if r.actor %}<tr><th>Actor</th><td>{{ r.actor }}</td></tr>{% endif %}
+      {% if r.trigger %}<tr><th>Trigger</th><td>{{ r.trigger }}</td></tr>{% endif %}
+      {% if r.permissions %}<tr><th>Permissions</th><td>{{ r.permissions }}</td></tr>{% endif %}
+    </tbody></table>
+    {{ source(r.source_path) }}
+  </div>
+</div>
+{% endblock %}

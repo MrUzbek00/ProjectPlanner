@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{% block page_title %}{{ tab | human | label }}{% endblock %} · {{ v.name }}{% endblock %}
+{% block content %}
+<div class="project-head">
+  <div class="titles">
+    <div class="crumbs"><a href="{{ url_for('home') }}">Projects</a> / {{ v.project.label }}</div>
+    <h1>{{ v.name }}</h1>
+    <div class="sub">
+      <span class="mono">{{ v.project_id }}</span> ·
+      Stage <strong>{{ v.state.get('current stage') or '—' }}</strong> ·
+      Specification {{ v.doc('project.json').get('version') or '—' }} {{ (v.doc('project.json').get('specification_status') or 'unknown') | badge }}
+    </div>
+  </div>
+  <form method="post" action="{{ url_for('refresh', slug=v.project.slug) }}">
+    <button class="button" type="submit" title="Re-evaluate the gates from the current records (read-only)">↻ Re-run checks</button>
+  </form>
+</div>
+<nav class="tabs">
+  {% for key, name in tabs %}
+  <a href="{{ url_for(key, slug=v.project.slug) }}" class="{{ 'active' if key == tab }}">{{ name }}</a>
+  {% endfor %}
+</nav>
+{% block body %}{% endblock %}
+{% endblock %}

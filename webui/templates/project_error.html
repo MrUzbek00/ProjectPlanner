@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="crumbs"><a href="{{ url_for('home') }}">Projects</a> / {{ error.project.label }}</div>
+<h1>{{ error.project.label }}</h1>
+<div class="notice bad">
+  <strong>This project cannot be evaluated.</strong>
+  <p>{{ error.message }}</p>
+  <p class="small">Fix the record named below, then reload. Run <code>python tools/check_gates.py {{ error.project.path }}</code> for the same result on the command line.</p>
+</div>
+<details class="card"><summary>Technical detail</summary><pre class="trace">{{ error.detail }}</pre></details>
+<form method="post" action="{{ url_for('refresh', slug=error.project.slug) }}" style="margin-top:1rem">
+  <button class="button" type="submit">↻ Try again</button>
+</form>
+{% endblock %}

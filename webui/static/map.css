@@ -1,0 +1,241 @@
+/* Workflow map (home page) — a full-window app with a dark canvas, like the SoftwareFactory map. */
+
+/* The home page fills the window: no page scroll, the map is moved by dragging instead. */
+body.app { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+body.app .topbar { position: static; flex: none; }
+.wide-bar { padding: 0 16px; }
+main.wide { flex: 1; min-height: 0; padding: 0; }
+
+.wm-shell {
+  --wm-canvas: #0a0b10;
+  --wm-side: #0c0e15;
+  --wm-card: #12141c;
+  --wm-line: rgba(255, 255, 255, 0.08);
+  --wm-text: #ffffff;
+  --wm-muted: #8b92a5;
+  --wm-dim: #6b7280;
+  --wm-accent: #ff4d8d;
+  --wm-pass: #2dd4bf;
+  --wm-warn: #f0b429;
+  --wm-fail: #ff4d6d;
+  --wm-current: #8ea6ff;
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  height: 100%;
+  background: var(--wm-canvas);
+  color: var(--wm-text);
+  transition: grid-template-columns 200ms ease;
+}
+.wm-shell.collapsed { grid-template-columns: 44px minmax(0, 1fr); }
+
+/* Sidebar ----------------------------------------------------------------------- */
+.wm-side {
+  background: var(--wm-side);
+  border-right: 1px solid var(--wm-line);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--wm-muted);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.wm-side-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.9rem 0.6rem 0.4rem 0.9rem; }
+.wm-side-body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 0.9rem 1rem; scrollbar-width: none; }
+.wm-side-body::-webkit-scrollbar { display: none; }
+.wm-side-title, .wm-label { letter-spacing: 0.16em; text-transform: uppercase; color: var(--wm-dim); font-size: 10px; white-space: nowrap; }
+.wm-label { display: block; margin: 1.1rem 0 0.4rem; }
+.wm-collapse {
+  flex: none; width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--wm-line);
+  background: transparent; color: var(--wm-muted); font: 14px/1 var(--mono); cursor: pointer;
+  transition: transform 200ms ease, color 120ms ease;
+}
+.wm-collapse:hover { color: var(--wm-text); background: rgba(255, 255, 255, 0.05); }
+.wm-shell.collapsed .wm-side-head { flex-direction: column; padding: 0.9rem 0 0; }
+.wm-shell.collapsed .wm-side-title {
+  writing-mode: vertical-rl; transform: rotate(180deg); order: 2; margin-top: 0.8rem;
+}
+.wm-shell.collapsed .wm-collapse { transform: rotate(180deg); }
+.wm-shell.collapsed .wm-side-body { display: none; }
+
+.wm-select {
+  width: 100%; background: var(--wm-card); color: var(--wm-text); border: 1px solid var(--wm-line);
+  border-radius: 6px; padding: 0.45rem 0.5rem; font: 12px var(--mono);
+}
+table.wm-run { font-size: 11px; }
+table.wm-run th, table.wm-run td { padding: 0.32rem 0.25rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+table.wm-run th { color: var(--wm-text); text-transform: none; letter-spacing: 0; font-size: 11px; width: 42%; }
+table.wm-run td { color: var(--wm-muted); }
+table.wm-run tbody tr:hover { background: transparent; }
+.wm-dim { color: var(--wm-dim); }
+.wm-bad { color: var(--wm-fail); }
+.wm-break { word-break: break-all; }
+.wm-views { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.wm-views a {
+  color: var(--wm-muted); border: 1px solid var(--wm-line); border-radius: 4px; padding: 0.2rem 0.45rem;
+  text-transform: uppercase; letter-spacing: 0.08em; font-size: 9.5px;
+}
+.wm-views a:hover { color: var(--wm-text); background: rgba(255, 255, 255, 0.05); text-decoration: none; }
+
+.wm-projects { display: grid; gap: 0.4rem; }
+.wm-proj {
+  display: grid; gap: 0.2rem; padding: 0.5rem 0.6rem; border: 1px solid var(--wm-line); border-radius: 8px;
+  background: var(--wm-card); color: var(--wm-muted);
+}
+.wm-proj:hover { text-decoration: none; border-color: rgba(255, 255, 255, 0.22); }
+.wm-proj.on { border-color: rgba(255, 77, 141, 0.55); }
+.wm-proj-name { color: var(--wm-text); font-family: system-ui, sans-serif; font-size: 12.5px; font-weight: 600; }
+.wm-proj-meta { font-size: 10px; }
+.wm-proj-steps { display: grid; grid-template-columns: repeat(13, 1fr); gap: 2px; margin-top: 0.2rem; }
+.wm-proj-steps i { height: 4px; border-radius: 2px; background: #2a2f3b; }
+.wm-proj-steps i.done { background: var(--wm-pass); }
+.wm-proj-steps i.warn { background: var(--wm-warn); }
+.wm-proj-steps i.fail { background: var(--wm-fail); }
+.wm-proj-steps i.current { background: var(--wm-current); }
+.wm-empty { line-height: 1.6; }
+.wm-empty code { color: #c9cfdc; }
+
+.wm-legend { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.35rem; }
+.wm-legend li { display: flex; align-items: center; gap: 0.5rem; }
+.wm-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--wm-dim); }
+.wm-dot.pass { background: var(--wm-pass); }
+.wm-dot.warn { background: var(--wm-warn); }
+.wm-dot.fail { background: var(--wm-fail); }
+.wm-dot.current { background: var(--wm-current); }
+.wm-dot.notdue { background: #3a3f4b; }
+
+/* Main area ----------------------------------------------------------------------- */
+.wm-main { display: flex; flex-direction: column; min-width: 0; min-height: 0; padding: 1rem 1.25rem 1rem; }
+.wm-head { flex: none; margin-bottom: 0.6rem; }
+.wm-head h1 { font-size: 1.4rem; color: var(--wm-text); margin-bottom: 0.3rem; }
+.wm-head h1 span { color: var(--wm-accent); }
+.wm-head p { margin: 0.1rem 0; font-size: 12.5px; color: var(--wm-muted); }
+.wm-head code { color: #c9cfdc; background: rgba(255, 255, 255, 0.06); padding: 0 0.3rem; border-radius: 4px; }
+
+/* The stage: a fixed window onto the canvas, panned by dragging and zoomed by the wheel. */
+.wm-stage {
+  position: relative; flex: 1; min-height: 0; overflow: hidden;
+  border: 1px solid var(--wm-line); border-radius: 12px; cursor: grab; touch-action: none;
+  user-select: none; -webkit-user-select: none;
+  background-color: #0b0c12;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.wm-stage.dragging { cursor: grabbing; }
+.wm-stage.dragging .wm-card { pointer-events: none; }
+.wm-canvas { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.wm-stage.animate .wm-canvas { transition: transform 260ms ease; }
+
+.wm-tools {
+  position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 4px;
+  padding: 4px; border: 1px solid var(--wm-line); border-radius: 8px; background: rgba(12, 14, 21, 0.9);
+}
+.wm-tools button {
+  min-width: 28px; height: 26px; border: none; border-radius: 5px; background: transparent;
+  color: var(--wm-muted); font: 12px var(--mono); cursor: pointer; padding: 0 0.45rem;
+}
+.wm-tools button:hover { color: var(--wm-text); background: rgba(255, 255, 255, 0.07); }
+.wm-zoom { min-width: 44px; text-align: center; font: 11px var(--mono); color: var(--wm-dim); }
+.wm-hint {
+  position: absolute; left: 14px; bottom: 14px; font: 10px var(--mono); letter-spacing: 0.08em;
+  color: var(--wm-dim); pointer-events: none;
+}
+
+/* Small screens: the page scrolls again and the sidebar stacks above the map. */
+@media (max-width: 900px) {
+  body.app { height: auto; overflow: auto; }
+  .wm-shell, .wm-shell.collapsed { grid-template-columns: 1fr; height: auto; }
+  .wm-shell.collapsed .wm-side-head { flex-direction: row; padding: 0.9rem 0.6rem 0.4rem 0.9rem; }
+  .wm-shell.collapsed .wm-side-title { writing-mode: initial; transform: none; margin: 0; }
+  .wm-stage { flex: none; height: 70vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wm-shell, .wm-collapse, .wm-stage.animate .wm-canvas { transition: none; }
+}
+
+/* Canvas -------------------------------------------------------------------------- */
+.wm-lane { position: absolute; top: 0; bottom: 0; border-left: 1px solid rgba(255, 255, 255, 0.05); }
+.wm-lane:first-child { border-left: none; }
+.wm-lane-head {
+  position: absolute; top: 28px; left: 25px; width: 250px; text-align: center;
+  font: 10px var(--mono); letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.85;
+}
+
+.wm-edges { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+.wm-edge { fill: none; stroke-width: 2; opacity: 0.85; }
+.wm-edge.dashed { stroke-dasharray: 3 5; opacity: 0.7; }
+.wm-edge.idle { opacity: 0.25; }
+
+/* Flow along the path already travelled: marching dashes plus a glowing particle. */
+.wm-flow {
+  fill: none; stroke: rgba(255, 255, 255, 0.5); stroke-width: 1.6; stroke-linecap: round;
+  stroke-dasharray: 1 13; animation: wm-march 1.1s linear infinite;
+}
+@keyframes wm-march { to { stroke-dashoffset: -14; } }
+.wm-particle { filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 8px currentColor); }
+@media (prefers-reduced-motion: reduce) {
+  .wm-flow, .wm-particle { display: none; }
+}
+.wm-gate circle { fill: var(--wm-canvas); stroke: var(--wm-dim); stroke-width: 1.5; }
+.wm-gate.pass circle { stroke: var(--wm-pass); }
+.wm-gate.warn circle { stroke: var(--wm-warn); }
+.wm-gate.fail circle { stroke: var(--wm-fail); }
+.wm-gate-mark { font: 700 10px system-ui, sans-serif; text-anchor: middle; fill: var(--wm-muted); }
+.wm-gate.pass .wm-gate-mark { fill: var(--wm-pass); }
+.wm-gate.warn .wm-gate-mark { fill: var(--wm-warn); }
+.wm-gate.fail .wm-gate-mark { fill: var(--wm-fail); }
+.wm-gate-label { font: 9px ui-monospace, Menlo, Consolas, monospace; letter-spacing: 0.12em; fill: var(--wm-muted); }
+
+/* Stage cards --------------------------------------------------------------------- */
+.wm-card {
+  position: absolute; display: block; width: 250px; height: 112px; background: var(--wm-card);
+  border: 1px solid var(--wm-line); border-radius: 10px; padding: 12px 14px 12px 17px;
+  overflow: hidden; color: var(--wm-text); transition: border-color 160ms ease, transform 160ms ease;
+}
+.wm-card:hover { text-decoration: none; border-color: rgba(255, 255, 255, 0.28); transform: translateY(-1px); }
+.wm-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.wm-title { display: block; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wm-sub {
+  display: -webkit-box; margin-top: 4px; font-size: 11px; line-height: 1.45; color: var(--wm-muted);
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.wm-chips { position: absolute; left: 17px; bottom: 10px; display: flex; gap: 5px; flex-wrap: nowrap; }
+.wm-chip {
+  font: 9px var(--mono); letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px;
+  padding: 3px 6px; background: rgba(255, 255, 255, 0.06); color: var(--wm-muted); white-space: nowrap;
+}
+.wm-chip.gate { color: #c9b8ff; background: rgba(139, 124, 246, 0.16); }
+.wm-chip.status.pass { color: var(--wm-pass); background: rgba(45, 212, 191, 0.12); }
+.wm-chip.status.warn { color: var(--wm-warn); background: rgba(240, 180, 41, 0.13); }
+.wm-chip.status.fail { color: var(--wm-fail); background: rgba(255, 77, 109, 0.14); }
+.wm-chip.status.notdue { color: var(--wm-dim); }
+.wm-chip.status.current { color: var(--wm-current); background: rgba(142, 166, 255, 0.14); }
+.wm-card.st-fail { border-color: rgba(255, 77, 109, 0.55); }
+.wm-card.st-notdue { opacity: 0.45; }
+.wm-card.current {
+  border-color: rgba(142, 166, 255, 0.75);
+  box-shadow: 0 0 0 1px rgba(142, 166, 255, 0.35), 0 0 24px rgba(142, 166, 255, 0.12);
+}
+.wm-card.current .wm-bar { animation: wm-pulse 2.4s ease-in-out infinite; }
+@keyframes wm-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@media (prefers-reduced-motion: reduce) {
+  .wm-card.current .wm-bar { animation: none; }
+  .wm-card { transition: none; }
+}
+
+/* Terminal, captions, change control ------------------------------------------------ */
+.wm-terminal {
+  position: absolute; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px; padding: 12px 14px;
+  background: #0f1117; font: 10px var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--wm-muted); text-align: center; line-height: 1.6;
+}
+.wm-terminal-status { display: block; margin-top: 6px; color: var(--wm-pass); }
+.wm-caption {
+  position: absolute; text-align: center; font: 9px var(--mono); letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(249, 115, 22, 0.75);
+}
+.wm-change {
+  flex: none; margin-top: 0.75rem; padding: 0.6rem 0.8rem; border: 1px dashed rgba(240, 180, 41, 0.35); border-radius: 8px;
+  font-size: 12px; color: var(--wm-muted); display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;
+}
+.wm-change strong { color: var(--wm-text); font-weight: 600; }
