@@ -14,7 +14,10 @@ Usage::
     python tools/setup_workflow.py --scope project
 
 Safe to re-run. Existing skills are updated rather than replaced, and a skill
-already provided by another installation is left alone.
+already provided by another installation is left alone - except for one line:
+the Excalidraw render page's library import is pinned to a known-good version in
+every installed copy, and re-pinned on every run, because the skill ships an
+unversioned import that currently resolves to a build that never loads.
 """
 
 from __future__ import annotations
@@ -23,6 +26,7 @@ import argparse
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -124,6 +128,18 @@ def skills_root(scope: str, override: Path | None) -> Path:
 #: Clones live here; the discoverable skill is materialized next to them.
 SOURCES_DIRNAME = ".workflow-sources"
 
+#: The Excalidraw library the render page imports. The skill imports
+#: `https://esm.sh/@excalidraw/excalidraw?bundle` with no version; that resolves to
+#: 0.18.1, one of whose dependencies esm.sh serves as 404, so the page never loads
+#: and every render times out. 0.18.0 from jsDelivr loads and provides exportToSvg,
+#: and does not depend on esm.sh's on-the-fly builds at all.
+EXCALIDRAW_PIN = "https://cdn.jsdelivr.net/npm/@excalidraw/excalidraw@0.18.0/+esm"
+RENDER_TEMPLATE = Path("references") / "render_template.html"
+#: An `import ... from "<url>"` whose URL loads @excalidraw/excalidraw from any CDN.
+EXCALIDRAW_IMPORT = re.compile(r"""(\bfrom\s*)(["'])(https?://[^"']*@excalidraw/excalidraw\b[^"']*)\2""")
+#: A URL that names an explicit version, e.g. .../@excalidraw/excalidraw@0.18.0...
+VERSIONED = re.compile(r"@excalidraw/excalidraw@\d")
+
 #: Never copied out of a source checkout into the skills directory.
 COPY_IGNORE = shutil.ignore_patterns(
     ".git", ".github", ".gitignore", "node_modules", "__pycache__", "*.pyc", "tests", ".venv"
@@ -221,7 +237,7 @@ def install_skill(
             OK,
             f"already provided at {existing}",
             required=spec.required,
-            notes=["Managed outside this installer; left untouched."],
+            notes=["Managed outside this installer; not updated by it."],
         )
 
     installed = (target / "SKILL.md").is_file()
@@ -505,12 +521,100 @@ SMOKE_DIAGRAM = {
 }
 
 
+def installed_skill_dirs(name: str, roots: list[Path]) -> list[Path]:
+    """Every installed copy of a skill under the given roots, never a source clone."""
+    found: list[Path] = []
+    for root in roots:
+        for candidate in (root / name, find_existing_skill(root, name)):
+            if candidate and (candidate / "SKILL.md").is_file() and SOURCES_DIRNAME not in candidate.parts:
+                resolved = candidate.resolve()
+                if resolved not in found:
+                    found.append(resolved)
+    return found
+
+
+def excalidraw_import(template: Path) -> str | None:
+    """The Excalidraw URL a render template imports, or None when it imports none."""
+    match = EXCALIDRAW_IMPORT.search(template.read_text(encoding="utf-8"))
+    return match.group(3) if match else None
+
+
+def pin_render_template(template: Path) -> tuple[bool, str | None]:
+    """Pin an unversioned Excalidraw import to EXCALIDRAW_PIN, changing nothing else.
+
+    Returns (changed, the URL found). An import that already names a version - ours
+    or one the skill's authors chose - is left as it is.
+    """
+    text = template.read_bytes().decode("utf-8")  # bytes, so line endings survive untouched
+    match = EXCALIDRAW_IMPORT.search(text)
+    if match is None:
+        return False, None
+    url = match.group(3)
+    if url == EXCALIDRAW_PIN or VERSIONED.search(url):
+        return False, url
+    pinned = text[: match.start(3)] + EXCALIDRAW_PIN + text[match.end(3):]
+    template.write_bytes(pinned.encode("utf-8"))
+    return True, url
+
+
+def pin_renderer(skill_dirs: list[Path], check_only: bool, skip: bool) -> Result:
+    """Pin the render page's Excalidraw import in every installed copy of the skill.
+
+    Runs on every setup, so a skill sync that restores the unversioned import is
+    repaired by the next run; --check reports a copy that still needs it.
+    """
+    item = "Excalidraw render page pin"
+    if skip:
+        return Result(item, SKIPPED, "skipped by --skip-renderer", required=False)
+    templates = [d / RENDER_TEMPLATE for d in skill_dirs if (d / RENDER_TEMPLATE).is_file()]
+    if not templates:
+        return Result(item, SKIPPED, "no installed Excalidraw render page to check", required=False)
+
+    notes: list[str] = []
+    unpinned: list[tuple[Path, str]] = []
+    unreadable: list[Path] = []
+    for template in templates:
+        url = excalidraw_import(template)
+        if url is None:
+            unreadable.append(template)
+        elif url == EXCALIDRAW_PIN:
+            continue
+        elif VERSIONED.search(url):
+            notes.append(f"{template}: already pinned by the skill to {url}; left as is.")
+        else:
+            unpinned.append((template, url))
+
+    if unpinned and not check_only:
+        for template, url in unpinned:
+            try:
+                pin_render_template(template)
+            except OSError as error:
+                return Result(item, MISSING, f"could not update {template}: {error}",
+                              "Edit the import line by hand: " + EXCALIDRAW_PIN)
+            notes.append(f"pinned {template} (was {url})")
+            if REPO_ROOT not in template.parents:
+                notes.append("  managed outside this installer: a skill sync may restore the old line; "
+                             "re-run this script after syncing.")
+        unpinned = []
+
+    for template in unreadable:
+        notes.append(f"{template}: no Excalidraw import found; the skill's layout changed.")
+    if unpinned:
+        notes += [f"{template} imports {url}" for template, url in unpinned]
+        return Result(item, PARTIAL, f"{len(unpinned)} render page(s) import an unversioned Excalidraw build",
+                      "Run: python tools/setup_workflow.py  (pins " + EXCALIDRAW_PIN + ")", notes=notes)
+    if unreadable:
+        return Result(item, PARTIAL, "a render page has no recognisable Excalidraw import",
+                      "Check references/render_template.html in the skill.", notes=notes)
+    return Result(item, OK, f"pinned to {EXCALIDRAW_PIN}", notes=notes)
+
+
 def verify_render(skill_dir: Path | None, check_only: bool, skip: bool) -> Result:
     """Render a throwaway diagram to prove the pipeline actually works.
 
-    The render page imports Excalidraw from esm.sh at render time, so a working
-    install can still fail on a restricted network. Finding that out here beats
-    finding it out halfway through a project.
+    The render page imports Excalidraw from a CDN at render time, so a working
+    install can still fail on a restricted network or on a broken library build.
+    Finding that out here beats finding it out halfway through a project.
     """
     item = "render smoke test"
     if skip or check_only:
@@ -554,8 +658,9 @@ def verify_render(skill_dir: Path | None, check_only: bool, skip: bool) -> Resul
 
 
 RENDER_NOTES = [
-    "The render page imports Excalidraw from https://esm.sh at render time.",
-    "Allow the headless browser to reach esm.sh, or diagrams cannot be visually verified.",
+    "The render page imports Excalidraw from a CDN at render time; it should be pinned to",
+    f"{EXCALIDRAW_PIN} (see 'Excalidraw render page pin' above).",
+    "If it is pinned and still never loads, check that the headless browser can reach cdn.jsdelivr.net.",
     "Diagrams can still be authored; only the mandatory render-and-inspect loop is affected.",
 ]
 
@@ -642,7 +747,7 @@ def report(results: list[Result], root: Path, check_only: bool) -> int:
         say(f"{len(optional_gaps)} optional item(s) unavailable; see the notes above.")
     say()
     say("Next: open this workflow with your assistant and start discovery.")
-    say("Diagram generation is described in WORKFLOW.md section 11.")
+    say("Diagram generation is described in WORKFLOW.md section 21.")
     return 0
 
 
@@ -704,6 +809,9 @@ def main(argv: list[str] | None = None) -> int:
 
     results.append(install_build_dependencies(args.check))
     results.append(install_handoff_dependencies(args.check))
+    # Pin before preparing and smoke-testing the renderer, so the test exercises the pinned page.
+    results.append(pin_renderer(installed_skill_dirs("excalidraw-diagram", [root, *also_search]),
+                                args.check, args.skip_renderer))
     results.append(setup_renderer(excalidraw_dir, args.check, args.skip_renderer))
     results.append(verify_render(excalidraw_dir, args.check, args.skip_renderer))
     results.append(check_python_for_skills())
